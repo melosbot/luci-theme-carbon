@@ -6,24 +6,36 @@ on:
     tags: ['v*']
   pull_request:
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Existing tag to build and publish (leave empty for build only)'
+        type: string
+        required: false
+        default: ''
 
 permissions:
   contents: read
+
+env:
+  RELEASE_TAG: ${{ inputs.release_tag || (startsWith(github.ref, 'refs/tags/v') && github.ref_name) || '' }}
 
 jobs:
   # Lint + SDK-free artifacts: the universal install script and a plain .ipk
   package:
     name: Install script
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.release_tag && format('refs/tags/{0}', inputs.release_tag) || github.ref }}
 
       - name: Tag must match PKG_VERSION
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: env.RELEASE_TAG != ''
         run: |
           ver=$(sed -n 's/^PKG_VERSION:=//p' Makefile)
-          if [ "v$ver" != "$GITHUB_REF_NAME" ]; then
-            echo "::error::Tag $GITHUB_REF_NAME does not match PKG_VERSION $ver in Makefile"
+          if [ "v$ver" != "$RELEASE_TAG" ]; then
+            echo "::error::Tag $RELEASE_TAG does not match PKG_VERSION $ver in Makefile"
             exit 1
           fi
 
@@ -54,18 +66,23 @@ jobs:
   sdk:
     name: SDK ${{ matrix.sdk }}
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
         sdk:
-          - x86_64-openwrt-24.10
+          # Release images include the SDK; the floating 24.10 snapshot
+          # downloads it at runtime and can stall indefinitely on the mirror.
+          - x86_64-24.10.8
           - x86_64-openwrt-25.12
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.release_tag && format('refs/tags/{0}', inputs.release_tag) || github.ref }}
           path: feed/luci-theme-carbon
 
       - name: Build with OpenWrt SDK
+        timeout-minutes: 15
         uses: openwrt/gh-action-sdk@v11
         env:
           ARCH: ${{ matrix.sdk }}
@@ -90,9 +107,10 @@ jobs:
 
   release:
     name: Publish release
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.release_tag != '')
     needs: [package, sdk]
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
     steps:
@@ -128,8 +146,9 @@ jobs:
 
           Log out and back in once after installing.
           EOF
-          gh release create "$GITHUB_REF_NAME" assets/* \
+          gh release create "$RELEASE_TAG" assets/* \
             --repo "$GITHUB_REPOSITORY" \
-            --title "Carbon $GITHUB_REF_NAME" \
+            --verify-tag \
+            --title "Carbon $RELEASE_TAG" \
             --notes-file notes.md \
             --generate-notes
