@@ -16,9 +16,9 @@
 
 ## 界面预览
 
-| 浅色 | 深色 |
-|---|---|
-| ![仪表盘 — 浅色](.github/screenshots/dashboard-light.jpg) | ![仪表盘 — 深色](.github/screenshots/dashboard-dark.jpg) |
+<p align="center"><img src=".github/screenshots/dashboard-light.jpg" alt="浅色" width="100%"></p>
+
+<p align="center"><img src=".github/screenshots/dashboard-dark.jpg" alt="深色" width="100%"></p>
 
 ## 功能
 

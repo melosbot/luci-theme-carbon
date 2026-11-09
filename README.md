@@ -16,9 +16,9 @@ A clean, glass-style LuCI theme for OpenWrt — built for everyday users.
 
 ## Screenshots
 
-| Light | Dark |
-|---|---|
-| ![Dashboard — light](.github/screenshots/dashboard-light.jpg) | ![Dashboard — dark](.github/screenshots/dashboard-dark.jpg) |
+<p align="center"><img src=".github/screenshots/dashboard-light.jpg" alt="Light" width="100%"></p>
+
+<p align="center"><img src=".github/screenshots/dashboard-dark.jpg" alt="Dark" width="100%"></p>
 
 ## Features
 
