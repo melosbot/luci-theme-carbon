@@ -9,7 +9,7 @@ LUCI_TITLE:=Carbon Theme (Apple-style, beginner friendly)
 LUCI_DEPENDS:=+luci-base
 LUCI_PKGARCH:=all
 
-PKG_VERSION:=0.6.3
+PKG_VERSION:=1.0.0
 PKG_RELEASE:=1
 PKG_LICENSE:=Apache-2.0
 

@@ -12,7 +12,7 @@
 	'use strict';
 
 	const C = window.Carbon = window.Carbon || {};
-	C.version = '0.6.3';
+	C.version = '1.0.0';
 
 	/* directory this script was loaded from (…/luci-static/carbon/) */
 	const BASE = ((document.currentScript && document.currentScript.src) || '').replace(/[?#].*$/, '').replace(/[^/]*$/, '');
