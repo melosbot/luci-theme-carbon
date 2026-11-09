@@ -32,7 +32,7 @@ A clean, glass-style LuCI theme for OpenWrt — built for everyday users.
 - **Frosted-glass sidebar** that collapses into an icon rail (button on the sidebar edge or <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>\\</kbd>); hovering a rail icon opens its sub-menu.
 - **Light / dark / auto** theme switch (top-right) and **中文 / English** language switch (bottom-left).
 - **Mobile friendly** — drawer navigation and tables that reflow into cards.
-- **Online updates** — check and install stable releases from *System → Carbon Update*. APK signatures remain verified; download size and SHA-256 are checked before installation.
+- **Online updates** — check and install stable releases from *System → Carbon Theme Settings*. APK signatures remain verified; download size and SHA-256 are checked before installation.
 - Existing LuCI pages and plugins keep working; the updater only installs the Carbon theme package.
 - Architecture independent: one theme package for every router.
 
@@ -98,12 +98,12 @@ Carbon becomes the default theme. Refresh the page, then **log out and log in on
 | Light / dark / auto | top-right of the toolbar |
 | 中文 / English | bottom-left of the sidebar (changes LuCI's language, same as *System → Language*) |
 | GitHub project | icon at the top-right of the toolbar |
-| Check and install theme updates | System → Carbon Update (Simple and Pro modes) |
+| Check and install theme updates | System → Carbon Theme Settings (Simple and Pro modes) |
 | LuCI's original status page | *Show detailed status* under the dashboard |
 
 ### Online upgrades (v1.1.0+)
 
-Install v1.1.0 or newer through the native package manager once. Open **System → Carbon Update**, click **Check for updates**, then **Install update** and confirm. The page shows release notes, progress and installation logs; refreshing it resumes monitoring. Theme preferences and router configuration are retained. Same-version installs, downgrades and expired update requests are rejected.
+Install v1.1.0 or newer through the native package manager once. Open **System → Carbon Theme Settings**, click **Check for updates**, then **Install update** and confirm. The page shows release notes, progress and installation logs; refreshing it resumes monitoring. Theme preferences and router configuration are retained. Same-version installs, downgrades and expired update requests are rejected.
 
 APK updates verify the bundled Carbon public key, then use APK's normal signature verification again during installation. They use already-installed dependencies without fetching firmware indexes. This does not change `/etc/apk/keys`; standard LuCI package uploads still need the one-time key import above. IPK updates use HTTPS plus the release asset's SHA-256 and size checks. Update checks need router access to GitHub and correct system time. See [online update details](docs/online-update.md).
 

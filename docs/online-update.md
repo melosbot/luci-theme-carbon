@@ -3,7 +3,7 @@
 ## 使用
 
 1. 首次手动安装 v1.1.0 或更新的原生 APK/IPK 包，退出并重新登录 LuCI，使新增 RPC 权限生效。
-2. 打开「系统 → Carbon 更新」。简洁和专业模式都有入口。
+2. 打开「系统 → Carbon 主题设置」。简洁和专业模式都有入口。
 3. 点击「检查更新」，查看当前版本、最新稳定版和更新说明。
 4. 点击「一键升级」，确认目标版本。后台执行下载、校验和安装，页面显示进度及日志；刷新页面不会取消安装。
 5. 成功后点击「刷新页面」。无需重启路由器。
@@ -34,7 +34,7 @@
 
 ## English
 
-Install the native v1.1.0+ APK/IPK once, then log out/back in. Open **System → Carbon Update**, check for updates, review the notes and confirm **Install update**. Progress and logs survive page refreshes. Reload the page after success; a router reboot is unnecessary. Read-only users cannot install updates.
+Install the native v1.1.0+ APK/IPK once, then log out/back in. Open **System → Carbon Theme Settings**, check for updates, review the notes and confirm **Install update**. Progress and logs survive page refreshes. Reload the page after success; a router reboot is unnecessary. Read-only users cannot install updates.
 
 The updater only accepts newer stable releases from the fixed Carbon repository. It verifies size, SHA-256, package name/version and, for APK, the bundled Carbon public key. APK verifies the signature again during installation with the same isolated key directory and no firmware repository access. System trust settings are unchanged. IPK uses HTTPS, size and SHA-256 validation rather than APK signing. Existing dependencies must be available. Checks expire after 30 minutes, and a lock prevents overlapping updates.
 

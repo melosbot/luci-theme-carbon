@@ -97,7 +97,7 @@ return view.extend({
 		self.pollStatus = sync;
 		poll.add(sync, 2);
 		return E('div', { 'class': 'cbi-map cb-update' }, [
-			E('h2', {}, tr('Carbon Update', 'Carbon 更新')),
+			E('h2', {}, tr('Carbon Theme Settings', 'Carbon 主题设置')),
 			E('p', { 'class': 'cbi-map-descr' }, tr('Update the theme without changing your router configuration.', '在线更新主题，保留路由器配置。')),
 			E('section', { 'class': 'cbi-section' }, [
 				E('div', { 'style': 'display:flex;gap:3rem;flex-wrap:wrap;margin:1rem 0' }, [

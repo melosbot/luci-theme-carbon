@@ -235,9 +235,9 @@ jobs:
 
           ### Online updates / 网页在线升级
 
-          Install v1.1.0 manually once, then open **System → Carbon Update** to check and install future stable releases. Installation runs in the background, preserves settings and resumes progress display after a page refresh. APK updates verify the bundled Carbon public key and retain signature verification; IPK updates verify the HTTPS release's SHA-256 and size. No signature bypass is used.
+          Install v1.1.0 manually once, then open **System → Carbon Theme Settings** to check and install future stable releases. Installation runs in the background, preserves settings and resumes progress display after a page refresh. APK updates verify the bundled Carbon public key and retain signature verification; IPK updates verify the HTTPS release's SHA-256 and size. No signature bypass is used.
 
-          首次手动安装 v1.1.0 后，在「系统 → Carbon 更新」检查更新并一键升级后续稳定版。APK 保留签名校验；下载失败、校验失败、同版本与降级均不会继续安装。通过独立安装脚本安装的设备，需先改用原生 APK/IPK 包安装一次，才能启用在线升级。
+          首次手动安装 v1.1.0 后，在「系统 → Carbon 主题设置」检查更新并一键升级后续稳定版。APK 保留签名校验；下载失败、校验失败、同版本与降级均不会继续安装。通过独立安装脚本安装的设备，需先改用原生 APK/IPK 包安装一次，才能启用在线升级。
           EOF
           gh release create "$RELEASE_TAG" assets/* \
             --repo "$GITHUB_REPOSITORY" \

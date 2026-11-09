@@ -39,7 +39,7 @@
 		{% if (css): %}
 		<style title="text/css">{{ css }}</style>
 		{% endif %}
-		<script src="{{ media }}/carbon.js?v=1.1.0"></script>
+		<script src="{{ media }}/carbon.js?v=1.1.0-ui1"></script>
 		<script src="{{ dispatcher.build_url('admin/translations', dispatcher.lang) }}"></script>
 		<script src="{{ resource }}/cbi.js"></script>
 	</head>

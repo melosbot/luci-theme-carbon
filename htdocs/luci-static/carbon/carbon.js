@@ -42,7 +42,7 @@
 		'Internet & Network': '上网与网络',
 		'Wi-Fi': '无线 Wi‑Fi',
 		'Software': '软件包',
-		'Carbon Update': 'Carbon 更新',
+		'Carbon Theme Settings': 'Carbon 主题设置',
 		'Password': '管理密码',
 		'Backup & Upgrade': '备份与升级',
 		'Reboot': '重启',
@@ -230,6 +230,7 @@
 	 * Icons (24×24, stroke = currentColor)
 	 * ------------------------------------------------------------------ */
 	const ICONS = {
+		carbon: '<path d="M12 3.5l7.4 4.25v8.5L12 20.5l-7.4-4.25v-8.5z"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/>',
 		gauge: '<path d="M4.5 16a7.5 7.5 0 1 1 15 0"/><path d="M12 16l3.5-4.5"/><circle cx="12" cy="16" r="1.3" fill="currentColor" stroke="none"/>',
 		globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.5 3.5 5.3 3.5 8.5s-1.1 6-3.5 8.5c-2.4-2.5-3.5-5.3-3.5-8.5s1.1-6 3.5-8.5z"/>',
 		sliders: '<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>',
@@ -265,7 +266,7 @@
 		nas: '<rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M5 9.5h14M5 15h14"/><circle cx="15.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/><circle cx="15.5" cy="12.2" r=".8" fill="currentColor" stroke="none"/>',
 		iot: '<rect x="7" y="7" width="10" height="10" rx="2"/><path d="M10 3.5V7M14 3.5V7M10 17v3.5M14 17v3.5M3.5 10H7M3.5 14H7M17 10h3.5M17 14h3.5"/>'
 	};
-	const icon = C.icon = (name) => name === 'carbon' ? LOGO :
+	const icon = C.icon = (name) =>
 		'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
 		(ICONS[name] || ICONS.square) + '</svg>';
 
@@ -382,7 +383,7 @@
 		] },
 		{ group: 'System', items: [
 			{ title: 'Software', icon: 'box', paths: ['system/package-manager', 'system/opkg'] },
-			{ title: 'Carbon Update', icon: 'carbon', paths: ['system/carbon-update'] },
+			{ title: 'Carbon Theme Settings', icon: 'carbon', paths: ['system/carbon-update'] },
 			{ title: 'Password', icon: 'key', paths: ['system/admin'] },
 			{ title: 'Backup & Upgrade', icon: 'download', paths: ['system/flash'] },
 			{ title: 'Reboot', icon: 'power', paths: ['system/reboot'] }
