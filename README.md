@@ -12,11 +12,11 @@ A clean, glass-style LuCI theme for OpenWrt — built for everyday users.
 [![Release](https://img.shields.io/github/v/release/mrjoechen/luci-theme-carbon)](https://github.com/mrjoechen/luci-theme-carbon/releases/latest)
 [![License](https://img.shields.io/github/license/mrjoechen/luci-theme-carbon)](LICENSE)
 
-**[Live demo](https://mrjoechen.github.io/luci-theme-carbon/) · [English demo](https://mrjoechen.github.io/luci-theme-carbon/?lang=en)**
-
 </div>
 
 ## Screenshots
+
+**[Live demo](https://mrjoechen.github.io/luci-theme-carbon/) · [English demo](https://mrjoechen.github.io/luci-theme-carbon/?lang=en)**
 
 <p align="center"><img src=".github/screenshots/overview-light.jpg" alt="Light" width="100%"></p>
 
@@ -33,7 +33,9 @@ A clean, glass-style LuCI theme for OpenWrt — built for everyday users.
 - **Changes nothing in OpenWrt** — pure front-end package, every LuCI page and plugin keeps working; uninstall to go back.
 - Tiny and architecture independent (~80 KB, one package for every router).
 
-## Compatibility
+## Installation & Usage
+
+### Compatibility
 
 | Firmware | Package manager | Package |
 |---|---|---|
@@ -41,8 +43,6 @@ A clean, glass-style LuCI theme for OpenWrt — built for everyday users.
 | OpenWrt / ImmortalWrt 25.x, snapshot | apk | `.apk` or install script |
 
 Requires the ucode-based LuCI (23.05 or newer).
-
-## Installation
 
 All files are on the [Releases](https://github.com/mrjoechen/luci-theme-carbon/releases/latest) page.
 
@@ -84,7 +84,7 @@ apk add --allow-untrusted /tmp/luci-theme-carbon-*.apk
 
 Carbon becomes the default theme. Refresh the page, then **log out and log in once** so the dashboard gets its read-only permissions. Switch themes any time in *System → System → Language and Style*.
 
-## Usage
+### Usage
 
 | What | Where |
 |---|---|
@@ -92,9 +92,10 @@ Carbon becomes the default theme. Refresh the page, then **log out and log in on
 | Collapse sidebar | round button on the sidebar edge, or <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>\\</kbd> |
 | Light / dark / auto | top-right of the toolbar |
 | 中文 / English | bottom-left of the sidebar (changes LuCI's language, same as *System → Language*) |
+| GitHub project | icon at the top-right of the toolbar |
 | LuCI's original status page | *Show detailed status* under the dashboard |
 
-## Uninstall
+### Uninstall
 
 ```bash
 sh /tmp/carbon-install.sh uninstall
@@ -102,7 +103,7 @@ sh /tmp/carbon-install.sh uninstall
 
 or remove the package with `opkg remove luci-theme-carbon` / `apk del luci-theme-carbon`. The previous theme is restored automatically.
 
-## Building
+## Build from source
 
 **Without the SDK** (produces the install script and an `.ipk`):
 
@@ -116,35 +117,12 @@ sh scripts/build-ipk.sh
 
 **With the OpenWrt SDK**: put this directory under `package/` and run `make package/luci-theme-carbon/compile`.
 
-**Releases** are built by GitHub Actions: pushing a tag `vX.Y.Z` that matches `PKG_VERSION` in the `Makefile` builds the install script, the `.ipk` (OpenWrt 24.10 SDK) and the `.apk` (OpenWrt 25.12 SDK) and publishes them as a GitHub release.
-
-## Demo & GitHub Pages
-
-The [live demo](https://mrjoechen.github.io/luci-theme-carbon/) uses the actual theme CSS, JavaScript and brand icons. It includes a live mock dashboard, interfaces, searchable devices, Wi-Fi and system forms, software installation, logs, diagnostics, backup and reboot simulations, plus a login preview. Try light/dark/auto appearance, Simple/Pro navigation and 中文/English. Demo settings last for the current browser tab; passwords are never saved and no router is contacted.
-
-**Local preview**: run `python3 -m http.server 8000` in the repo root and open [the preview](http://localhost:8000/preview/index.html). Add `?lang=en` for English. The existing `/preview/form.html` URL opens the wireless demo.
-
-**Build the deployable site** (Python 3, no npm dependencies):
-
-```bash
-python3 scripts/build-demo.py
-python3 -m http.server 8000 --directory dist/demo
-```
-
-Open [the built demo](http://localhost:8000/). The build copies only the preview and required theme assets into `dist/demo/`; relative asset URLs and query-based navigation support project Pages paths and custom domains.
-
-**Automatic deployment**: in the repository's **Settings → Pages → Build and deployment → Source**, select **GitHub Actions** once. After committing and pushing these files to `main`, the **Deploy demo to GitHub Pages** workflow builds and deploys changes to the demo, theme assets or workflow. It also supports manual runs; pull requests build without publishing. The workflow uses the built-in `GITHUB_TOKEN` and needs no custom secrets. Deployment permissions/environment rules must allow `main`. Forks use `https://<owner>.github.io/<repo>/`; update the demo links above when forking.
-
-See [GitHub's Pages workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
-
 **Brand data** (`brands.js`) is regenerated with `python3 -I scripts/gen-brands.py`.
 
-## Credits
+## Notices
 
 - Brand glyphs: [Simple Icons](https://simpleicons.org) (CC0 1.0). All trademarks belong to their respective owners.
 - MAC vendor prefixes: IEEE Registration Authority MA-L registry.
 - Widget behaviour follows the official `luci-theme-bootstrap`.
 
-## License
-
-[Apache License 2.0](LICENSE)
+Licensed under [Apache License 2.0](LICENSE).
