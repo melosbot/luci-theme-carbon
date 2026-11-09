@@ -76,11 +76,13 @@ opkg install /tmp/luci-theme-carbon_*_all.ipk
 
 ### Option 3 — apk (`.apk`, 25.x / snapshot)
 
-LuCI's web upload refuses packages that are not signed by your firmware's key, so install over SSH:
+**v1.0.1 and newer Release APKs are signed.** Import `carbon-apk.pem` once per device, then install or upgrade directly in LuCI:
 
-```bash
-apk add --allow-untrusted /tmp/luci-theme-carbon-*.apk
-```
+1. Download the public key and APK from [Releases](https://github.com/mrjoechen/luci-theme-carbon/releases/latest).
+2. In Pro mode, open **System → Administration → Repo Public Keys**, paste the full public key and click **Add key** (if your firmware provides this page).
+3. Open **System → Software → Upload Package**, upload the APK and install.
+
+Older LuCI needs a one-time SSH key import. See [APK configuration and troubleshooting](docs/apk-install.md) for the verified key fingerprint, commands and preserving the key across firmware upgrades. The old v1.0.0 APK is unsigned; download a new version. Repository `wget` / `packages.adb` errors are separate network/feed problems and still need fixing for reliable web installs.
 
 ### After installing
 
@@ -118,6 +120,8 @@ sh scripts/build-ipk.sh
 ```
 
 **With the OpenWrt SDK**: put this directory under `package/` and run `make package/luci-theme-carbon/compile`.
+
+**APK signing**: raw SDK APKs are unsigned. See [signing setup and validation](docs/apk-signing.md) for local signing and the `APK_SIGNING_KEY` Actions secret required for releases.
 
 **Brand data** (`brands.js`) is regenerated with `python3 -I scripts/gen-brands.py`.
 

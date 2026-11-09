@@ -73,11 +73,13 @@ opkg install /tmp/luci-theme-carbon_*_all.ipk
 
 ### 方式三：apk（`.apk`，25.x / snapshot）
 
-LuCI 网页上传只接受固件官方签名的包，所以请通过 SSH 安装：
+**从 v1.0.1 开始，Release 中的 APK 已签名。** 每台设备只需导入一次 `carbon-apk.pem`，后续直接通过 LuCI 上传安装或升级：
 
-```bash
-apk add --allow-untrusted /tmp/luci-theme-carbon-*.apk
-```
+1. 从 [Releases](https://github.com/mrjoechen/luci-theme-carbon/releases/latest) 下载公钥和 APK。
+2. 切换到专业模式，在 **系统 → 管理权 → 软件源公钥（Repo Public Keys）** 中粘贴完整公钥并添加（需固件提供此页面）。
+3. 在 **系统 → 软件包 → 上传软件包** 中上传 APK 并安装。
+
+旧版 LuCI 没有公钥管理页时，只需一次 SSH 导入。公钥指纹、导入命令、刷机保留配置及排错见 [APK 配置说明](docs/apk-install.md)。旧 v1.0.0 APK 未签名，请重新下载新版。`wget` / `packages.adb` 报错属于独立的软件源或网络问题，要稳定通过网页安装仍需修复软件源。
 
 ### 安装之后
 
@@ -115,6 +117,8 @@ sh scripts/build-ipk.sh
 ```
 
 **使用 OpenWrt SDK**：把本目录放到 SDK 的 `package/` 下，执行 `make package/luci-theme-carbon/compile`。
+
+**APK 签名**：SDK 原始 APK 未签名；本地签名方法、验证步骤和发布所需的 `APK_SIGNING_KEY` Actions Secret 见 [签名构建说明](docs/apk-signing.md)。
 
 **品牌数据**（`brands.js`）可用 `python3 -I scripts/gen-brands.py` 重新生成。
 

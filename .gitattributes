@@ -1,0 +1,4 @@
+# Public-key file checksums must stay identical across Windows and Linux.
+keys/*.pem text eol=lf
+keys/SHA256SUMS text eol=lf
+*.sh text eol=lf
