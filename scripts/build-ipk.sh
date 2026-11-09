@@ -16,6 +16,7 @@ PKG=luci-theme-carbon
 VER=$(sed -n 's/^PKG_VERSION:=//p' "$ROOT/Makefile")
 REL=$(sed -n 's/^PKG_RELEASE:=//p' "$ROOT/Makefile")
 FULLVER="$VER-r$REL"
+mkdir -p "$OUT" && OUT=$(cd "$OUT" && pwd)   # absolute: later steps run from a temp dir
 IPK="$OUT/${PKG}_${FULLVER}_all.ipk"
 
 WORK=$(mktemp -d "${TMPDIR:-/tmp}/carbon-ipk.XXXXXX")

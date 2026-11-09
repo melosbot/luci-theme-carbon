@@ -10,6 +10,7 @@ set -eu
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 OUT=${1:-"$ROOT/dist"}
 VER=$(sed -n 's/^PKG_VERSION:=//p' "$ROOT/Makefile")
+mkdir -p "$OUT" && OUT=$(cd "$OUT" && pwd)   # absolute: later steps run from a temp dir
 TARGET="$OUT/carbon-install.sh"
 
 WORK=$(mktemp -d "${TMPDIR:-/tmp}/carbon-inst.XXXXXX")
