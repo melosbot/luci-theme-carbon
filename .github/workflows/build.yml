@@ -62,7 +62,7 @@ jobs:
           name: ipk-standalone
           path: dist-ipk/*.ipk
 
-  # Official OpenWrt SDKs: 24.10 (opkg → .ipk) and 25.12 (apk → .apk)
+  # Official release SDKs: 24.10 (opkg → .ipk) and 25.12 (apk → .apk)
   sdk:
     name: SDK ${{ matrix.sdk }}
     runs-on: ubuntu-latest
@@ -71,10 +71,10 @@ jobs:
       fail-fast: false
       matrix:
         sdk:
-          # Release images include the SDK; the floating 24.10 snapshot
-          # downloads it at runtime and can stall indefinitely on the mirror.
+          # Release images include the SDK; floating snapshot images
+          # download it at runtime and can stall indefinitely on the mirror.
           - x86_64-24.10.8
-          - x86_64-openwrt-25.12
+          - x86_64-25.12.6
     steps:
       - uses: actions/checkout@v4
         with:
