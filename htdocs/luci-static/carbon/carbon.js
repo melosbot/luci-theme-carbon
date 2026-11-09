@@ -12,7 +12,7 @@
 	'use strict';
 
 	const C = window.Carbon = window.Carbon || {};
-	C.version = '1.0.1';
+	C.version = '1.1.0';
 
 	/* directory this script was loaded from (…/luci-static/carbon/) */
 	const BASE = ((document.currentScript && document.currentScript.src) || '').replace(/[?#].*$/, '').replace(/[^/]*$/, '');
@@ -42,6 +42,7 @@
 		'Internet & Network': '上网与网络',
 		'Wi-Fi': '无线 Wi‑Fi',
 		'Software': '软件包',
+		'Carbon Update': 'Carbon 更新',
 		'Password': '管理密码',
 		'Backup & Upgrade': '备份与升级',
 		'Reboot': '重启',
@@ -264,7 +265,7 @@
 		nas: '<rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M5 9.5h14M5 15h14"/><circle cx="15.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/><circle cx="15.5" cy="12.2" r=".8" fill="currentColor" stroke="none"/>',
 		iot: '<rect x="7" y="7" width="10" height="10" rx="2"/><path d="M10 3.5V7M14 3.5V7M10 17v3.5M14 17v3.5M3.5 10H7M3.5 14H7M17 10h3.5M17 14h3.5"/>'
 	};
-	const icon = C.icon = (name) =>
+	const icon = C.icon = (name) => name === 'carbon' ? LOGO :
 		'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
 		(ICONS[name] || ICONS.square) + '</svg>';
 
@@ -328,6 +329,7 @@
 		wireguard: 'lock', nlbw: 'chart', statistics: 'chart', netdata: 'chart', 'temperature': 'thermo',
 		/* system */
 		system: 'gear', admin: 'user', 'package-manager': 'box', opkg: 'box', startup: 'rocket',
+		'carbon-update': 'carbon',
 		crontab: 'clock', mounts: 'disk', leds: 'bulb', flash: 'download', reboot: 'power', plugins: 'puzzle',
 		ttyd: 'terminal', commands: 'terminal', filetransfer: 'upload', fileassistant: 'folder',
 		autoreboot: 'clock', 'argon-config': 'palette', 'design-config': 'palette', 'kucat-config': 'palette',
@@ -380,6 +382,7 @@
 		] },
 		{ group: 'System', items: [
 			{ title: 'Software', icon: 'box', paths: ['system/package-manager', 'system/opkg'] },
+			{ title: 'Carbon Update', icon: 'carbon', paths: ['system/carbon-update'] },
 			{ title: 'Password', icon: 'key', paths: ['system/admin'] },
 			{ title: 'Backup & Upgrade', icon: 'download', paths: ['system/flash'] },
 			{ title: 'Reboot', icon: 'power', paths: ['system/reboot'] }

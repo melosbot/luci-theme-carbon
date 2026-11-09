@@ -6,10 +6,10 @@
 include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=Carbon Theme (Apple-style, beginner friendly)
-LUCI_DEPENDS:=+luci-base
+LUCI_DEPENDS:=+luci-base +curl +ca-bundle +flock
 LUCI_PKGARCH:=all
 
-PKG_VERSION:=1.0.1
+PKG_VERSION:=1.1.0
 PKG_RELEASE:=1
 PKG_LICENSE:=Apache-2.0
 
@@ -20,6 +20,7 @@ CONFIG_LUCI_JSMIN:=
 
 define Package/luci-theme-carbon/postrm
 #!/bin/sh
+if [ "$${PKG_UPGRADE}" = 1 ] || [ "$$1" = upgrade ]; then exit 0; fi
 [ -n "$${IPKG_INSTROOT}" ] || {
 	uci -q delete luci.themes.Carbon
 	if [ "$$(uci -q get luci.main.mediaurlbase)" = "/luci-static/carbon" ]; then

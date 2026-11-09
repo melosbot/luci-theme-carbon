@@ -3,6 +3,7 @@ dist/
 .cache/
 .private/
 *.private.pem
+__pycache__/
 
 # OS / editor
 .DS_Store

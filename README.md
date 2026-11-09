@@ -32,8 +32,9 @@ A clean, glass-style LuCI theme for OpenWrt — built for everyday users.
 - **Frosted-glass sidebar** that collapses into an icon rail (button on the sidebar edge or <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>\\</kbd>); hovering a rail icon opens its sub-menu.
 - **Light / dark / auto** theme switch (top-right) and **中文 / English** language switch (bottom-left).
 - **Mobile friendly** — drawer navigation and tables that reflow into cards.
-- **Changes nothing in OpenWrt** — pure front-end package, every LuCI page and plugin keeps working; uninstall to go back.
-- Tiny and architecture independent (~80 KB, one package for every router).
+- **Online updates** — check and install stable releases from *System → Carbon Update*. APK signatures remain verified; download size and SHA-256 are checked before installation.
+- Existing LuCI pages and plugins keep working; the updater only installs the Carbon theme package.
+- Architecture independent: one theme package for every router.
 
 ## Installation & Usage
 
@@ -48,7 +49,7 @@ Requires the ucode-based LuCI (23.05 or newer).
 
 All files are on the [Releases](https://github.com/mrjoechen/luci-theme-carbon/releases/latest) page.
 
-### Option 1 — install script (any firmware, recommended)
+### Option 1 — install script (any firmware)
 
 Run on the router (SSH):
 
@@ -97,7 +98,16 @@ Carbon becomes the default theme. Refresh the page, then **log out and log in on
 | Light / dark / auto | top-right of the toolbar |
 | 中文 / English | bottom-left of the sidebar (changes LuCI's language, same as *System → Language*) |
 | GitHub project | icon at the top-right of the toolbar |
+| Check and install theme updates | System → Carbon Update (Simple and Pro modes) |
 | LuCI's original status page | *Show detailed status* under the dashboard |
+
+### Online upgrades (v1.1.0+)
+
+Install v1.1.0 or newer through the native package manager once. Open **System → Carbon Update**, click **Check for updates**, then **Install update** and confirm. The page shows release notes, progress and installation logs; refreshing it resumes monitoring. Theme preferences and router configuration are retained. Same-version installs, downgrades and expired update requests are rejected.
+
+APK updates verify the bundled Carbon public key, then use APK's normal signature verification again during installation. They use already-installed dependencies without fetching firmware indexes. This does not change `/etc/apk/keys`; standard LuCI package uploads still need the one-time key import above. IPK updates use HTTPS plus the release asset's SHA-256 and size checks. Update checks need router access to GitHub and correct system time. See [online update details](docs/online-update.md).
+
+Required packages: `curl`, `ca-bundle`, `flock` (installed as native package dependencies). Script-only installations must first install the native APK/IPK package; the script does not create a package-manager database entry.
 
 ### Uninstall
 

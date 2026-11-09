@@ -32,6 +32,7 @@ cp -R "$ROOT/htdocs/." "$DATA/www/"
 cp -R "$ROOT/ucode/." "$DATA/usr/share/ucode/luci/"
 cp -R "$ROOT/root/." "$DATA/"
 chmod 0755 "$DATA/etc/uci-defaults/30_luci-theme-carbon"
+chmod 0755 "$DATA/usr/libexec/rpcd/luci.carbon_update"
 find "$DATA" -name '.DS_Store' -exec rm {} +
 
 SIZE=$(du -sk "$DATA" | cut -f1)
@@ -40,7 +41,7 @@ SIZE=$(du -sk "$DATA" | cut -f1)
 cat > "$CTRL/control" <<EOF
 Package: $PKG
 Version: $FULLVER
-Depends: luci-base
+Depends: luci-base, curl, ca-bundle, flock
 Source: $PKG
 SourceName: $PKG
 License: Apache-2.0
@@ -66,6 +67,7 @@ EOF
 
 cat > "$CTRL/postrm" <<'EOF'
 #!/bin/sh
+if [ "${PKG_UPGRADE:-}" = 1 ] || [ "${1:-}" = upgrade ]; then exit 0; fi
 [ -n "${IPKG_INSTROOT:-}" ] && exit 0
 uci -q delete luci.themes.Carbon
 if [ "$(uci -q get luci.main.mediaurlbase)" = "/luci-static/carbon" ]; then

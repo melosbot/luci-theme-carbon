@@ -44,8 +44,13 @@ jobs:
           node --check htdocs/luci-static/carbon/carbon.js
           node --check htdocs/luci-static/carbon/brands.js
           node -e "new Function(require('fs').readFileSync('htdocs/luci-static/resources/menu-carbon.js', 'utf8'))"
+          node -e "new Function(require('fs').readFileSync('htdocs/luci-static/resources/view/system/carbon-update.js', 'utf8'))"
           python3 -m json.tool root/usr/share/rpcd/acl.d/luci-theme-carbon.json > /dev/null
-          for f in scripts/*.sh root/etc/uci-defaults/*; do sh -n "$f"; done
+          python3 -m json.tool root/usr/share/rpcd/acl.d/luci-theme-carbon-update.json > /dev/null
+          python3 -m json.tool root/usr/share/luci/menu.d/luci-theme-carbon.json > /dev/null
+          for f in scripts/*.sh tests/*.sh root/etc/uci-defaults/* root/usr/libexec/rpcd/*; do sh -n "$f"; done
+          cmp keys/carbon-apk.pem root/usr/share/carbon/keys/carbon-apk.pem
+          test "$(cat root/usr/share/carbon/version)" = "$(sed -n 's/^PKG_VERSION:=//p' Makefile)-r$(sed -n 's/^PKG_RELEASE:=//p' Makefile)"
 
       - name: Build install script and .ipk
         run: |
@@ -61,6 +66,17 @@ jobs:
         with:
           name: ipk-standalone
           path: dist-ipk/*.ipk
+
+  updater:
+    name: Online update integration tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.release_tag && format('refs/tags/{0}', inputs.release_tag) || github.ref }}
+      - run: python3 tests/update-integration.py
+      - run: python3 tests/opkg-update.py
 
   # Official release SDKs: 24.10 (opkg → .ipk) and 25.12 (apk → .apk)
   sdk:
@@ -143,7 +159,7 @@ jobs:
   release:
     name: Publish release
     if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.release_tag != '')
-    needs: [package, sdk]
+    needs: [package, sdk, updater]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -216,6 +232,12 @@ jobs:
           ```
 
           Log out and back in once after installing.
+
+          ### Online updates / 网页在线升级
+
+          Install v1.1.0 manually once, then open **System → Carbon Update** to check and install future stable releases. Installation runs in the background, preserves settings and resumes progress display after a page refresh. APK updates verify the bundled Carbon public key and retain signature verification; IPK updates verify the HTTPS release's SHA-256 and size. No signature bypass is used.
+
+          首次手动安装 v1.1.0 后，在「系统 → Carbon 更新」检查更新并一键升级后续稳定版。APK 保留签名校验；下载失败、校验失败、同版本与降级均不会继续安装。通过独立安装脚本安装的设备，需先改用原生 APK/IPK 包安装一次，才能启用在线升级。
           EOF
           gh release create "$RELEASE_TAG" assets/* \
             --repo "$GITHUB_REPOSITORY" \

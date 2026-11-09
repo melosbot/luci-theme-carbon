@@ -17,6 +17,11 @@ PATHS="
 /www/luci-static/resources/menu-carbon.js
 /usr/share/ucode/luci/template/themes/carbon
 /usr/share/rpcd/acl.d/luci-theme-carbon.json
+/usr/share/rpcd/acl.d/luci-theme-carbon-update.json
+/usr/share/luci/menu.d/luci-theme-carbon.json
+/usr/share/carbon
+/usr/libexec/rpcd/luci.carbon_update
+/www/luci-static/resources/view/system/carbon-update.js
 "
 
 say() { printf '%s\n' "$*"; }

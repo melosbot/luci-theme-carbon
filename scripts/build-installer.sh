@@ -22,7 +22,8 @@ mkdir -p "$DATA/www" "$DATA/usr/share/ucode/luci" "$DATA/usr/share/rpcd" "$OUT"
 
 cp -R "$ROOT/htdocs/." "$DATA/www/"
 cp -R "$ROOT/ucode/." "$DATA/usr/share/ucode/luci/"
-cp -R "$ROOT/root/usr/share/rpcd/." "$DATA/usr/share/rpcd/"
+cp -R "$ROOT/root/usr/." "$DATA/usr/"
+chmod 0755 "$DATA/usr/libexec/rpcd/luci.carbon_update"
 find "$DATA" -name '.DS_Store' -exec rm {} +
 
 if tar --version 2>/dev/null | grep -q 'GNU tar'; then

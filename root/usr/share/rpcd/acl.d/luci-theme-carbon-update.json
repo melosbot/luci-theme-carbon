@@ -1,0 +1,7 @@
+{
+  "luci-theme-carbon-update": {
+    "description": "Check Carbon releases and install verified theme updates",
+    "read": { "ubus": { "luci.carbon_update": [ "status", "check" ] } },
+    "write": { "ubus": { "luci.carbon_update": [ "upgrade" ] } }
+  }
+}

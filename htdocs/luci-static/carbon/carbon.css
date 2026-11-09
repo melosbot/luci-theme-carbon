@@ -2781,6 +2781,8 @@ body.cb-has-dash #maincontent > h2 { display: none; }
 	}
 }
 
+.cb-update [hidden] { display: none !important; }
+
 @media print {
 	.cb-sidebar, .cb-toolbar, .cb-scrim, .cbi-page-actions, .cb-footer { display: none !important; }
 	.cb-main { margin: 0; }

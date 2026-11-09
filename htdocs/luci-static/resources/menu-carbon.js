@@ -99,7 +99,7 @@ return baseclass.extend({
 			url: L.url(root.name, cat.name),
 			children: ui.menu.getChildren(cat).map((ch) => ({
 				name: ch.name,
-				title: _(ch.title),
+				title: C.t(_(ch.title)),
 				path: root.name + '/' + cat.name + '/' + ch.name,
 				url: L.url(root.name, cat.name, ch.name)
 			}))
