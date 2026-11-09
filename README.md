@@ -103,7 +103,7 @@ Carbon becomes the default theme. Refresh the page, then **log out and log in on
 
 ### Online upgrades (v1.1.0+)
 
-Install v1.1.0 or newer through the native package manager once. Open **System → Carbon Theme Settings**, click **Check for updates**, then **Install update** and confirm. The page shows release notes, progress and installation logs; refreshing it resumes monitoring. Theme preferences and router configuration are retained. Same-version installs, downgrades and expired update requests are rejected.
+Install v1.1.0 or newer through the native package manager once. Open **System → Carbon Theme Settings** (**Carbon Update** in v1.1.0), click **Check for updates**, then **Install update** and confirm. The page shows release notes, progress and installation logs; refreshing it resumes monitoring. Theme preferences and router configuration are retained. Same-version installs, downgrades and expired update requests are rejected.
 
 APK updates verify the bundled Carbon public key, then use APK's normal signature verification again during installation. They use already-installed dependencies without fetching firmware indexes. This does not change `/etc/apk/keys`; standard LuCI package uploads still need the one-time key import above. IPK updates use HTTPS plus the release asset's SHA-256 and size checks. Update checks need router access to GitHub and correct system time. See [online update details](docs/online-update.md).
 
