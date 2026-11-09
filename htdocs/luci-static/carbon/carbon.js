@@ -122,6 +122,7 @@
 		'Collapse sidebar': '收起侧边栏',
 		'click to switch': '点击切换',
 		'Appearance': '外观',
+		'GitHub (opens in a new tab)': 'GitHub（在新标签页打开）',
 		'Language': '语言',
 		'All settings': '全部设置',
 		'Randomised MAC address': '设备使用了随机 MAC 地址，无法通过 MAC 识别品牌'
@@ -277,6 +278,7 @@
 
 	/* Extra line icons used by the sidebar (24×24, stroke = currentColor) */
 	Object.assign(ICONS, {
+		github: '<path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 19 4.77 5.07 5.07 0 0 0 18.91 1S17.73.65 15 2.48a13.38 13.38 0 0 0-7 0C5.27.65 4.09 1 4.09 1A5.07 5.07 0 0 0 4 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 8 18.13V22"/>',
 		route: '<circle cx="6" cy="18" r="2.2"/><circle cx="18" cy="6" r="2.2"/><path d="M8.2 18H15a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h6.8"/>',
 		doc: '<path d="M6.5 3.5h7l4 4v13h-11z"/><path d="M13.5 3.5v4h4M9 12h6M9 15.5h6"/>',
 		cpu: '<rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9.5 3v3M14.5 3v3M9.5 18v3M14.5 18v3M3 9.5h3M3 14.5h3M18 9.5h3M18 14.5h3"/>',
@@ -550,6 +552,16 @@
 			themeHost.appendChild(segmented(
 				APPEARANCES.map((v) => ({ value: v, title: appearanceLabel(v), html: icon(APPEARANCE_ICON[v]) })),
 				C.appearance.get(), (v) => C.appearance.set(v), t('Appearance')));
+		}
+
+		const toolbar = document.querySelector('.cb-toolbar');
+		if (toolbar && !toolbar.querySelector('.cb-github')) {
+			toolbar.appendChild(h('a', {
+				class: 'cb-github', href: 'https://github.com/mrjoechen/luci-theme-carbon',
+				target: '_blank', rel: 'noopener noreferrer',
+				title: t('GitHub (opens in a new tab)'), 'aria-label': t('GitHub (opens in a new tab)'),
+				html: icon('github')
+			}));
 		}
 
 		const collapse = document.getElementById('cb-collapse');

@@ -11,34 +11,38 @@
 	/* ---------------- menu tree (shape mirrors ui.menu) ---------------- */
 	const MENU = [
 		['status', T('Status', '状态'), [
-			['overview', T('Overview', '概览')], ['routes', T('Routing', '路由')], ['syslog', T('System Log', '系统日志')],
-			['processes', T('Processes', '进程')], ['realtime', T('Realtime Graphs', '实时信息')]
+			['overview', T('Overview', '概览')], ['syslog', T('System Log', '系统日志')]
 		]],
 		['system', T('System', '系统'), [
 			['system', T('System', '系统')], ['admin', T('Administration', '管理权')], ['package-manager', T('Software', '软件包')],
-			['startup', T('Startup', '启动项')], ['crontab', T('Scheduled Tasks', '计划任务')], ['mounts', T('Mount Points', '挂载点')],
 			['flash', T('Backup / Flash Firmware', '备份与升级')], ['reboot', T('Reboot', '重启')]
 		]],
-		['services', T('Services', '服务'), [
-			['ddns', T('Dynamic DNS', '动态 DNS')], ['upnp', 'UPnP IGD & PCP'], ['wol', T('Wake on LAN', '网络唤醒')]
-		]],
 		['network', T('Network', '网络'), [
-			['network', T('Interfaces', '接口')], ['wireless', T('Wireless', '无线')], ['routes', T('Routing', '路由')],
-			['dhcp', T('DHCP and DNS', 'DHCP/DNS')], ['diagnostics', T('Diagnostics', '网络诊断')], ['firewall', T('Firewall', '防火墙')]
-		]],
-		['vpn', 'VPN', [['wireguard', 'WireGuard']]],
-		['logout', T('Logout', '退出'), []]
+			['network', T('Interfaces', '接口')], ['wireless', T('Wireless', '无线')],
+			['dhcp', T('Connected Devices', '已连接设备')], ['diagnostics', T('Diagnostics', '网络诊断')]
+		]]
 	];
 
+	const url = (path) => 'index.html?' + new URLSearchParams({ lang: ZH ? 'zh-Hans' : 'en', page: path });
+	const defaults = { hostname: 'OpenWrt', ssid: 'Carbon-Home', channel: '6', encryption: 'psk2', enabled: true, guest: false };
+	let settings = Object.assign({}, defaults);
+	try { Object.assign(settings, JSON.parse(sessionStorage.getItem('carbon.demo.settings') || '{}')); } catch (e) { /* storage may be blocked */ }
+
 	window.CarbonPreview = {
+		T, url, settings,
+		paths: MENU.flatMap((c) => c[2].map((ch) => 'admin/' + c[0] + '/' + ch[0])),
+		save(values) {
+			Object.assign(settings, values);
+			try { sessionStorage.setItem('carbon.demo.settings', JSON.stringify(settings)); } catch (e) { /* in-memory demo still works */ }
+		},
 		model(active) {
 			return {
 				root: 'admin',
 				activePath: active.split('/'),
-				url: (p) => '#' + p,
+				url,
 				categories: MENU.map((c) => ({
-					name: c[0], title: c[1], path: 'admin/' + c[0], url: '#admin/' + c[0],
-					children: c[2].map((ch) => ({ name: ch[0], title: ch[1], path: 'admin/' + c[0] + '/' + ch[0], url: '#admin/' + c[0] + '/' + ch[0] }))
+					name: c[0], title: c[1], path: 'admin/' + c[0], url: url('admin/' + c[0] + '/' + c[2][0][0]),
+					children: c[2].map((ch) => ({ name: ch[0], title: ch[1], path: 'admin/' + c[0] + '/' + ch[0], url: url('admin/' + c[0] + '/' + ch[0]) }))
 				}))
 			};
 		},
@@ -77,7 +81,10 @@
 		tx += up * elapsed;
 		load = Math.max(0.05, load + rnd(-0.08, 0.08));
 	}
-	setInterval(tickCounters, 2000);
+	// Only the overview needs live counters; other views use static fixtures.
+	const requestedPage = new URLSearchParams(location.search).get('page') || location.hash.slice(1);
+	if (!window.CarbonPreview.paths.includes(requestedPage) || requestedPage === 'admin/status/overview')
+		setInterval(tickCounters, 2000);
 	tickCounters();
 
 	const wait = (v) => new Promise((r) => setTimeout(() => r(v), rnd(40, 160)));
@@ -104,7 +111,7 @@
 
 	window.CarbonPreview.provider = {
 		board: () => wait({
-			hostname: 'OpenWrt',
+			hostname: settings.hostname,
 			model: 'Xiaomi Redmi Router AX6000',
 			kernel: '6.6.73',
 			release: { distribution: 'OpenWrt', version: '24.10.0', description: 'OpenWrt 24.10.0 r28427-6df0e3d02a' }
@@ -127,9 +134,9 @@
 		devStats: () => wait({ rx_bytes: Math.round(rx), tx_bytes: Math.round(tx) }),
 		leases: () => wait({ dhcp_leases: LEASES, dhcp6_leases: [] }),
 		wireless: () => wait({
-			radio0: { up: true, config: { band: '2g', channel: '6' }, interfaces: [
-				{ ifname: 'phy0-ap0', config: { mode: 'ap', ssid: 'Carbon-Home', encryption: 'psk2' } },
-				{ ifname: 'phy0-ap1', config: { mode: 'ap', ssid: 'Carbon-Guest', encryption: 'psk2', disabled: true } }
+			radio0: { up: settings.enabled, config: { band: '2g', channel: settings.channel }, interfaces: [
+				{ ifname: 'phy0-ap0', config: { mode: 'ap', ssid: settings.ssid, encryption: settings.encryption, disabled: !settings.enabled } },
+				{ ifname: 'phy0-ap1', config: { mode: 'ap', ssid: 'Carbon-Guest', encryption: 'psk2', disabled: !settings.guest } }
 			] },
 			radio1: { up: true, config: { band: '5g', channel: '149' }, interfaces: [
 				{ ifname: 'phy1-ap0', config: { mode: 'ap', ssid: 'Carbon-Home-5G', encryption: 'sae-mixed' } }

@@ -4,13 +4,15 @@
 
 # luci-theme-carbon
 
-简洁的毛玻璃风格 OpenWrt LuCI 主题，为普通用户设计。
+简洁的毛玻璃风格 OpenWrt LuCI 主题，为每一个人设计。
 
 [English](README.md) · **简体中文**
 
 [![Build](https://github.com/mrjoechen/luci-theme-carbon/actions/workflows/build.yml/badge.svg)](https://github.com/mrjoechen/luci-theme-carbon/actions/workflows/build.yml)
 [![Release](https://img.shields.io/github/v/release/mrjoechen/luci-theme-carbon)](https://github.com/mrjoechen/luci-theme-carbon/releases/latest)
 [![License](https://img.shields.io/github/license/mrjoechen/luci-theme-carbon)](LICENSE)
+
+**[在线演示](https://mrjoechen.github.io/luci-theme-carbon/) · [English demo](https://mrjoechen.github.io/luci-theme-carbon/?lang=en)**
 
 </div>
 
@@ -116,7 +118,24 @@ sh scripts/build-ipk.sh
 
 **发布版本**由 GitHub Actions 自动构建：推送与 `Makefile` 中 `PKG_VERSION` 一致的 `vX.Y.Z` 标签后，会自动构建安装脚本、`.ipk`（OpenWrt 24.10 SDK）和 `.apk`（OpenWrt 25.12 SDK），并发布到 GitHub Releases。
 
-**无需路由器的本地预览**：在仓库根目录执行 `python3 -m http.server`，打开 `/preview/index.html`（模拟数据，加 `?lang=en` 查看英文）。
+## 演示站与 GitHub Pages
+
+[在线演示](https://mrjoechen.github.io/luci-theme-carbon/)直接使用主题的 CSS、JavaScript 与品牌图标，包含动态模拟仪表盘、网络接口、设备搜索、Wi-Fi 和系统设置、软件包安装、日志、网络诊断、备份与重启模拟，以及登录页。支持浅色 / 深色 / 自动、简洁 / 专业模式及中英文切换。演示设置仅保留在当前浏览器标签页，不保存密码，也不连接真实路由器。
+
+**本地预览**：在仓库根目录执行 `python3 -m http.server 8000`，打开[本地演示](http://localhost:8000/preview/index.html)，加 `?lang=en` 查看英文。原有 `/preview/form.html` 地址会跳转到无线演示。
+
+**构建部署目录**（仅需 Python 3，无 npm 依赖）：
+
+```bash
+python3 scripts/build-demo.py
+python3 -m http.server 8000 --directory dist/demo
+```
+
+打开[构建后的演示](http://localhost:8000/)。构建仅将演示文件和必要的主题资源复制到 `dist/demo/`，相对资源地址和查询参数导航同时兼容项目 Pages 子路径与自定义域名。
+
+**自动部署**：在仓库 **Settings → Pages → Build and deployment → Source** 中选择一次 **GitHub Actions**。提交并推送这些文件到 `main` 后，**Deploy demo to GitHub Pages** 工作流会在演示、主题资源或工作流变化时构建并部署，也支持手动触发；Pull Request 只构建、不发布。使用内置 `GITHUB_TOKEN`，无需额外配置密钥；仓库部署权限和环境规则需允许 `main`。Fork 后地址为 `https://<用户名>.github.io/<仓库名>/`，请相应修改上方演示链接。
+
+参见 [GitHub Pages 工作流官方文档](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)。
 
 **品牌数据**（`brands.js`）可用 `python3 -I scripts/gen-brands.py` 重新生成。
 

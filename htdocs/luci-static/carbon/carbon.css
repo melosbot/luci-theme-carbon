@@ -763,6 +763,21 @@ form.inline { display: inline; margin: 0; }
 .cb-appearance .cb-seg-btn { height: 26px; min-width: 32px; padding: 0 8px; }
 .cb-appearance .cb-seg-btn svg { width: 15px; height: 15px; }
 
+.cb-github {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: none;
+	width: 32px;
+	height: 32px;
+	border-radius: 8px;
+	color: var(--cb-text-2);
+	transition: color .2s var(--cb-ease), background .2s var(--cb-ease);
+}
+.cb-github svg { width: 19px; height: 19px; }
+.cb-github:hover { color: var(--cb-accent); background: var(--cb-hover); }
+.cb-github:focus-visible { outline: 2px solid var(--cb-accent); outline-offset: 2px; }
+
 .cb-indicators,
 #indicators {
 	display: flex;

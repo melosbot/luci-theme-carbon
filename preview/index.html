@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html lang="zh_Hans">
+<html lang="zh-Hans">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<meta name="theme-color" content="#f2f2f7">
+	<meta name="description" content="Explore the Carbon LuCI theme for OpenWrt: live mock traffic, connected devices, Wi-Fi and system settings.">
 	<title>OpenWrt · 概览 — Carbon 预览</title>
 	<script>
 		/* ?lang=en switches the preview language */
 		(function () { var m = /[?&]lang=([\w-]+)/.exec(location.search); if (m) document.documentElement.lang = m[1]; })();
 	</script>
 	<link rel="stylesheet" href="../htdocs/luci-static/carbon/carbon.css">
+	<link rel="stylesheet" href="demo.css">
 	<link rel="icon" href="../htdocs/luci-static/carbon/logo.svg" type="image/svg+xml">
 	<script src="../htdocs/luci-static/carbon/carbon.js"></script>
 	<script src="mock.js"></script>
 </head>
 <body class="lang_zh_Hans" data-page="admin-status-overview">
+	<a class="demo-skip" href="#maincontent">Skip to content / 跳到内容</a>
 	<div class="cb-app">
 		<aside class="cb-sidebar" id="cb-sidebar">
 				<button type="button" class="cb-collapse" id="cb-collapse" aria-label="Collapse sidebar"></button>
@@ -41,65 +44,21 @@
 				</div>
 			</header>
 
-			<div id="maincontent" class="cb-content">
+			<div id="maincontent" class="cb-content" tabindex="-1">
+				<div id="demo-banner" class="demo-banner"></div>
+				<noscript><div class="alert-message warning">请启用 JavaScript 以体验 Carbon 演示。 Enable JavaScript to explore this demo.</div></noscript>
 				<div id="tabmenu" style="display:none"></div>
 
-				<!-- what LuCI's own status/overview view renders (kept below the dashboard) -->
-				<div id="view">
-					<div class="cbi-section">
-						<h3>系统</h3>
-						<div class="table">
-							<div class="tr"><div class="td left" width="33%">主机名</div><div class="td left">OpenWrt</div></div>
-							<div class="tr"><div class="td left" width="33%">型号</div><div class="td left">Xiaomi Redmi Router AX6000</div></div>
-							<div class="tr"><div class="td left" width="33%">架构</div><div class="td left">ARMv8 Processor rev 4</div></div>
-							<div class="tr"><div class="td left" width="33%">固件版本</div><div class="td left">OpenWrt 24.10.0 r28427-6df0e3d02a / LuCI openwrt-24.10 branch</div></div>
-							<div class="tr"><div class="td left" width="33%">内核版本</div><div class="td left">6.6.73</div></div>
-						</div>
-					</div>
-					<div class="cbi-section">
-						<h3>内存</h3>
-						<div class="table">
-							<div class="tr"><div class="td left" width="33%">可用数</div><div class="td left"><div class="cbi-progressbar" title="286 MiB / 512 MiB (55%)"><div style="width:55%"></div></div></div></div>
-							<div class="tr"><div class="td left" width="33%">已缓存</div><div class="td left"><div class="cbi-progressbar" title="96 MiB / 512 MiB (18%)"><div style="width:18%"></div></div></div></div>
-						</div>
-					</div>
-					<div class="cbi-section">
-						<h3>网络</h3>
-						<div class="network-status-table">
-							<div class="ifacebox"><div class="ifacebox-head center active"><strong>IPv4 上游</strong></div>
-								<div class="ifacebox-body left"><div class="ifacebadge large"><span><strong>协议：</strong>PPPoE<br><strong>地址：</strong>100.64.23.18/32<br><strong>网关：</strong>100.64.0.1</span></div></div></div>
-							<div class="ifacebox"><div class="ifacebox-head center active"><strong>IPv6 上游</strong></div>
-								<div class="ifacebox-body left"><div class="ifacebadge large"><span><strong>协议：</strong>DHCPv6 客户端<br><strong>前缀：</strong>240e:3a1:4c2:8f0::/60</span></div></div></div>
-						</div>
-					</div>
-				</div>
+				<div id="view" aria-busy="true"><p>正在加载演示 / Loading demo…</p></div>
 			</div>
 
 			<footer class="cb-footer">
-				<span>Powered by <a href="#">LuCI openwrt-24.10 branch</a> · <a href="#">OpenWrt 24.10.0</a> · Carbon</span>
+				<span>Powered by <a href="https://github.com/openwrt/luci" target="_blank" rel="noopener noreferrer">LuCI</a> · <a href="https://openwrt.org" target="_blank" rel="noopener noreferrer">OpenWrt 24.10.0</a> · Carbon Demo</span>
 			</footer>
 		</main>
 	</div>
 
-	<script>
-		var P = window.CarbonPreview, active = 'admin/status/overview';
-		Carbon.initShell({
-			logoutUrl: 'login.html',
-			language: {
-				current: /^zh/i.test(document.documentElement.lang) ? 'zh' : 'en',
-				set: function (v) { location.search = '?lang=' + (v === 'zh' ? 'zh_Hans' : 'en'); return new Promise(function () {}); }
-			}
-		});
-		Carbon.renderNav(P.model(active));
-		Carbon.setTitle(P.title(active));
-
-		var host = document.createElement('div');
-		host.id = 'cb-dashboard';
-		document.getElementById('maincontent').insertBefore(host, document.getElementById('view'));
-		Carbon.Dashboard.mount(host, P.provider, {
-			urls: { network: '#admin/network/network', wireless: '#admin/network/wireless', devices: '#admin/network/dhcp' }
-		});
-		Carbon.detailsToggle(host, Carbon.mode.get() === 'pro');
-	</script>
+	<div id="demo-toast" class="demo-toast" role="status" aria-live="polite"></div>
+	<script src="demo.js"></script>
 </body>
 </html>
