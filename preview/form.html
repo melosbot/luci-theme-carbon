@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh_Hans">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<meta name="theme-color" content="#f2f2f7">
+	<title>OpenWrt · 无线 — Carbon 预览</title>
+	<script>(function () { var m = /[?&]lang=([\w-]+)/.exec(location.search); if (m) document.documentElement.lang = m[1]; })();</script>
+	<link rel="stylesheet" href="../htdocs/luci-static/carbon/carbon.css">
+	<link rel="icon" href="../htdocs/luci-static/carbon/logo.svg" type="image/svg+xml">
+	<script src="../htdocs/luci-static/carbon/carbon.js"></script>
+	<script src="mock.js"></script>
+</head>
+<body class="lang_zh_Hans" data-page="admin-network-wireless">
+	<div class="cb-app">
+		<aside class="cb-sidebar" id="cb-sidebar">
+				<button type="button" class="cb-collapse" id="cb-collapse" aria-label="Collapse sidebar"></button>
+			<a class="cb-brand" href="index.html">
+				<img class="cb-brand-logo" src="../htdocs/luci-static/carbon/logo.svg" alt="">
+				<span class="cb-brand-text"><strong>OpenWrt</strong><small>Xiaomi Redmi Router AX6000</small></span>
+			</a>
+			<div class="cb-mode" id="cb-mode"></div>
+			<nav class="cb-nav" id="topmenu" style="display:none"></nav>
+			<div class="cb-sidebar-foot" id="cb-sidebar-foot"></div>
+		</aside>
+		<div class="cb-scrim" id="cb-scrim"></div>
+
+		<main class="cb-main">
+			<header class="cb-toolbar">
+				<button type="button" class="cb-burger" id="cb-burger" aria-label="Menu"><span></span></button>
+				<div class="cb-title" id="cb-title"></div>
+				<div class="cb-appearance" id="cb-appearance"></div>
+					<div id="indicators" class="cb-indicators">
+					<span data-indicator="uci-changes" data-clickable="true" data-style="active">未保存的配置：3</span>
+				</div>
+			</header>
+
+			<div id="maincontent" class="cb-content">
+				<div class="alert-message warning fade-in">
+					<h4>尚未设置密码！</h4>
+					<p>此路由器尚未设置密码。请设置 root 用户的密码以保护 Web 管理界面。</p>
+					<div class="right"><a class="btn" href="#">前往密码配置…</a></div>
+				</div>
+
+				<div id="tabmenu"><ul class="tabs"><li class="active"><a href="#">无线概况</a></li><li><a href="#">访客网络</a></li><li><a href="#">MAC 过滤</a></li></ul></div>
+
+				<div id="view">
+					<div class="cbi-map" id="cbi-wireless">
+						<h2 name="content">无线概况</h2>
+						<div class="cbi-map-descr">配置无线网络的名称、密码与信道。修改后点击右下角「保存并应用」生效。</div>
+
+						<div class="cbi-section">
+							<h3>无线网络</h3>
+							<div class="table cbi-section-table">
+								<div class="tr cbi-section-table-titles">
+									<div class="th">网络</div><div class="th">频段</div><div class="th">状态</div><div class="th">已连接</div><div class="th cbi-section-actions">&nbsp;</div>
+								</div>
+								<div class="tr cbi-section-table-row">
+									<div class="td" data-title="网络"><strong>Carbon-Home</strong><br><small style="color:var(--cb-text-2)">WPA2-PSK · 主网络</small></div>
+									<div class="td" data-title="频段">2.4 GHz · 信道 6</div>
+									<div class="td" data-title="状态"><span class="label success">已启用</span></div>
+									<div class="td" data-title="已连接">7 台设备</div>
+									<div class="td cbi-section-actions"><div><button class="btn cbi-button cbi-button-neutral">重启</button><button class="btn cbi-button cbi-button-edit">编辑</button><button class="btn cbi-button cbi-button-remove">移除</button></div></div>
+								</div>
+								<div class="tr cbi-section-table-row">
+									<div class="td" data-title="网络"><strong>Carbon-Home-5G</strong><br><small style="color:var(--cb-text-2)">WPA2/WPA3 混合</small></div>
+									<div class="td" data-title="频段">5 GHz · 信道 149</div>
+									<div class="td" data-title="状态"><span class="label success">已启用</span></div>
+									<div class="td" data-title="已连接">4 台设备</div>
+									<div class="td cbi-section-actions"><div><button class="btn cbi-button cbi-button-neutral">重启</button><button class="btn cbi-button cbi-button-edit">编辑</button><button class="btn cbi-button cbi-button-remove">移除</button></div></div>
+								</div>
+								<div class="tr cbi-section-table-row">
+									<div class="td" data-title="网络"><strong>Carbon-Guest</strong><br><small style="color:var(--cb-text-2)">WPA2-PSK · 访客</small></div>
+									<div class="td" data-title="频段">2.4 GHz · 信道 6</div>
+									<div class="td" data-title="状态"><span class="label">已禁用</span></div>
+									<div class="td" data-title="已连接">—</div>
+									<div class="td cbi-section-actions"><div><button class="btn cbi-button cbi-button-positive">启用</button><button class="btn cbi-button cbi-button-edit">编辑</button><button class="btn cbi-button cbi-button-remove">移除</button></div></div>
+								</div>
+							</div>
+							<div class="cbi-section-create"><input type="text" class="cbi-input-text" placeholder="新网络名称"><button class="btn cbi-button cbi-button-add">添加</button></div>
+						</div>
+
+						<div class="cbi-section" id="cbi-wireless-default_radio0">
+							<h3>接口配置 · Carbon-Home</h3>
+							<ul class="cbi-tabmenu">
+								<li class="cbi-tab"><a href="#">常规设置</a></li>
+								<li class="cbi-tab-disabled" data-errors="1"><a href="#">无线安全</a></li>
+								<li class="cbi-tab-disabled"><a href="#">MAC 过滤</a></li>
+								<li class="cbi-tab-disabled"><a href="#">高级设置</a></li>
+							</ul>
+							<div class="cbi-section-node cbi-section-node-tabbed">
+								<div data-tab="general" data-tab-title="常规设置" data-tab-active="true">
+									<div class="cbi-value">
+										<label class="cbi-value-title" for="w-en">启用</label>
+										<div class="cbi-value-field"><div class="cbi-checkbox"><input type="hidden" value="1"><input type="checkbox" id="w-en" checked><label for="w-en"></label></div></div>
+									</div>
+									<div class="cbi-value">
+										<label class="cbi-value-title" for="w-ssid">网络名称 (SSID)</label>
+										<div class="cbi-value-field"><div><input type="text" class="cbi-input-text" id="w-ssid" value="Carbon-Home"></div>
+											<div class="cbi-value-description">手机、电脑上看到的 Wi‑Fi 名称。</div></div>
+									</div>
+									<div class="cbi-value">
+										<label class="cbi-value-title">密码</label>
+										<div class="cbi-value-field"><div><input type="password" class="cbi-input-password cbi-input-invalid" value="1234"></div>
+											<div class="cbi-value-description">至少 8 位字符。</div></div>
+									</div>
+									<div class="cbi-value">
+										<label class="cbi-value-title">加密方式</label>
+										<div class="cbi-value-field">
+											<div class="cbi-dropdown" tabindex="0">
+												<ul><li data-value="psk2" display="0" selected>WPA2-PSK（推荐）</li><li data-value="sae-mixed">WPA2/WPA3 混合</li><li data-value="none">不加密</li></ul>
+												<span class="open">▾</span>
+											</div>
+										</div>
+									</div>
+									<div class="cbi-value">
+										<label class="cbi-value-title">信道</label>
+										<div class="cbi-value-field"><select><option>自动</option><option selected>6 (2437 MHz)</option><option>11 (2462 MHz)</option></select></div>
+									</div>
+									<div class="cbi-value">
+										<label class="cbi-value-title">隐藏网络</label>
+										<div class="cbi-value-field"><div class="cbi-checkbox"><input type="checkbox" id="w-hide"><label for="w-hide"></label></div>
+											<div class="cbi-value-description">开启后需要手动输入名称才能连接。</div></div>
+									</div>
+									<div class="cbi-value">
+										<label class="cbi-value-title">NTP 服务器</label>
+										<div class="cbi-value-field">
+											<div class="cbi-dynlist">
+												<div class="item"><span>0.openwrt.pool.ntp.org</span></div>
+												<div class="item"><span>ntp.aliyun.com</span></div>
+												<div class="add-item"><input type="text" class="cbi-input-text" placeholder="添加服务器"><button class="cbi-button cbi-button-add">+</button></div>
+											</div>
+										</div>
+									</div>
+									<div class="cbi-value">
+										<label class="cbi-value-title">连接模式</label>
+										<div class="cbi-value-field"><div>
+											<label class="cbi-radio"><input type="radio" name="m" checked> 接入点 (AP)</label>
+											<label class="cbi-radio"><input type="radio" name="m"> 客户端</label>
+										</div></div>
+									</div>
+									<div class="cbi-value">
+										<label class="cbi-value-title">MAC 地址</label>
+										<div class="cbi-value-field"><div>a4:83:e7:2c:91:0f</div></div>
+									</div>
+									<div class="cbi-value">
+										<label class="cbi-value-title">信号质量</label>
+										<div class="cbi-value-field"><div class="cbi-progressbar" title="-48 dBm · 极好"><div style="width:82%"></div></div></div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="cbi-section">
+							<h3>备注</h3>
+							<div class="cbi-section-node">
+								<div class="cbi-value"><label class="cbi-value-title">自定义配置</label>
+									<div class="cbi-value-field"><textarea rows="4"># 在这里写额外的 hostapd 选项</textarea></div></div>
+							</div>
+						</div>
+
+						<div class="alert-message success"><p>配置已应用，无线网络将在几秒钟后重新启动。</p></div>
+						<div class="alert-message error"><p>密码长度不足 8 位，无法保存。</p></div>
+					</div>
+
+					<div class="cbi-page-actions">
+						<div class="cbi-dropdown btn cbi-button cbi-button-apply" tabindex="0">
+							<ul><li display="0" selected>保存并应用</li><li>应用（不检查）</li></ul>
+							<span class="open">▾</span>
+						</div>
+						<button class="btn cbi-button cbi-button-save">保存</button>
+						<button class="btn cbi-button cbi-button-reset">复位</button>
+					</div>
+				</div>
+			</div>
+
+			<footer class="cb-footer"><span>Powered by <a href="#">LuCI openwrt-24.10 branch</a> · <a href="#">OpenWrt 24.10.0</a> · Carbon</span></footer>
+		</main>
+	</div>
+
+	<div id="modal_overlay"><div class="modal">
+		<h4>配置已更改</h4>
+		<p>以下 3 项配置尚未应用：</p>
+		<pre>wireless.default_radio0.ssid = 'Carbon-Home'
+wireless.default_radio0.key = '********'
+wireless.radio0.channel = '6'</pre>
+		<div class="right"><button class="btn cbi-button" onclick="document.body.classList.remove('modal-overlay-active')">取消</button><button class="btn cbi-button cbi-button-negative">还原</button><button class="btn cbi-button cbi-button-apply important">保存并应用</button></div>
+	</div></div>
+
+	<script>
+		var P = window.CarbonPreview, active = 'admin/network/wireless';
+		Carbon.initShell({
+			logoutUrl: 'login.html',
+			language: {
+				current: /^zh/i.test(document.documentElement.lang) ? 'zh' : 'en',
+				set: function (v) { location.search = '?lang=' + (v === 'zh' ? 'zh_Hans' : 'en'); return new Promise(function () {}); }
+			}
+		});
+		Carbon.renderNav(P.model(active));
+		Carbon.setTitle(P.title(active));
+
+		/* light demo behaviour for widgets LuCI's ui.js normally drives */
+		document.querySelectorAll('.cbi-dropdown:not(.btn)').forEach(function (d) {
+			d.addEventListener('click', function () {
+				if (d.hasAttribute('open')) { d.removeAttribute('open'); d.querySelector('ul').classList.remove('dropdown'); return; }
+				d.setAttribute('open', ''); var ul = d.querySelector('ul'); ul.classList.add('dropdown'); ul.style.top = d.offsetHeight + 4 + 'px'; ul.style.left = '0';
+			});
+		});
+		document.querySelectorAll('[data-indicator="uci-changes"]').forEach(function (i) {
+			i.addEventListener('click', function () { document.body.classList.add('modal-overlay-active'); });
+		});
+	</script>
+</body>
+</html>

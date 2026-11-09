@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh_Hans">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<meta name="theme-color" content="#f2f2f7">
+	<title>OpenWrt — Carbon 预览</title>
+	<link rel="stylesheet" href="../htdocs/luci-static/carbon/carbon.css">
+	<link rel="icon" href="../htdocs/luci-static/carbon/logo.svg" type="image/svg+xml">
+	<script src="../htdocs/luci-static/carbon/carbon.js"></script>
+</head>
+<body class="lang_zh_Hans cb-login" data-page="admin">
+	<div class="cb-login-wrap">
+		<div class="cb-login-brand">
+			<img class="cb-login-logo" src="../htdocs/luci-static/carbon/logo.svg" alt="">
+			<h1>OpenWrt</h1>
+			<p>Xiaomi Redmi Router AX6000</p>
+		</div>
+		<div id="maincontent" class="cb-login-card">
+			<!-- below is LuCI's stock sysauth.ut form, untouched -->
+			<form method="post" onsubmit="location.href='index.html';return false">
+				<div class="cbi-map">
+					<h2 name="content">需要授权</h2>
+					<div class="cbi-map-descr">请输入用户名和密码。</div>
+					<div class="cbi-section"><div class="cbi-section-node">
+						<div class="cbi-value">
+							<label class="cbi-value-title">用户名</label>
+							<div class="cbi-value-field"><input class="cbi-input-text" type="text" name="luci_username" value="root"></div>
+						</div>
+						<div class="cbi-value cbi-value-last">
+							<label class="cbi-value-title">密码</label>
+							<div class="cbi-value-field"><input class="cbi-input-text" type="password" name="luci_password"></div>
+						</div>
+					</div></div>
+				</div>
+				<div class="cbi-page-actions">
+					<input type="submit" value="登录" class="btn cbi-button cbi-button-apply">
+					<input type="reset" value="复位" class="btn cbi-button cbi-button-reset">
+				</div>
+			</form>
+		</div>
+		<p class="cb-login-foot">OpenWrt 24.10.0</p>
+	</div>
+</body>
+</html>

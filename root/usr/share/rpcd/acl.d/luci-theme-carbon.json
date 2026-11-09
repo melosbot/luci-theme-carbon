@@ -1,0 +1,29 @@
+{
+	"luci-theme-carbon": {
+		"description": "Carbon theme: read-only dashboard data and the interface language switch",
+		"read": {
+			"ubus": {
+				"system": [ "board", "info" ],
+				"network.interface": [ "dump" ],
+				"network.device": [ "status" ],
+				"network.wireless": [ "status" ],
+				"luci-rpc": [ "getDHCPLeases", "getNetworkDevices" ],
+				"file": [ "read" ],
+				"uci": [ "get" ]
+			},
+			"file": {
+				"/proc/stat": [ "read" ],
+				"/proc/sys/net/netfilter/nf_conntrack_count": [ "read" ],
+				"/proc/sys/net/netfilter/nf_conntrack_max": [ "read" ],
+				"/sys/class/thermal/thermal_zone0/temp": [ "read" ]
+			},
+			"uci": [ "luci" ]
+		},
+		"write": {
+			"ubus": {
+				"uci": [ "set", "commit" ]
+			},
+			"uci": [ "luci" ]
+		}
+	}
+}

@@ -1,0 +1,110 @@
+{#
+ Carbon — an Apple-style LuCI theme for everyday users
+ Licensed to the public under the Apache License 2.0.
+
+ Structure follows luci-theme-bootstrap so every LuCI widget keeps working:
+ #topmenu, #indicators, #maincontent and #tabmenu are the hooks ui.js expects.
+-#}
+
+{%
+	import { getuid, getspnam } from 'luci.core';
+
+	const boardinfo = ubus.call('system', 'board') ?? {};
+	const hostname = striptags(boardinfo.hostname ?? 'OpenWrt');
+	const model = striptags(boardinfo.model ?? '');
+	const page = dispatched ?? node;
+
+	/* `duser` is only defined when LuCI renders the login (sysauth) page.
+	   We keep LuCI's own login form (so auth plugins keep working) and
+	   only switch to a centered card layout. */
+	const is_login = (duser != null);
+
+	http.prepare_content('text/html; charset=UTF-8');
+-%}
+
+<!DOCTYPE html>
+<html lang="{{ dispatcher.lang }}">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+		<meta name="darkreader-lock">
+		<meta name="theme-color" content="#f2f2f7">
+		<title>{{ hostname }}{{ page?.title ? ` · ${striptags(_(page.title))}` : '' }}</title>
+		<link rel="stylesheet" href="{{ media }}/carbon.css?v=0.6.3">
+		<link rel="icon" href="{{ media }}/logo.svg" type="image/svg+xml">
+		<link rel="apple-touch-icon" href="{{ media }}/logo.svg">
+		{% if (page?.css): %}
+		<link rel="stylesheet" href="{{ resource }}/{{ page.css }}">
+		{% endif %}
+		{% if (css): %}
+		<style title="text/css">{{ css }}</style>
+		{% endif %}
+		<script src="{{ media }}/carbon.js?v=0.6.3"></script>
+		<script src="{{ dispatcher.build_url('admin/translations', dispatcher.lang) }}"></script>
+		<script src="{{ resource }}/cbi.js"></script>
+	</head>
+
+	<body class="lang_{{ dispatcher.lang }}{{ is_login ? ' cb-login' : '' }}" data-page="{{ entityencode(join('-', length(ctx.request_path) ? ctx.request_path : ctx.path), true) }}">
+	{% if (is_login): %}
+		<div class="cb-login-wrap">
+			<div class="cb-login-brand">
+				<img class="cb-login-logo" src="{{ media }}/logo.svg" alt="">
+				<h1>{{ hostname }}</h1>
+				{% if (model): %}<p>{{ model }}</p>{% endif %}
+			</div>
+			<div id="maincontent" class="cb-login-card">
+	{% elif (!blank_page): %}
+		<div class="cb-app">
+			<aside class="cb-sidebar" id="cb-sidebar">
+				<button type="button" class="cb-collapse" id="cb-collapse" aria-label="Collapse sidebar"></button>
+				<a class="cb-brand" href="{{ dispatcher.build_url() }}">
+					<img class="cb-brand-logo" src="{{ media }}/logo.svg" alt="">
+					<span class="cb-brand-text">
+						<strong>{{ hostname }}</strong>
+						{% if (model): %}<small>{{ model }}</small>{% endif %}
+					</span>
+				</a>
+				<div class="cb-mode" id="cb-mode"></div>
+				<nav class="cb-nav" id="topmenu" style="display:none"></nav>
+				<div class="cb-sidebar-foot" id="cb-sidebar-foot"></div>
+			</aside>
+			<div class="cb-scrim" id="cb-scrim"></div>
+
+			<main class="cb-main">
+				<header class="cb-toolbar">
+					<button type="button" class="cb-burger" id="cb-burger" aria-label="Menu"><span></span></button>
+					<div class="cb-title" id="cb-title">{{ page?.title ? striptags(_(page.title)) : '' }}</div>
+					<div class="cb-appearance" id="cb-appearance"></div>
+					<div id="indicators" class="cb-indicators"></div>
+				</header>
+
+				<div id="maincontent" class="cb-content">
+					{% if (getuid() == 0 && getspnam('root')?.pwdp === ''): %}
+						<div class="alert-message warning">
+							<h4>{{ _('No password set!') }}</h4>
+							<p>{{ _('There is no password set on this router. Please configure a root password to protect the web interface.') }}</p>
+							{% if (dispatcher.lookup("admin/system/admin")): %}
+							<div class="right"><a class="btn" href="{{ dispatcher.build_url("admin/system/admin") }}">{{ _('Go to password configuration...') }}</a></div>
+							{% endif %}
+						</div>
+					{% endif %}
+
+					{% if (boardinfo.rootfs_type == "initramfs"): %}
+						<div class="alert-message warning">
+							<h4>{{ _('System running in recovery (initramfs) mode.') }}</h4>
+							<p>{{ _('No changes to settings will be stored and are lost after rebooting. This mode should only be used to install a firmware upgrade') }}</p>
+							{% if (dispatcher.lookup("admin/system/flash")): %}
+							<div class="right"><a class="btn" href="{{ dispatcher.build_url("admin/system/flash") }}">{{ _('Go to firmware upgrade...') }}</a></div>
+							{% endif %}
+						</div>
+					{% endif %}
+
+					<noscript>
+						<div class="alert-message warning">
+							<h4>{{ _('JavaScript required!') }}</h4>
+							<p>{{ _('You must enable JavaScript in your browser or LuCI will not work properly.') }}</p>
+						</div>
+					</noscript>
+
+					<div id="tabmenu" style="display:none"></div>
+	{% endif %}
