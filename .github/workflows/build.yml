@@ -81,9 +81,35 @@ jobs:
           ref: ${{ inputs.release_tag && format('refs/tags/{0}', inputs.release_tag) || github.ref }}
           path: feed/luci-theme-carbon
 
+      - name: Check out SDK action
+        uses: actions/checkout@v4
+        with:
+          repository: openwrt/gh-action-sdk
+          ref: 7fc2640243284ecc44f4a9c3f749a61746ee02cb # v11
+          path: sdk-action
+
+      - name: Reuse SDK already present in release images
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          entrypoint = Path('sdk-action/entrypoint.sh')
+          source = entrypoint.read_text()
+          old = '[ ! -f setup.sh ] || bash setup.sh'
+          # v11 reruns setup.sh even when a release image already has the SDK.
+          # Keep upstream signature/checksum verification for snapshot images.
+          new = '''if [ -f scripts/feeds ] && [ -d staging_dir ] && [ -f Makefile ]; then
+            echo "Using SDK already installed in the container"
+          else
+            [ ! -f setup.sh ] || bash setup.sh
+          fi'''
+          if source.count(old) != 1:
+              raise SystemExit('SDK action initialization changed; review the guard')
+          entrypoint.write_text(source.replace(old, new))
+          PY
+
       - name: Build with OpenWrt SDK
         timeout-minutes: 15
-        uses: openwrt/gh-action-sdk@v11
+        uses: ./sdk-action
         env:
           ARCH: ${{ matrix.sdk }}
           FEED_DIR: ${{ github.workspace }}/feed
