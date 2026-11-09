@@ -8,6 +8,8 @@
 4. 点击「一键升级」，确认目标版本。后台执行下载、校验和安装，页面显示进度及日志；刷新页面不会取消安装。
 5. 成功后点击「刷新页面」。无需重启路由器。
 
+从 v1.1.0 升级到 v1.1.1 后，LuCI 可能仍从当前会话缓存读取旧菜单名称，专业模式可能显示英文 `Carbon Update`。退出并重新登录 LuCI 一次即可显示「Carbon 主题设置」；这不影响已完成的包升级，不需要重复安装。
+
 更新保留 LuCI 语言、当前主题选择及浏览器中的浅色/深色、导航偏好。安装过程中请不要断电或同时操作其他软件包。安装失败时会显示原生包管理器日志；更新器不会声称自动回滚，也不会强制覆盖文件或忽略依赖。
 
 只读 LuCI 用户可以查看状态和检查更新，安装操作单独要求 `luci-theme-carbon-update` 的写权限。没有安装权限时升级按钮禁用。后台只接受已检查的目标版本，不接受浏览器传入下载地址、包路径、Shell 命令或密钥。
@@ -35,6 +37,8 @@
 ## English
 
 Install the native v1.1.0+ APK/IPK once, then log out/back in. Open **System → Carbon Theme Settings** (**Carbon Update** in v1.1.0), check for updates, review the notes and confirm **Install update**. Progress and logs survive page refreshes. Reload the page after success; a router reboot is unnecessary. Read-only users cannot install updates.
+
+After upgrading from v1.1.0 to v1.1.1, log out and back in once if the menu or breadcrumb still says **Carbon Update**. LuCI caches the menu in the current browser session; this does not mean the package upgrade failed and does not require reinstalling.
 
 The updater only accepts newer stable releases from the fixed Carbon repository. It verifies size, SHA-256, package name/version and, for APK, the bundled Carbon public key. APK verifies the signature again during installation with the same isolated key directory and no firmware repository access. System trust settings are unchanged. IPK uses HTTPS, size and SHA-256 validation rather than APK signing. Existing dependencies must be available. Checks expire after 30 minutes, and a lock prevents overlapping updates.
 
