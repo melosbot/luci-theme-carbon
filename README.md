@@ -12,11 +12,13 @@ A clean, glass-style LuCI theme for OpenWrt — built for everyday users.
 [![Release](https://img.shields.io/github/v/release/mrjoechen/luci-theme-carbon)](https://github.com/mrjoechen/luci-theme-carbon/releases/latest)
 [![License](https://img.shields.io/github/license/mrjoechen/luci-theme-carbon)](LICENSE)
 
+
+**[Live demo](https://mrjoechen.github.io/luci-theme-carbon/) · [English demo](https://mrjoechen.github.io/luci-theme-carbon/?lang=en)**
+
 </div>
 
 ## Screenshots
 
-**[Live demo](https://mrjoechen.github.io/luci-theme-carbon/) · [English demo](https://mrjoechen.github.io/luci-theme-carbon/?lang=en)**
 
 <p align="center"><img src=".github/screenshots/overview-light.jpg" alt="Light" width="100%"></p>
 

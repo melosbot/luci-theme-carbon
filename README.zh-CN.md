@@ -11,12 +11,11 @@
 [![Build](https://github.com/mrjoechen/luci-theme-carbon/actions/workflows/build.yml/badge.svg)](https://github.com/mrjoechen/luci-theme-carbon/actions/workflows/build.yml)
 [![Release](https://img.shields.io/github/v/release/mrjoechen/luci-theme-carbon)](https://github.com/mrjoechen/luci-theme-carbon/releases/latest)
 [![License](https://img.shields.io/github/license/mrjoechen/luci-theme-carbon)](LICENSE)
+**[在线演示](https://mrjoechen.github.io/luci-theme-carbon/) · [English demo](https://mrjoechen.github.io/luci-theme-carbon/?lang=en)**
 
 </div>
 
 ## 界面预览
-
-**[在线演示](https://mrjoechen.github.io/luci-theme-carbon/) · [English demo](https://mrjoechen.github.io/luci-theme-carbon/?lang=en)**
 
 <p align="center"><img src=".github/screenshots/overview-light.jpg" alt="浅色" width="100%"></p>
 
