@@ -31,8 +31,14 @@ def docker(*args, check=True):
 
 
 def archive(files):
+    # Like ipkg-build: parent directory entries first, then the files.
     out = io.BytesIO()
     with tarfile.open(fileobj=out, mode='w:gz') as tar:
+        dirs = sorted({'/'.join(name.split('/')[:i]) for name in files for i in range(1, name.count('/') + 1)})
+        for d in dirs:
+            entry = tarfile.TarInfo('./' + d)
+            entry.type, entry.mode = tarfile.DIRTYPE, 0o755
+            tar.addfile(entry)
         for name, content in files.items():
             content = content.encode() if isinstance(content, str) else content
             entry = tarfile.TarInfo('./' + name)
@@ -133,8 +139,9 @@ class InstallerTests(unittest.TestCase):
         status = r.sh('opkg status luci-theme-carbon')[1]
         self.assertIn('Version: 1.1.0-r1', status)
         self.assertRegex(status, r'Status: .* installed')
-        self.assertEqual(r.sh('cat /www/luci-static/carbon/marker')[1], 'ipk\n')
-        self.assertIn('/www/luci-static/carbon/marker', r.sh('opkg files luci-theme-carbon')[1])
+        owned = r.sh('opkg files luci-theme-carbon')[1]
+        self.assertIn('/www/luci-static/carbon/marker', owned)
+        self.assertEqual(r.sh('cat /www/luci-static/carbon/marker', check=False)[1], 'ipk\n', owned)
 
         code, out = r.sh(f'sh {self.good} uninstall', check=False)
         self.assertEqual(code, 0, out)
