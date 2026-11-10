@@ -237,7 +237,7 @@ jobs:
           wget -O /tmp/carbon-install.sh https://github.com/${{ github.repository }}/releases/latest/download/carbon-install.sh && sh /tmp/carbon-install.sh
           ```
 
-          Log out and back in once after installing.
+          After first installing the updater, log out and back in once to activate its RPC permissions. For upgrades to v1.1.2 or later, simply reload the page; no logout is needed.
 
           ### Online updates / 网页在线升级
 
