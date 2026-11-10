@@ -2783,6 +2783,40 @@ body.cb-has-dash #maincontent > h2 { display: none; }
 
 .cb-update [hidden] { display: none !important; }
 
+/* Release notes: scoped Markdown typography, with local overflow on phones. */
+.cb-update .cb-release-notes {
+	max-height: 32rem;
+	min-width: 0;
+	overflow: auto;
+	overflow-wrap: anywhere;
+	line-height: 1.75;
+	padding: 2px 12px 2px 2px;
+	color: var(--cb-text);
+}
+.cb-release-notes > :first-child { margin-top: 0; }
+.cb-release-notes > :last-child { margin-bottom: 0; }
+.cb-release-notes :is(h1, h2, h3, h4, h5, h6) { line-height: 1.4; margin: 1.25em 0 .6em; font-weight: 650; }
+.cb-release-notes h1 { font-size: 1.5rem; }
+.cb-release-notes h2 { font-size: 1.3rem; }
+.cb-release-notes h3 { font-size: 1.12rem; }
+.cb-release-notes :is(h4, h5, h6) { font-size: 1rem; }
+.cb-release-notes :is(p, ul, ol, blockquote, pre, table) { margin: .8em 0; }
+.cb-release-notes :is(ul, ol) { padding-inline-start: 1.6em; }
+.cb-release-notes ul { list-style: disc outside; }
+.cb-release-notes ol { list-style: decimal outside; }
+.cb-release-notes li { display: list-item; margin: .25em 0; }
+.cb-release-notes li > :is(ul, ol) { margin: .25em 0; }
+.cb-release-notes a { color: var(--cb-accent); text-decoration: underline; text-underline-offset: 3px; }
+.cb-release-notes blockquote { border-inline-start: 3px solid var(--cb-accent); padding: .1em 1em; color: var(--cb-text-2); }
+.cb-release-notes code { font-family: var(--cb-mono); font-size: .9em; background: var(--cb-fill); border-radius: 4px; padding: .15em .35em; }
+.cb-release-notes pre { max-width: 100%; overflow: auto; white-space: pre; padding: 14px; background: var(--cb-fill-2); border: 1px solid var(--cb-border); border-radius: var(--cb-radius-sm); }
+.cb-release-notes pre code { display: block; background: none; padding: 0; white-space: pre; overflow-wrap: normal; }
+.cb-release-notes table { display: block; max-width: 100%; overflow: auto; border-collapse: collapse; }
+.cb-release-notes :is(th, td) { border: 1px solid var(--cb-border-strong); padding: 8px 12px; text-align: start; }
+.cb-release-notes th { background: var(--cb-fill-2); font-weight: 600; }
+.cb-release-notes img { max-width: 100%; height: auto; border-radius: var(--cb-radius-sm); }
+.cb-release-notes hr { border: 0; border-top: 1px solid var(--cb-border); margin: 1.25em 0; }
+
 @media print {
 	.cb-sidebar, .cb-toolbar, .cb-scrim, .cbi-page-actions, .cb-footer { display: none !important; }
 	.cb-main { margin: 0; }

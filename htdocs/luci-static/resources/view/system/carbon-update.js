@@ -3,6 +3,7 @@
 'require rpc';
 'require poll';
 'require ui';
+'require carbon.markdown as markdown';
 
 const status = rpc.declare({ object: 'luci.carbon_update', method: 'status', expect: { '': {} }, raise: true });
 const check = rpc.declare({ object: 'luci.carbon_update', method: 'check', expect: { '': {} }, raise: true });
@@ -31,13 +32,13 @@ return view.extend({
 	load() { return status(); },
 	render(data) {
 		const self = this;
-		let current = data, pending = false;
+		let current = data, pending = false, renderedNotes;
 		const installedText = E('strong');
 		const latestText = E('strong');
 		const stateText = E('p', { 'role': 'status', 'aria-live': 'polite' });
 		const errorText = E('p', { 'role': 'alert', 'class': 'alert-message warning', 'hidden': true });
 		const securityText = E('p', { 'class': 'cbi-section-descr' });
-		const notes = E('pre', { 'style': 'white-space:pre-wrap;overflow-wrap:anywhere;max-height:24rem;overflow:auto' });
+		const notes = E('div', { 'class': 'cb-release-notes', 'tabindex': '0', 'role': 'region', 'aria-label': tr('Release notes', '更新说明') });
 		const logs = E('pre', { 'style': 'white-space:pre-wrap;overflow-wrap:anywhere;max-height:16rem;overflow:auto' });
 		const refresh = E('button', { 'class': 'cbi-button cbi-button-action', 'click': () => {
 			ui.menu.flushCache();
@@ -73,7 +74,13 @@ return view.extend({
 			securityText.textContent = value.manager === 'apk' ?
 				tr('APK signature, SHA-256 and file size are verified before installation. Your signature checks remain enabled.', '安装前验证 APK 签名、SHA-256 和文件大小，保留签名校验。') :
 				tr('IPK updates are downloaded over HTTPS and checked against the release SHA-256 and file size.', 'IPK 更新通过 HTTPS 下载，并核对发布文件的 SHA-256 和大小。');
-			notes.textContent = value.notes || tr('Release notes will appear after checking.', '检查后显示更新说明。');
+			// Keep selection, focus and scroll position while status polls every 2s.
+			const nextNotes = value.notes || '';
+			if (nextNotes !== renderedNotes) {
+				if (nextNotes) notes.innerHTML = markdown.render(nextNotes);
+				else notes.textContent = tr('Release notes will appear after checking.', '检查后显示更新说明。');
+				renderedNotes = nextNotes;
+			}
 			logs.textContent = value.log || tr('No installation log yet.', '暂无安装日志。');
 			checkButton.disabled = pending || value.busy || !!value.reason;
 			updateButton.disabled = pending || value.busy || !value.can_upgrade || !L.hasViewPermission();
