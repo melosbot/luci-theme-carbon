@@ -6,6 +6,8 @@
 | Unit: LuCI glue — poll pause, language list/switch, menu cache | `npm test` | Node 18+ |
 | Unit: release-notes Markdown | `npm test` | Node 18+ |
 | Browser: preview pages, accessibility, minified build parity | `npm run test:browser` | `npm ci`, `npx playwright install chromium` |
+| Installer control flow (stub apk/opkg/uci) | `npm test` | Node 18+, `sh`, `tar` |
+| Installer with real apk (25.12) and opkg (24.10) | `python3 tests/installer-integration.py` | Docker, network |
 | Theme templates rendered by OpenWrt's ucode | see below | Docker |
 | Updater (APK and IPK) | see [online-update.md](../docs/online-update.md#maintainers) | Docker |
 

@@ -28,7 +28,7 @@ const errors = {
 	invalid: N_('Invalid update request.'),
 	busy: N_('Another update operation is running.'),
 	dependencies: N_('Install curl, ca-bundle and flock, and restore the Carbon public key if missing.'),
-	manual_install: N_('Install Carbon through the native package manager once to enable online upgrades.'),
+	manual_install: N_('apk/opkg has no record of this Carbon install (for example, it was copied by an older carbon-install.sh). Run the latest carbon-install.sh once, or install the APK/IPK package, to enable online upgrades.'),
 	space: N_('Not enough temporary storage or unable to create update files.'),
 	state: N_('Unable to access update state storage.'),
 	invalid_mirror: N_('Enter an HTTPS mirror prefix such as https://mirror.example.com/ (letters, digits and . _ ~ % + - only).')

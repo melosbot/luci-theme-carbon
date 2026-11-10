@@ -67,6 +67,10 @@ msgstr "APK 簽章驗證失敗，未執行安裝；簽章驗證維持啟用。"
 msgid "APK signature, SHA-256 and file size are verified before installation. Your signature checks remain enabled."
 msgstr "安裝前會驗證 APK 簽章、SHA-256 與檔案大小，並保留簽章驗證。"
 
+#: htdocs/luci-static/resources/view/system/carbon-update.js:31
+msgid "apk/opkg has no record of this Carbon install (for example, it was copied by an older carbon-install.sh). Run the latest carbon-install.sh once, or install the APK/IPK package, to enable online upgrades."
+msgstr "apk/opkg 中沒有這次 Carbon 安裝的記錄（例如由舊版 carbon-install.sh 複製檔案安裝）。請重新執行一次最新的 carbon-install.sh，或安裝 APK/IPK 套件，以啟用線上升級。"
+
 #: htdocs/luci-static/carbon/carbon.js:660
 #: htdocs/luci-static/carbon/carbon.js:663
 msgid "Appearance"
@@ -228,10 +232,6 @@ msgstr "隱藏網路"
 #: htdocs/luci-static/carbon/carbon.js:1769
 msgid "Hide detailed status"
 msgstr "收合詳細狀態"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js:31
-msgid "Install Carbon through the native package manager once to enable online upgrades."
-msgstr "請先透過系統套件管理員安裝一次 Carbon，以啟用線上升級。"
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js:30
 msgid "Install curl, ca-bundle and flock, and restore the Carbon public key if missing."

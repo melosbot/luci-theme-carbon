@@ -55,6 +55,15 @@
 wget -O /tmp/carbon-install.sh https://github.com/mrjoechen/luci-theme-carbon/releases/latest/download/carbon-install.sh && sh /tmp/carbon-install.sh
 ```
 
+脚本内置当前 Release 的已签名 `.apk`、`.ipk` 和 Carbon 公钥，通过系统包管理器安装，因此在线升级可用，**无需手动导入公钥**。APK 签名用内置公钥在独立目录中校验，不修改 `/etc/apk/keys`。缺少的依赖（`curl`、`ca-bundle`、`flock`）从固件自带软件源安装。可选参数：
+
+| 命令 | 作用 |
+|---|---|
+| `sh carbon-install.sh --trust-key` | 同时把 Carbon 公钥加入 `/etc/apk/keys`，之后可在 LuCI 直接上传 Carbon 的 APK |
+| `sh carbon-install.sh --files` | 只复制文件（不登记到包管理器，无法在线升级） |
+
+再次运行脚本即可原地升级，也会把旧版脚本安装的主题转为包管理器登记的安装。无法通过包管理器安装时（例如离线且缺少依赖），会自动改为复制文件并给出提示。
+
 如果路由器不能上网，先在电脑上下载 `carbon-install.sh` 再传过去（`-O` 不能省，OpenWrt 的 SSH 服务没有 SFTP）：
 
 ```bash
@@ -108,7 +117,7 @@ APK 在线更新先使用包内固定的 Carbon 公钥验证，再由 APK 包管
 
 GitHub 下载缓慢或无法访问时，可在同一页面填写 HTTPS **下载镜像**前缀。镜像只用于下载安装包，版本、大小和 SHA-256 仍以 GitHub 为准；镜像失败时自动改用 GitHub。
 
-依赖 `curl`、`ca-bundle`、`flock`，使用原生包安装时自动处理。独立安装脚本不会创建包管理器记录，通过脚本安装的设备需先安装一次原生 APK/IPK 包，才能启用在线升级。
+依赖 `curl`、`ca-bundle`、`flock`，使用原生包安装时自动处理。使用 `--files` 或 v1.2 之前的安装脚本安装的主题没有登记到 apk/opkg，重新运行一次当前的 `carbon-install.sh` 即可启用在线升级。
 
 ### 卸载
 

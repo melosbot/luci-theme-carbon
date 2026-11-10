@@ -4,6 +4,8 @@
 
 从 **v1.0.1** 开始，Release 中的 APK 使用 Carbon 固定公钥对应的私钥签名。每台设备只需导入一次公钥，后续可以直接通过 LuCI 上传安装或升级，无需每次 SSH。v1.0.0 的旧 APK 未签名，导入公钥后也不能直接上传安装，请重新下载新版。
 
+> **最简单的方式：** 使用 Release 中的 `carbon-install.sh`。它内置签名 APK 和公钥，在独立的密钥目录中验签后通过 apk 安装，无需导入公钥，在线升级也可用。加 `--trust-key` 参数时会同时把公钥加入 `/etc/apk/keys`。下面的步骤用于在 LuCI 中手动上传 APK。
+
 ### 首次配置：优先通过网页导入公钥
 
 1. 从 [Release](https://github.com/mrjoechen/luci-theme-carbon/releases/latest) 下载 `carbon-apk.pem` 和 `luci-theme-carbon-*.apk`。公钥也保存在仓库的 `keys/carbon-apk.pem`。
@@ -45,6 +47,8 @@ c5187568040b024559e6dddbd752c4661455b0ccfb94a66b013f05eb28ef9a0b
 - **`Read-only file system`**：系统根目录必须可写。这是容器或存储配置问题，与包签名不同。
 
 ## English
+
+The simplest route is the release's `carbon-install.sh`: it embeds the signed APK and the public key, verifies the APK in a private key directory and installs it with apk — no key import needed, and online updates work. `--trust-key` additionally adds the key to `/etc/apk/keys`. The steps below are for manual LuCI uploads.
 
 Release APKs are individually signed starting with **v1.0.1**. Import the Carbon public key once per device; subsequent installs and upgrades can use LuCI's package upload. The old v1.0.0 APK is unsigned and must be replaced with a new download.
 

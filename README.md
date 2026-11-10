@@ -58,6 +58,15 @@ Run on the router (SSH):
 wget -O /tmp/carbon-install.sh https://github.com/mrjoechen/luci-theme-carbon/releases/latest/download/carbon-install.sh && sh /tmp/carbon-install.sh
 ```
 
+The script embeds the release's signed `.apk`, its `.ipk` and Carbon's public key, and installs through the system package manager — so online updates work and **no key import is needed**. The APK signature is checked with the embedded key in a private key directory; `/etc/apk/keys` is left alone. Missing dependencies (`curl`, `ca-bundle`, `flock`) come from your firmware's feeds. Options:
+
+| Command | Effect |
+|---|---|
+| `sh carbon-install.sh --trust-key` | also add Carbon's key to `/etc/apk/keys`, so later LuCI uploads of Carbon APKs work |
+| `sh carbon-install.sh --files` | only copy files (no package record, no online updates) |
+
+Running the script again upgrades in place, and turns an older script-only install into a registered package. If a native install is impossible (for example offline with missing dependencies), it falls back to copying files and says so.
+
 If the router has no internet access, download `carbon-install.sh` on your computer and copy it over (`-O` is needed because OpenWrt's SSH server has no SFTP):
 
 ```bash
@@ -111,7 +120,7 @@ APK updates verify the bundled Carbon public key, then use APK's normal signatur
 
 If GitHub downloads are slow or blocked, enter an HTTPS **Download mirror** prefix on the same page. Only the package bytes use the mirror; version, size and SHA-256 still come from GitHub, and the updater falls back to GitHub if the mirror fails.
 
-Required packages: `curl`, `ca-bundle`, `flock` (installed as native package dependencies). Script-only installations must first install the native APK/IPK package; the script does not create a package-manager database entry.
+Required packages: `curl`, `ca-bundle`, `flock` (installed as native package dependencies). Installs made with `--files` or with installers before v1.2 are not registered with apk/opkg; run the current `carbon-install.sh` once to enable online updates.
 
 ### Uninstall
 
