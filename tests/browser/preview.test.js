@@ -118,11 +118,15 @@ test('dashboard shows merged devices, Wi-Fi details, IPv6, sensors and a traffic
 	assert.equal(info.gateway, false, 'upstream gateway is not a LAN device');
 	assert.equal(info.ipv6, '240e:3a1:4c2:8f0::1');
 	assert.deepEqual(info.sensors, ['Temperature · cpu', 'Temperature · mt7986 phy1']);
-	assert.deepEqual(info.options, ['auto', 'br-lan', 'pppoe-wan']);
+	assert.deepEqual(info.options, ['auto', 'br-lan', 'pppoe-wan', 'eth0', 'lan1', 'lan2', 'lan4', 'phy0-ap0', 'phy1-ap0', 'wan']);
 	assert.match(info.tile, /^\d+ on Wi-Fi$/);
 
 	await page.selectOption('.cb-traffic-select', 'br-lan');
 	assert.equal(await page.evaluate(() => localStorage.getItem('carbon.traffic')), 'br-lan');
+	/* a physical port (e.g. an xPON uplink) is selectable and survives the next refresh */
+	await page.selectOption('.cb-traffic-select', 'wan');
+	assert.equal(await page.evaluate(() => localStorage.getItem('carbon.traffic')), 'wan');
+	assert.deepEqual(await page.$$eval('.cb-traffic-select optgroup', (g) => g.map((x) => x.label)), ['Interfaces', 'Network devices']);
 	await context.close();
 });
 

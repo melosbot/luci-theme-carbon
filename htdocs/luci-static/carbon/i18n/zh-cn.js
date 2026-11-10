@@ -77,6 +77,7 @@
 	"Menu": "菜单",
 	"Mirror prefix": "镜像前缀",
 	"Need more settings? Switch to": "需要更多设置？切换到",
+	"Network devices": "网络设备",
 	"No devices yet": "暂时没有设备",
 	"No installation log yet.": "暂无安装日志。",
 	"No wireless": "未检测到无线网卡",

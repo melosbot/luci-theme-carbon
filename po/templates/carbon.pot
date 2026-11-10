@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
-#: htdocs/luci-static/carbon/carbon.js:1718
+#: htdocs/luci-static/carbon/carbon.js:1763
 msgid "%d cores"
 msgstr ""
 
@@ -10,7 +10,7 @@ msgstr ""
 msgid "%d min"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1452
+#: htdocs/luci-static/carbon/carbon.js:1487
 msgid "%d on Wi-Fi"
 msgstr ""
 
@@ -26,19 +26,19 @@ msgstr ""
 msgid "%ds ago"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1460
+#: htdocs/luci-static/carbon/carbon.js:1495
 msgid "%s device"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1464
+#: htdocs/luci-static/carbon/carbon.js:1499
 msgid "%s left"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1673
+#: htdocs/luci-static/carbon/carbon.js:1718
 msgid "1 min average"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1358
+#: htdocs/luci-static/carbon/carbon.js:1392
 msgid "2 min ago"
 msgstr ""
 
@@ -75,8 +75,8 @@ msgstr ""
 msgid "Appearance"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1353
-#: htdocs/luci-static/carbon/carbon.js:1574
+#: htdocs/luci-static/carbon/carbon.js:1387
+#: htdocs/luci-static/carbon/carbon.js:1609
 #: htdocs/luci-static/carbon/carbon.js:578
 #: htdocs/luci-static/carbon/carbon.js:655
 msgid "Auto"
@@ -86,12 +86,12 @@ msgstr ""
 msgid "Backup & Upgrade"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1655
-#: htdocs/luci-static/carbon/carbon.js:1659
+#: htdocs/luci-static/carbon/carbon.js:1700
+#: htdocs/luci-static/carbon/carbon.js:1704
 msgid "Cache"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1137
+#: htdocs/luci-static/carbon/carbon.js:1139
 msgid "Camera"
 msgstr ""
 
@@ -133,7 +133,7 @@ msgstr ""
 msgid "Common"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1136
+#: htdocs/luci-static/carbon/carbon.js:1138
 msgid "Computer"
 msgstr ""
 
@@ -141,15 +141,15 @@ msgstr ""
 msgid "Confirm update"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1542
+#: htdocs/luci-static/carbon/carbon.js:1577
 msgid "Connected"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1405
+#: htdocs/luci-static/carbon/carbon.js:1439
 msgid "Connected Devices"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1480
+#: htdocs/luci-static/carbon/carbon.js:1515
 msgid "Connected over Wi-Fi"
 msgstr ""
 
@@ -157,11 +157,11 @@ msgstr ""
 msgid "Connection interrupted. Progress will resume when LuCI reconnects. %s"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1394
+#: htdocs/luci-static/carbon/carbon.js:1428
 msgid "Connections"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1423
+#: htdocs/luci-static/carbon/carbon.js:1457
 msgid "CPU"
 msgstr ""
 
@@ -169,20 +169,20 @@ msgstr ""
 msgid "Dark"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1393
+#: htdocs/luci-static/carbon/carbon.js:1427
 msgid "Devices"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1096
+#: htdocs/luci-static/carbon/carbon.js:1098
 msgid "DHCP client"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1453
+#: htdocs/luci-static/carbon/carbon.js:1488
 msgid "DHCP clients"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1349
-#: htdocs/luci-static/carbon/carbon.js:1421
+#: htdocs/luci-static/carbon/carbon.js:1383
+#: htdocs/luci-static/carbon/carbon.js:1455
 msgid "Download"
 msgstr ""
 
@@ -207,16 +207,16 @@ msgstr ""
 msgid "Expand sidebar"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1466
+#: htdocs/luci-static/carbon/carbon.js:1501
 msgid "Fixed IP"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1655
-#: htdocs/luci-static/carbon/carbon.js:1659
+#: htdocs/luci-static/carbon/carbon.js:1700
+#: htdocs/luci-static/carbon/carbon.js:1704
 msgid "Free"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1137
+#: htdocs/luci-static/carbon/carbon.js:1139
 msgid "Game console"
 msgstr ""
 
@@ -224,11 +224,11 @@ msgstr ""
 msgid "GitHub (opens in a new tab)"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1513
+#: htdocs/luci-static/carbon/carbon.js:1548
 msgid "Hidden network"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1769
+#: htdocs/luci-static/carbon/carbon.js:1814
 msgid "Hide detailed status"
 msgstr ""
 
@@ -256,7 +256,8 @@ msgstr ""
 msgid "Installing update…"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1413
+#: htdocs/luci-static/carbon/carbon.js:1447
+#: htdocs/luci-static/carbon/carbon.js:1612
 msgid "Interfaces"
 msgstr ""
 
@@ -272,7 +273,7 @@ msgstr ""
 msgid "IPK updates are downloaded over HTTPS and checked against the release SHA-256 and file size."
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1341
+#: htdocs/luci-static/carbon/carbon.js:1375
 msgid "LAN IP"
 msgstr ""
 
@@ -291,15 +292,15 @@ msgstr ""
 msgid "Light"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1355
+#: htdocs/luci-static/carbon/carbon.js:1389
 msgid "Live Traffic"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1395
+#: htdocs/luci-static/carbon/carbon.js:1429
 msgid "Load"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1675
+#: htdocs/luci-static/carbon/carbon.js:1720
 msgid "Load average"
 msgstr ""
 
@@ -308,12 +309,12 @@ msgstr ""
 msgid "Log out"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1325
+#: htdocs/luci-static/carbon/carbon.js:1359
 msgid "Manage"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1372
-#: htdocs/luci-static/carbon/carbon.js:1424
+#: htdocs/luci-static/carbon/carbon.js:1406
+#: htdocs/luci-static/carbon/carbon.js:1458
 msgid "Memory"
 msgstr ""
 
@@ -329,7 +330,11 @@ msgstr ""
 msgid "Need more settings? Switch to"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1455
+#: htdocs/luci-static/carbon/carbon.js:1613
+msgid "Network devices"
+msgstr ""
+
+#: htdocs/luci-static/carbon/carbon.js:1490
 msgid "No devices yet"
 msgstr ""
 
@@ -337,7 +342,7 @@ msgstr ""
 msgid "No installation log yet."
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1519
+#: htdocs/luci-static/carbon/carbon.js:1554
 msgid "No wireless"
 msgstr ""
 
@@ -345,7 +350,7 @@ msgstr ""
 msgid "Not checked"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1542
+#: htdocs/luci-static/carbon/carbon.js:1577
 msgid "Not connected"
 msgstr ""
 
@@ -353,28 +358,28 @@ msgstr ""
 msgid "Not enough temporary storage or unable to create update files."
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1358
+#: htdocs/luci-static/carbon/carbon.js:1392
 #: htdocs/luci-static/carbon/carbon.js:998
 msgid "Now"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1691
+#: htdocs/luci-static/carbon/carbon.js:1736
 msgid "of %s max"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1523
+#: htdocs/luci-static/carbon/carbon.js:1558
 msgid "Off"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1611
+#: htdocs/luci-static/carbon/carbon.js:1656
 msgid "Offline"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1523
+#: htdocs/luci-static/carbon/carbon.js:1558
 msgid "On"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1611
+#: htdocs/luci-static/carbon/carbon.js:1656
 msgid "Online"
 msgstr ""
 
@@ -382,7 +387,7 @@ msgstr ""
 msgid "Optional. If GitHub downloads are slow or blocked, enter an HTTPS prefix that proxies GitHub links, for example https://mirror.example.com/ for https://mirror.example.com/https://github.com/…. Release information is still read from GitHub, and the downloaded file must match the size and SHA-256 published there; GitHub is tried if the mirror fails."
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1318
+#: htdocs/luci-static/carbon/carbon.js:1352
 #: htdocs/luci-static/carbon/carbon.js:298
 msgid "Overview"
 msgstr ""
@@ -391,19 +396,19 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1136
+#: htdocs/luci-static/carbon/carbon.js:1138
 msgid "Phone"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1096
+#: htdocs/luci-static/carbon/carbon.js:1098
 msgid "PPPoE"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1137
+#: htdocs/luci-static/carbon/carbon.js:1139
 msgid "Printer"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1481
+#: htdocs/luci-static/carbon/carbon.js:1516
 msgid "Private"
 msgstr ""
 
@@ -415,7 +420,7 @@ msgstr ""
 msgid "Pro mode"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1481
+#: htdocs/luci-static/carbon/carbon.js:1516
 msgid "Randomised MAC address"
 msgstr ""
 
@@ -423,7 +428,7 @@ msgstr ""
 msgid "Reboot"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1453
+#: htdocs/luci-static/carbon/carbon.js:1488
 msgid "Recently active"
 msgstr ""
 
@@ -444,7 +449,7 @@ msgstr ""
 msgid "Reload page"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1367
+#: htdocs/luci-static/carbon/carbon.js:1401
 msgid "Resources"
 msgstr ""
 
@@ -460,15 +465,15 @@ msgstr ""
 msgid "Saved. Downloads use GitHub directly."
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1489
+#: htdocs/luci-static/carbon/carbon.js:1524
 msgid "Show all %d devices"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1769
+#: htdocs/luci-static/carbon/carbon.js:1814
 msgid "Show detailed status"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1489
+#: htdocs/luci-static/carbon/carbon.js:1524
 msgid "Show less"
 msgstr ""
 
@@ -476,15 +481,15 @@ msgstr ""
 msgid "Simple"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1679
+#: htdocs/luci-static/carbon/carbon.js:1724
 msgid "Since %s"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1736
+#: htdocs/luci-static/carbon/carbon.js:1781
 msgid "Since boot"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1137
+#: htdocs/luci-static/carbon/carbon.js:1139
 msgid "Smart device"
 msgstr ""
 
@@ -492,20 +497,20 @@ msgstr ""
 msgid "Software"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1136
+#: htdocs/luci-static/carbon/carbon.js:1138
 msgid "Speaker"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1463
+#: htdocs/luci-static/carbon/carbon.js:1498
 msgid "Static"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1096
+#: htdocs/luci-static/carbon/carbon.js:1098
 msgid "Static address"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1137
-#: htdocs/luci-static/carbon/carbon.js:1425
+#: htdocs/luci-static/carbon/carbon.js:1139
+#: htdocs/luci-static/carbon/carbon.js:1459
 msgid "Storage"
 msgstr ""
 
@@ -513,12 +518,12 @@ msgstr ""
 msgid "System"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1136
+#: htdocs/luci-static/carbon/carbon.js:1138
 msgid "Tablet"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1700
-#: htdocs/luci-static/carbon/carbon.js:1702
+#: htdocs/luci-static/carbon/carbon.js:1745
+#: htdocs/luci-static/carbon/carbon.js:1747
 msgid "Temperature"
 msgstr ""
 
@@ -546,11 +551,11 @@ msgstr ""
 msgid "The update was interrupted. Check the installed version before trying again."
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1352
+#: htdocs/luci-static/carbon/carbon.js:1386
 msgid "Traffic interface"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1136
+#: htdocs/luci-static/carbon/carbon.js:1138
 msgid "TV"
 msgstr ""
 
@@ -558,14 +563,14 @@ msgstr ""
 msgid "Unable to access update state storage."
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1454
-#: htdocs/luci-static/carbon/carbon.js:1519
-#: htdocs/luci-static/carbon/carbon.js:1529
-#: htdocs/luci-static/carbon/carbon.js:1668
-#: htdocs/luci-static/carbon/carbon.js:1683
-#: htdocs/luci-static/carbon/carbon.js:1684
-#: htdocs/luci-static/carbon/carbon.js:1694
-#: htdocs/luci-static/carbon/carbon.js:1722
+#: htdocs/luci-static/carbon/carbon.js:1489
+#: htdocs/luci-static/carbon/carbon.js:1554
+#: htdocs/luci-static/carbon/carbon.js:1564
+#: htdocs/luci-static/carbon/carbon.js:1713
+#: htdocs/luci-static/carbon/carbon.js:1728
+#: htdocs/luci-static/carbon/carbon.js:1729
+#: htdocs/luci-static/carbon/carbon.js:1739
+#: htdocs/luci-static/carbon/carbon.js:1767
 msgid "Unavailable"
 msgstr ""
 
@@ -573,11 +578,11 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1460
+#: htdocs/luci-static/carbon/carbon.js:1495
 msgid "Unknown device"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1096
+#: htdocs/luci-static/carbon/carbon.js:1098
 msgid "Unmanaged"
 msgstr ""
 
@@ -597,17 +602,17 @@ msgstr ""
 msgid "Update the theme without changing your router configuration."
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1350
-#: htdocs/luci-static/carbon/carbon.js:1421
+#: htdocs/luci-static/carbon/carbon.js:1384
+#: htdocs/luci-static/carbon/carbon.js:1455
 msgid "Upload"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1396
+#: htdocs/luci-static/carbon/carbon.js:1430
 msgid "Uptime"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1655
-#: htdocs/luci-static/carbon/carbon.js:1659
+#: htdocs/luci-static/carbon/carbon.js:1700
+#: htdocs/luci-static/carbon/carbon.js:1704
 msgid "Used"
 msgstr ""
 
@@ -619,20 +624,20 @@ msgstr ""
 msgid "View releases on GitHub"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1341
+#: htdocs/luci-static/carbon/carbon.js:1375
 msgid "WAN IP"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1334
+#: htdocs/luci-static/carbon/carbon.js:1368
 msgid "WAN IPv6"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1480
+#: htdocs/luci-static/carbon/carbon.js:1515
 #: htdocs/luci-static/carbon/carbon.js:300
 msgid "Wi-Fi"
 msgstr ""
 
-#: htdocs/luci-static/carbon/carbon.js:1412
+#: htdocs/luci-static/carbon/carbon.js:1446
 msgid "Wireless"
 msgstr ""
 

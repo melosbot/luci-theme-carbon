@@ -81,6 +81,7 @@ const provider = {
 			return (d && d.stats) ? d.stats : null;
 		});
 	}),
+	netDevices: () => callNetDevs().then((r) => (r && typeof r === 'object' && Object.keys(r).length) ? r : null),
 	leases: () => callLeases().then((r) => (r && Array.isArray(r.dhcp_leases)) ? r : null),
 	wireless: () => callWireless(),
 	hostHints: () => callHostHints(),

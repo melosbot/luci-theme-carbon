@@ -116,6 +116,33 @@ test('LAN devices exclude non-static uplinks but keep a dumb AP\'s static LAN', 
 	assert.equal(C.lanDevices(null), null);
 });
 
+test('traffic picker lists interfaces plus physical ports such as an xPON uplink', () => {
+	const C = load();
+	/* xPON router: internet and IPTV are PPPoE sessions on VLANs of pon0 */
+	const ifs = [
+		{ interface: 'lan', up: true, device: 'br-lan', l3_device: 'br-lan' },
+		{ interface: 'wan', up: true, device: 'pon0.41', l3_device: 'pppoe-wan' },
+		{ interface: 'wan6', up: true, device: 'pppoe-wan', l3_device: 'pppoe-wan' },
+		{ interface: 'IPTV', up: true, device: 'pon0mac0.42', l3_device: 'pppoe-IPTV' },
+		{ interface: 'guest', up: false, device: 'br-guest' },
+		{ interface: 'loopback', up: true, device: 'lo', l3_device: 'lo' }
+	];
+	const dev = (up, extra) => Object.assign({ flags: { up: up } }, extra);
+	const netdevs = {
+		lo: dev(true, { flags: { up: true, loopback: true } }), 'br-lan': dev(true), 'pppoe-wan': dev(true), 'pppoe-IPTV': dev(true),
+		pon0: dev(true), 'pon0.41': dev(true), pon0mac0: dev(true), 'pon0mac0.42': dev(true), omci0: dev(true),
+		lan1: dev(true), lan10: dev(true), lan2: dev(false), eth0: { up: true }, sit0: dev(false), ifb0: dev(true), gre0: dev(true)
+	};
+	const plain = (x) => JSON.parse(JSON.stringify(x));
+	const src = plain(C.trafficSources(ifs, netdevs));
+	assert.deepEqual(src.ifaces.map((g) => [g.dev, g.alt, g.names.join('/')]),
+		[['br-lan', 'br-lan', 'LAN'], ['pppoe-wan', 'pon0.41', 'WAN/WAN6'], ['pppoe-IPTV', 'pon0mac0.42', 'IPTV']]);
+	assert.deepEqual(src.devices.map((d) => d.dev), ['eth0', 'lan1', 'lan10', 'omci0', 'pon0', 'pon0.41', 'pon0mac0', 'pon0mac0.42']);
+	/* no device list (old provider, failed call): interfaces only */
+	assert.deepEqual(plain(C.trafficSources(ifs, null).devices), []);
+	assert.deepEqual(plain(C.trafficSources(null, netdevs).ifaces), []);
+});
+
 test('devices merge leases, Wi-Fi stations, ARP and host hints by MAC', () => {
 	const C = load();
 	const list = C.mergeDevices({

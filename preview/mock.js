@@ -132,6 +132,11 @@
 			{ interface: 'guest', up: false, proto: 'static', device: 'br-guest', 'ipv4-address': [], route: [] }
 		]),
 		devStats: () => wait({ rx_bytes: Math.round(rx), tx_bytes: Math.round(tx) }),
+		/* kernel devices (luci-rpc getNetworkDevices): physical ports show up in the traffic picker */
+		netDevices: () => wait([
+			['lo', true, { loopback: true }], ['eth0', true], ['wan', true], ['lan1', true], ['lan2', true], ['lan3', false], ['lan4', true],
+			['br-lan', true], ['pppoe-wan', true], ['phy0-ap0', true], ['phy1-ap0', true], ['ifb0', false], ['sit0', false]
+		].reduce((o, d) => (o[d[0]] = { name: d[0], up: d[1], flags: Object.assign({ up: d[1] }, d[2]), stats: { rx_bytes: 0, tx_bytes: 0 } }, o), {})),
 		leases: () => wait({ dhcp_leases: LEASES, dhcp6_leases: [] }),
 		wireless: () => wait({
 			radio0: { up: settings.enabled, config: { band: '2g', channel: settings.channel }, interfaces: [

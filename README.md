@@ -107,7 +107,7 @@ Carbon becomes the default theme. Refresh the page, then **log out and log in on
 | Collapse sidebar | round button on the sidebar edge, or <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>\\</kbd> |
 | Light / dark / auto | top-right of the toolbar |
 | Language | bottom-left of the sidebar (changes LuCI's language, same as *System → Language*; a list when more than two are installed) |
-| Live traffic interface | picker in the *Live Traffic* card (remembered per browser) |
+| Live traffic interface | picker in the *Live Traffic* card: *Auto* follows the WAN; any interface or network device (e.g. an xPON port such as `pon0` that also carries IPTV) can be picked, remembered per browser |
 | GitHub project | icon at the top-right of the toolbar |
 | Check and install theme updates | System → Carbon Theme Settings (Simple and Pro modes) |
 | LuCI's original status page | *Show detailed status* under the dashboard |

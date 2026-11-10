@@ -1080,6 +1080,8 @@
 	 *   cpuStat()          → contents of /proc/stat
 	 *   interfaces()       → ubus network.interface dump (array)
 	 *   devStats(dev)      → { rx_bytes, tx_bytes }
+	 *   netDevices()       → luci-rpc getNetworkDevices, keyed by name (optional;
+	 *                        lists physical ports such as pon0 in the traffic picker)
 	 *   leases()           → luci-rpc getDHCPLeases
 	 *   wireless()         → ubus network.wireless status
 	 *   stations(ifnames)  → [{ ifname, mac, signal }] from iwinfo assoclist (optional)
@@ -1278,6 +1280,38 @@
 		return devs;
 	};
 
+	/*
+	 * Traffic picker choices.
+	 *   ifaces:  one entry per L3 device of an up logical interface ({ dev, alt, names })
+	 *   devices: other up kernel devices from getNetworkDevices ({ dev }) — physical
+	 *            uplinks such as an xPON port (pon0) carrying several VLANs/PPPoE
+	 *            sessions, switch ports, VLANs, radios. Kernel placeholder devices
+	 *            (lo, ifb, sit0, gre0 …) are left out.
+	 */
+	const NOISE_DEV = /^(lo|ifb\d*|imq\d+|teql\d+|dummy\d*|bonding_masters|tunl0|sit0|ip6tnl0|ip6gre0|gre0|gretap0|erspan0|ip_vti0|ip6_vti0)$/;
+	C.trafficSources = function (ifs, netdevs) {
+		const ifaces = [], devices = [], seen = {};
+		(ifs || []).forEach((i) => {
+			const dev = i.l3_device || i.device;
+			if (!i.up || i.interface === 'loopback' || !dev) return;
+			let g = ifaces.find((x) => x.dev === dev);
+			if (!g) { ifaces.push(g = { dev: dev, alt: i.device, names: [] }); seen[dev] = true; }
+			g.names.push((i.interface || '').toUpperCase());
+		});
+		if (netdevs && typeof netdevs === 'object') {
+			Object.keys(netdevs).forEach((k) => {
+				const d = netdevs[k] || {};
+				const name = d.name || k;
+				const up = d.up != null ? d.up : (d.flags && d.flags.up);
+				if (!up || seen[name] || NOISE_DEV.test(name) || (d.flags && d.flags.loopback)) return;
+				seen[name] = true;
+				devices.push({ dev: name });
+			});
+			devices.sort((a, b) => a.dev.localeCompare(b.dev, undefined, { numeric: true }));
+		}
+		return { ifaces: ifaces, devices: devices };
+	};
+
 	/* first global IPv6 address of the interface carrying the IPv6 default route */
 	C.wanIPv6 = function (ifs) {
 		const up = (ifs || []).filter((i) => i.up && (i.route || []).some((r) => r.target === '::' && r.mask === 0));
@@ -1428,7 +1462,8 @@
 			/* ---------------- data ---------------- */
 			const st = {
 				dev: null, devAlt: null, prevNet: null, prevCpu: null, showAll: false, devices: [], wifiCount: null,
-				traffic: store.get('carbon.traffic', 'auto'), trafficKey: '', ifs: null, hints: null, hintsAt: 0, aps: null
+				traffic: store.get('carbon.traffic', 'auto'), trafficKey: '', ifs: null, hints: null, hintsAt: 0, aps: null,
+				netdevs: null, netdevsAt: 0
 			};
 			const safe = (fn) => {
 				if (typeof fn !== 'function') return Promise.resolve(null);
@@ -1551,30 +1586,36 @@
 				return { wan: wan, lan: ifs.find((i) => i.interface === 'lan') };
 			}
 
-			/* traffic source: "auto" follows the uplink, or a device the user picked */
+			/*
+			 * traffic source: "auto" follows the uplink (the L3 device, e.g. pppoe-wan),
+			 * or an interface / network device the user picked. The physical port
+			 * below the uplink is not chosen automatically: on xPON it also carries
+			 * IPTV and management VLANs, but on a one-armed router it carries LAN too.
+			 */
 			function updateTraffic() {
 				const ifs = st.ifs;
 				if (!ifs) return;
-				const groups = [];
-				ifs.forEach((i) => {
-					const dev = i.l3_device || i.device;
-					if (!i.up || i.interface === 'loopback' || !dev) return;
-					let g = groups.find((x) => x.dev === dev);
-					if (!g) groups.push(g = { dev: dev, alt: i.device, names: [] });
-					g.names.push((i.interface || '').toUpperCase());
-				});
+				const src = C.trafficSources(ifs, st.netdevs);
+				const groups = src.ifaces;
 				const u = uplinks(ifs);
 				const auto = (u.wan && u.wan.up) ? u.wan : u.lan;
 				const autoDev = auto ? (auto.l3_device || auto.device) : null;
-				const key = groups.map((g) => g.dev + '=' + g.names.join(',')).join('|') + '#' + autoDev;
+				const key = groups.map((g) => g.dev + '=' + g.names.join(',')).join('|') + '#' +
+					src.devices.map((d) => d.dev).join(',') + '#' + autoDev;
 				if (key !== st.trafficKey) {
 					st.trafficKey = key;
 					ui.trafficSel.innerHTML = '';
 					ui.trafficSel.appendChild(h('option', { value: 'auto' },
 						t('Auto') + (auto ? ' · ' + (auto.interface || '').toUpperCase() + (autoDev ? ' (' + autoDev + ')' : '') : '')));
-					groups.forEach((g) => ui.trafficSel.appendChild(h('option', { value: g.dev }, g.names.join(' / ') + ' (' + g.dev + ')')));
+					const ifOpts = groups.map((g) => h('option', { value: g.dev }, g.names.join(' / ') + ' (' + g.dev + ')'));
+					if (src.devices.length) {
+						ui.trafficSel.appendChild(h('optgroup', { label: t('Interfaces') }, ifOpts));
+						ui.trafficSel.appendChild(h('optgroup', { label: t('Network devices') },
+							src.devices.map((d) => h('option', { value: d.dev }, d.dev))));
+					}
+					else ifOpts.forEach((o) => ui.trafficSel.appendChild(o));
 				}
-				const pick = groups.find((g) => g.dev === st.traffic);
+				const pick = groups.find((g) => g.dev === st.traffic) || src.devices.find((d) => d.dev === st.traffic);
 				ui.trafficSel.value = pick ? pick.dev : 'auto';
 				const dev = pick ? pick.dev : autoDev;
 				if (dev !== st.dev) {
@@ -1594,15 +1635,19 @@
 
 			async function slow() {
 				const hintsDue = Date.now() - st.hintsAt > 30000;
+				const netdevsDue = Date.now() - st.netdevsAt > 30000;
 				/* stations use the AP list from the previous tick, so everything goes in one batch */
 				const known = st.aps;
 				const r = await Promise.all([
 					safe(P.interfaces), safe(P.leases), safe(P.wireless), safe(P.neighbors),
 					hintsDue ? safe(P.hostHints) : Promise.resolve(st.hints),
-					known && known.length && P.stations ? safe(() => P.stations(known)) : Promise.resolve(null)
+					known && known.length && P.stations ? safe(() => P.stations(known)) : Promise.resolve(null),
+					netdevsDue ? safe(P.netDevices) : Promise.resolve(st.netdevs)
 				]);
 				const ifs = Array.isArray(r[0]) ? r[0] : null;
 				st.ifs = ifs;
+				/* device list for the traffic picker; keep the last good one if a refresh fails */
+				if (netdevsDue && r[6] && typeof r[6] === 'object') { st.netdevs = r[6]; st.netdevsAt = Date.now(); }
 
 				if (ifs) {
 					const u = uplinks(ifs);
