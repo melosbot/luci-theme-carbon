@@ -38,7 +38,7 @@ GitHub 下载缓慢或无法访问时，在同一页面的「下载镜像」中�
 ## 常见问题
 
 - **没有更新入口**：旧版未包含更新器，先安装新包并重新登录。确认 `rpcd` 已加载 `luci.carbon_update`。
-- **提示「请先通过系统包管理器安装一次 Carbon」**：主题是复制文件安装的（`--files` 或 v1.2 之前的安装脚本），apk/opkg 中没有记录。重新运行一次当前的 `carbon-install.sh`：它会通过包管理器安装内置的签名包，无需导入公钥；也可以手动安装 APK/IPK。更新器本身不会把未登记的文件强制接管给包管理器。
+- **提示「请先通过系统包管理器安装一次 Carbon」**：主题是复制文件安装的（`--files` 或 v1.1.3 之前的安装脚本），apk/opkg 中没有记录。重新运行一次当前的 `carbon-install.sh`：它会通过包管理器安装内置的签名包，无需导入公钥；也可以手动安装 APK/IPK。更新器本身不会把未登记的文件强制接管给包管理器。
 - **缺少工具**：需要 `curl`、`ca-bundle` 和 `flock`，通常随包依赖安装。不要为解决 HTTPS 问题关闭证书校验。
 - **下载失败**：检查路由器时间、DNS、外网和 GitHub 连通性；GitHub API 限流也会导致检查失败，稍后重试。
 - **签名/校验失败**：没有执行安装。重新检查并下载；若持续失败，请提供错误和日志，不要禁用签名验证。
@@ -53,7 +53,7 @@ v1.1.2 refreshes LuCI's cached menu automatically when the Carbon version change
 
 The updater only accepts newer stable releases from the fixed Carbon repository. It verifies size, SHA-256, package name/version and, for APK, the bundled Carbon public key. APK verifies the signature again during installation with the same isolated key directory and no firmware repository access. System trust settings are unchanged. IPK uses HTTPS, size and SHA-256 validation rather than APK signing. Existing dependencies must be available. Checks expire after 30 minutes, and a lock prevents overlapping updates.
 
-Preferences and router configuration are retained. Installs made by copying files (`carbon-install.sh --files`, or installers before v1.2) are not registered with apk/opkg; run the current `carbon-install.sh` once, which installs the embedded signed package natively. Failed installations display logs and do not promise rollback; check the actual installed version before retrying. GitHub connectivity, correct system time, `curl`, `ca-bundle` and `flock` are required.
+Preferences and router configuration are retained. Installs made by copying files (`carbon-install.sh --files`, or installers before v1.1.3) are not registered with apk/opkg; run the current `carbon-install.sh` once, which installs the embedded signed package natively. Failed installations display logs and do not promise rollback; check the actual installed version before retrying. GitHub connectivity, correct system time, `curl`, `ca-bundle` and `flock` are required.
 
 ### Download mirror
 

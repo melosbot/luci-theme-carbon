@@ -120,7 +120,7 @@ APK updates verify the bundled Carbon public key, then use APK's normal signatur
 
 If GitHub downloads are slow or blocked, enter an HTTPS **Download mirror** prefix on the same page. Only the package bytes use the mirror; version, size and SHA-256 still come from GitHub, and the updater falls back to GitHub if the mirror fails.
 
-Required packages: `curl`, `ca-bundle`, `flock` (installed as native package dependencies). Installs made with `--files` or with installers before v1.2 are not registered with apk/opkg; run the current `carbon-install.sh` once to enable online updates.
+Required packages: `curl`, `ca-bundle`, `flock` (installed as native package dependencies). Installs made with `--files` or with installers before v1.1.3 are not registered with apk/opkg; run the current `carbon-install.sh` once to enable online updates.
 
 ### Uninstall
 

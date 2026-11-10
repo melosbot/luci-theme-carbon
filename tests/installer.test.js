@@ -10,6 +10,7 @@ const path = require('node:path');
 const { execFileSync, spawnSync } = require('node:child_process');
 
 const REPO = path.resolve(__dirname, '..');
+const VERSION = fs.readFileSync(path.join(REPO, 'root/usr/share/carbon/version'), 'utf8').trim();
 let tmp, installer, plainInstaller;
 
 const STUBS = path.join(__dirname, 'installer-stubs');   // stub apk / opkg / uci
@@ -106,7 +107,7 @@ test('script-only install migrates to a registered package', () => {
 	assert.equal(r.version(), null);
 	const { code, out } = r.run();
 	assert.equal(code, 0, out);
-	assert.equal(r.version(), '1.1.2-r1');
+	assert.equal(r.version(), VERSION);
 	// unowned files were removed so the package owns them (the stub installs no files)
 	assert.equal(r.exists('www/luci-static/carbon'), false);
 });
@@ -114,7 +115,7 @@ test('script-only install migrates to a registered package', () => {
 test('opkg: installs the embedded ipk; same version reinstalls; newer installed is kept', () => {
 	let r = router('opkg', { installed: { 'luci-base': '1', curl: '1', 'ca-bundle': '1', flock: '1' } });
 	assert.equal(r.run().code, 0);
-	assert.equal(r.version(), '1.1.2-r1');
+	assert.equal(r.version(), VERSION);
 	assert.doesNotMatch(r.log(), /opkg update/, 'no feed access when dependencies are present');
 	assert.equal(r.run().code, 0);
 	assert.match(r.log(), /opkg install --force-reinstall \S+\.ipk/);

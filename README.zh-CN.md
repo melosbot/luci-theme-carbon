@@ -117,7 +117,7 @@ APK 在线更新先使用包内固定的 Carbon 公钥验证，再由 APK 包管
 
 GitHub 下载缓慢或无法访问时，可在同一页面填写 HTTPS **下载镜像**前缀。镜像只用于下载安装包，版本、大小和 SHA-256 仍以 GitHub 为准；镜像失败时自动改用 GitHub。
 
-依赖 `curl`、`ca-bundle`、`flock`，使用原生包安装时自动处理。使用 `--files` 或 v1.2 之前的安装脚本安装的主题没有登记到 apk/opkg，重新运行一次当前的 `carbon-install.sh` 即可启用在线升级。
+依赖 `curl`、`ca-bundle`、`flock`，使用原生包安装时自动处理。使用 `--files` 或 v1.1.3 之前的安装脚本安装的主题没有登记到 apk/opkg，重新运行一次当前的 `carbon-install.sh` 即可启用在线升级。
 
 ### 卸载
 

@@ -22,7 +22,7 @@ VERSION="@VERSION@"
 PKG=luci-theme-carbon
 ROOT="${CARBON_ROOT:-}"                             # tests only: alternate root with stub tools on PATH
 DEPS="${CARBON_DEPS-luci-base curl ca-bundle flock}"   # tests only: override the dependency list
-# Files written by the --files mode (and by installers before v1.2).
+# Files written by the --files mode (and by installers before v1.1.3).
 FILE_PATHS="
 /www/luci-static/carbon
 /www/luci-static/resources/menu-carbon.js
