@@ -9,7 +9,7 @@
 1. 从 [Release](https://github.com/mrjoechen/luci-theme-carbon/releases/latest) 下载 `carbon-apk.pem` 和 `luci-theme-carbon-*.apk`。公钥也保存在仓库的 `keys/carbon-apk.pem`。
 2. 切到 Carbon「专业」模式，在 **系统 → 管理权（Administration）→ 软件源公钥（Repo Public Keys）** 中，粘贴公钥文件的完整内容并点击「添加密钥」。有些版本也支持拖入公钥文件。此页面与 SSH 公钥页面不同。
 3. 在 **系统 → 软件包 → 上传软件包** 中上传新版 `.apk` 并安装。重复安装相同版本时，如界面提供「重新安装」选项，可勾选它。
-4. 刷新页面并退出、重新登录 LuCI。
+4. 刷新页面。首次安装更新器时，退出并重新登录 LuCI，使新增 RPC 权限生效；已有 v1.1.x 升级到 v1.1.2 或更新版本，只需刷新，无需退出。
 
 菜单名称取决于固件翻译；较旧的 LuCI 可能没有公钥管理页。这种情况使用下面的一次性 SSH 配置，之后仍通过网页上传 APK。
 

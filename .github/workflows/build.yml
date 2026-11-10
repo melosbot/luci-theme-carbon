@@ -45,6 +45,7 @@ jobs:
           node --check htdocs/luci-static/carbon/brands.js
           node -e "new Function(require('fs').readFileSync('htdocs/luci-static/resources/menu-carbon.js', 'utf8'))"
           node -e "new Function(require('fs').readFileSync('htdocs/luci-static/resources/view/system/carbon-update.js', 'utf8'))"
+          node --test tests/menu-cache.test.js
           python3 -m json.tool root/usr/share/rpcd/acl.d/luci-theme-carbon.json > /dev/null
           python3 -m json.tool root/usr/share/rpcd/acl.d/luci-theme-carbon-update.json > /dev/null
           python3 -m json.tool root/usr/share/luci/menu.d/luci-theme-carbon.json > /dev/null

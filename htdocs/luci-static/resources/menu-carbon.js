@@ -1,6 +1,7 @@
 'use strict';
 'require baseclass';
 'require ui';
+'require session';
 'require rpc';
 'require fs';
 
@@ -80,7 +81,17 @@ const provider = {
 
 return baseclass.extend({
 	__init__() {
-		ui.menu.load().then((tree) => this.render(tree));
+		const version = window.Carbon && window.Carbon.version;
+		if (version && session.getLocalData('carbon-menu-version') !== version) {
+			ui.menu.flushCache();
+			// LuCI's flushCache clears session data only. Its instance may already
+			// hold the old tree when the theme menu is instantiated.
+			ui.menu.menu = null;
+		}
+		return ui.menu.load().then((tree) => {
+			this.render(tree);
+			if (version) session.setLocalData('carbon-menu-version', version);
+		});
 	},
 
 	render(tree) {
@@ -155,7 +166,7 @@ return baseclass.extend({
 			const className = 'tabmenu-item-%s %s'.format(child.name, isActive ? 'active' : '');
 
 			ul.appendChild(E('li', { 'class': className }, [
-				E('a', { 'href': L.url(url, child.name) }, [ _(child.title) ])
+				E('a', { 'href': L.url(url, child.name), 'aria-current': isActive ? 'page' : null }, [ _(child.title) ])
 			]));
 
 			if (isActive)

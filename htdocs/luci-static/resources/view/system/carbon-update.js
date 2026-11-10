@@ -39,7 +39,10 @@ return view.extend({
 		const securityText = E('p', { 'class': 'cbi-section-descr' });
 		const notes = E('pre', { 'style': 'white-space:pre-wrap;overflow-wrap:anywhere;max-height:24rem;overflow:auto' });
 		const logs = E('pre', { 'style': 'white-space:pre-wrap;overflow-wrap:anywhere;max-height:16rem;overflow:auto' });
-		const refresh = E('button', { 'class': 'cbi-button cbi-button-action', 'click': () => window.location.reload() }, tr('Reload page', '刷新页面'));
+		const refresh = E('button', { 'class': 'cbi-button cbi-button-action', 'click': () => {
+			ui.menu.flushCache();
+			window.location.reload();
+		} }, tr('Reload page', '刷新页面'));
 		const checkButton = E('button', { 'class': 'cbi-button cbi-button-action', 'click': () => run(check) }, tr('Check for updates', '检查更新'));
 		const updateButton = E('button', { 'class': 'cbi-button cbi-button-positive', 'click': () => {
 			if (!current.can_upgrade || current.busy || pending || !L.hasViewPermission()) return;

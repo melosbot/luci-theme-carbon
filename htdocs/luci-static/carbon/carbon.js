@@ -12,7 +12,7 @@
 	'use strict';
 
 	const C = window.Carbon = window.Carbon || {};
-	C.version = '1.1.1';
+	C.version = '1.1.2';
 
 	/* directory this script was loaded from (…/luci-static/carbon/) */
 	const BASE = ((document.currentScript && document.currentScript.src) || '').replace(/[?#].*$/, '').replace(/[^/]*$/, '');
@@ -520,11 +520,60 @@
 		el.addEventListener('blur', () => hideFlyout());
 	}
 
+	/* Keep the active route / form tab visible without moving focus or the page.
+	 * LuCI inserts form tabs asynchronously and can reveal nested tab groups. */
+	const tabRoots = new WeakSet();
+	C.initTabs = function (root) {
+		if (!root || tabRoots.has(root)) return;
+		tabRoots.add(root);
+		const rows = new Map();
+		let pending = false;
+		const schedule = () => {
+			if (pending) return;
+			pending = true;
+			requestAnimationFrame(sync);
+		};
+		const resize = window.ResizeObserver ? new ResizeObserver(schedule) : null;
+		function sync() {
+			pending = false;
+			for (const row of rows.keys()) {
+				if (!root.contains(row)) {
+					if (resize) resize.unobserve(row);
+					rows.delete(row);
+				}
+			}
+			root.querySelectorAll('.tabs, .cbi-tabmenu').forEach((row) => {
+				const previous = rows.get(row);
+				if (!previous && resize) resize.observe(row);
+				const active = Array.from(row.children).find((li) => li.classList.contains('active') || li.classList.contains('cbi-tab'));
+				const width = row.clientWidth, contentWidth = row.scrollWidth;
+				rows.set(row, { active, width, contentWidth });
+				// Do not snap back when the user browses other tabs or a status poll
+				// changes unrelated content. Only selection or layout changes count.
+				if (!active || !width || contentWidth <= width + 1 ||
+					(previous && previous.active === active && previous.width === width && previous.contentWidth === contentWidth)) return;
+				const bounds = row.getBoundingClientRect(), item = active.getBoundingClientRect();
+				if (!item.width) return;
+				const left = bounds.left + row.clientLeft, right = left + width;
+				if (item.left < left || item.right > right)
+					row.scrollLeft += item.left - left - Math.max(0, (width - item.width) / 2);
+			});
+		}
+		new MutationObserver(schedule).observe(root, {
+			childList: true, subtree: true, attributes: true,
+			attributeFilter: ['class', 'style', 'hidden', 'data-tab-active']
+		});
+		window.addEventListener('resize', schedule, { passive: true });
+		if (document.fonts) document.fonts.ready.then(schedule);
+		schedule();
+	};
+
 	/* ------------------------------------------------------------------
 	 * Shell: drawer, collapse, mode switch, appearance switch, logout
 	 * ------------------------------------------------------------------ */
 	C.initShell = function (opts) {
 		opts = opts || {};
+		C.initTabs(document.getElementById('maincontent'));
 		const body = document.body;
 		const burger = document.getElementById('cb-burger');
 		const scrim = document.getElementById('cb-scrim');

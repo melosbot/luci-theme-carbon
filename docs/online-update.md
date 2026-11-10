@@ -6,9 +6,9 @@
 2. 打开「系统 → Carbon 主题设置」（v1.1.0 中名为「Carbon 更新」）。简洁和专业模式都有入口。
 3. 点击「检查更新」，查看当前版本、最新稳定版和更新说明。
 4. 点击「一键升级」，确认目标版本。后台执行下载、校验和安装，页面显示进度及日志；刷新页面不会取消安装。
-5. 成功后点击「刷新页面」。无需重启路由器。
+5. 成功后点击「刷新页面」。升级到 v1.1.2 或更新版本时，主题自动刷新当前会话的菜单缓存，无需退出登录或重启路由器。
 
-从 v1.1.0 升级到 v1.1.1 后，LuCI 可能仍从当前会话缓存读取旧菜单名称，专业模式可能显示英文 `Carbon Update`。退出并重新登录 LuCI 一次即可显示「Carbon 主题设置」；这不影响已完成的包升级，不需要重复安装。
+v1.1.0 / v1.1.1 的旧菜单名称缓存问题已在 v1.1.2 修复。可以直接从这两个版本通过网页升级到最新版，完成后刷新即可。首次安装更新器带来的新增 RPC 权限与菜单缓存不同，仍需按第 1 步重新登录一次。
 
 更新保留 LuCI 语言、当前主题选择及浏览器中的浅色/深色、导航偏好。安装过程中请不要断电或同时操作其他软件包。安装失败时会显示原生包管理器日志；更新器不会声称自动回滚，也不会强制覆盖文件或忽略依赖。
 
@@ -36,9 +36,9 @@
 
 ## English
 
-Install the native v1.1.0+ APK/IPK once, then log out/back in. Open **System → Carbon Theme Settings** (**Carbon Update** in v1.1.0), check for updates, review the notes and confirm **Install update**. Progress and logs survive page refreshes. Reload the page after success; a router reboot is unnecessary. Read-only users cannot install updates.
+Install the native v1.1.0+ APK/IPK once, then log out/back in to activate the newly added RPC permissions. Open **System → Carbon Theme Settings** (**Carbon Update** in v1.1.0), check for updates, review the notes and confirm **Install update**. Progress and logs survive page refreshes. When upgrading to v1.1.2 or later, reload after success; neither logout nor a router reboot is needed. Read-only users cannot install updates.
 
-After upgrading from v1.1.0 to v1.1.1, log out and back in once if the menu or breadcrumb still says **Carbon Update**. LuCI caches the menu in the current browser session; this does not mean the package upgrade failed and does not require reinstalling.
+v1.1.2 refreshes LuCI's cached menu automatically when the Carbon version changes, including upgrades from v1.1.0 and v1.1.1. It preserves the login session and unrelated session data. First-time RPC permission activation still requires the initial login described above.
 
 The updater only accepts newer stable releases from the fixed Carbon repository. It verifies size, SHA-256, package name/version and, for APK, the bundled Carbon public key. APK verifies the signature again during installation with the same isolated key directory and no firmware repository access. System trust settings are unchanged. IPK uses HTTPS, size and SHA-256 validation rather than APK signing. Existing dependencies must be available. Checks expire after 30 minutes, and a lock prevents overlapping updates.
 
