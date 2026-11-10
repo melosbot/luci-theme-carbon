@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: zh_Hant\n"
 
-#: htdocs/luci-static/carbon/carbon.js:1764
+#: htdocs/luci-static/carbon/carbon.js:1849
 msgid "%d cores"
 msgstr "%d 核心"
 
@@ -11,7 +11,7 @@ msgstr "%d 核心"
 msgid "%d min"
 msgstr "%d 分鐘"
 
-#: htdocs/luci-static/carbon/carbon.js:1488
+#: htdocs/luci-static/carbon/carbon.js:1565
 msgid "%d on Wi-Fi"
 msgstr "Wi‑Fi 連線 %d 台"
 
@@ -23,23 +23,19 @@ msgstr "%d 天 %d 小時"
 msgid "%dh %dm"
 msgstr "%d 小時 %d 分"
 
-#: htdocs/luci-static/carbon/carbon.js:999
+#: htdocs/luci-static/carbon/carbon.js:1001
 msgid "%ds ago"
 msgstr "%d 秒前"
 
-#: htdocs/luci-static/carbon/carbon.js:1496
-msgid "%s device"
-msgstr "%s 裝置"
-
-#: htdocs/luci-static/carbon/carbon.js:1500
+#: htdocs/luci-static/carbon/carbon.js:1581
 msgid "%s left"
 msgstr "剩餘 %s"
 
-#: htdocs/luci-static/carbon/carbon.js:1719
+#: htdocs/luci-static/carbon/carbon.js:1804
 msgid "1 min average"
 msgstr "1 分鐘平均"
 
-#: htdocs/luci-static/carbon/carbon.js:1393
+#: htdocs/luci-static/carbon/carbon.js:1470
 msgid "2 min ago"
 msgstr "2 分鐘前"
 
@@ -51,7 +47,7 @@ msgstr "<1 分鐘"
 msgid "A new version is available."
 msgstr "有新版本可用。"
 
-#: htdocs/luci-static/carbon/carbon.js:810
+#: htdocs/luci-static/carbon/carbon.js:812
 msgid "All settings"
 msgstr "全部設定"
 
@@ -71,28 +67,28 @@ msgstr "安裝前會驗證 APK 簽章、SHA-256 與檔案大小，並保留簽�
 msgid "apk/opkg has no record of this Carbon install (for example, it was copied by an older carbon-install.sh). Run the latest carbon-install.sh once, or install the APK/IPK package, to enable online upgrades."
 msgstr "apk/opkg 中沒有這次 Carbon 安裝的記錄（例如由舊版 carbon-install.sh 複製檔案安裝）。請重新執行一次最新的 carbon-install.sh，或安裝 APK/IPK 套件，以啟用線上升級。"
 
-#: htdocs/luci-static/carbon/carbon.js:661
-#: htdocs/luci-static/carbon/carbon.js:664
+#: htdocs/luci-static/carbon/carbon.js:663
+#: htdocs/luci-static/carbon/carbon.js:666
 msgid "Appearance"
 msgstr "外觀"
 
-#: htdocs/luci-static/carbon/carbon.js:1388
-#: htdocs/luci-static/carbon/carbon.js:1610
-#: htdocs/luci-static/carbon/carbon.js:579
-#: htdocs/luci-static/carbon/carbon.js:656
+#: htdocs/luci-static/carbon/carbon.js:1465
+#: htdocs/luci-static/carbon/carbon.js:1695
+#: htdocs/luci-static/carbon/carbon.js:581
+#: htdocs/luci-static/carbon/carbon.js:658
 msgid "Auto"
 msgstr "自動"
 
-#: htdocs/luci-static/carbon/carbon.js:307
+#: htdocs/luci-static/carbon/carbon.js:309
 msgid "Backup & Upgrade"
 msgstr "備份與升級"
 
-#: htdocs/luci-static/carbon/carbon.js:1701
-#: htdocs/luci-static/carbon/carbon.js:1705
+#: htdocs/luci-static/carbon/carbon.js:1786
+#: htdocs/luci-static/carbon/carbon.js:1790
 msgid "Cache"
 msgstr "快取"
 
-#: htdocs/luci-static/carbon/carbon.js:1140
+#: htdocs/luci-static/carbon/carbon.js:1142
 msgid "Camera"
 msgstr "攝影機"
 
@@ -100,7 +96,7 @@ msgstr "攝影機"
 msgid "Cancel"
 msgstr "取消"
 
-#: htdocs/luci-static/carbon/carbon.js:305
+#: htdocs/luci-static/carbon/carbon.js:307
 #: htdocs/luci-static/resources/view/system/carbon-update.js:138
 #: root/usr/share/luci/menu.d/luci-theme-carbon.json
 msgid "Carbon Theme Settings"
@@ -118,23 +114,23 @@ msgstr "檢查 Carbon 最新穩定版。"
 msgid "Checking for updates…"
 msgstr "正在檢查更新…"
 
-#: htdocs/luci-static/carbon/carbon.js:573
-#: htdocs/luci-static/carbon/carbon.js:693
-#: htdocs/luci-static/carbon/carbon.js:705
+#: htdocs/luci-static/carbon/carbon.js:575
+#: htdocs/luci-static/carbon/carbon.js:695
+#: htdocs/luci-static/carbon/carbon.js:707
 msgid "click to switch"
 msgstr "點選切換"
 
-#: htdocs/luci-static/carbon/carbon.js:356
-#: htdocs/luci-static/carbon/carbon.js:680
-#: htdocs/luci-static/carbon/carbon.js:681
+#: htdocs/luci-static/carbon/carbon.js:358
+#: htdocs/luci-static/carbon/carbon.js:682
+#: htdocs/luci-static/carbon/carbon.js:683
 msgid "Collapse sidebar"
 msgstr "收合側邊欄"
 
-#: htdocs/luci-static/carbon/carbon.js:298
+#: htdocs/luci-static/carbon/carbon.js:300
 msgid "Common"
 msgstr "常用"
 
-#: htdocs/luci-static/carbon/carbon.js:1139
+#: htdocs/luci-static/carbon/carbon.js:1141
 msgid "Computer"
 msgstr "電腦"
 
@@ -142,15 +138,15 @@ msgstr "電腦"
 msgid "Confirm update"
 msgstr "確認升級"
 
-#: htdocs/luci-static/carbon/carbon.js:1578
+#: htdocs/luci-static/carbon/carbon.js:1663
 msgid "Connected"
 msgstr "已連線"
 
-#: htdocs/luci-static/carbon/carbon.js:1440
+#: htdocs/luci-static/carbon/carbon.js:1517
 msgid "Connected Devices"
 msgstr "已連線裝置"
 
-#: htdocs/luci-static/carbon/carbon.js:1516
+#: htdocs/luci-static/carbon/carbon.js:1597
 msgid "Connected over Wi-Fi"
 msgstr "透過 Wi‑Fi 連線"
 
@@ -158,32 +154,32 @@ msgstr "透過 Wi‑Fi 連線"
 msgid "Connection interrupted. Progress will resume when LuCI reconnects. %s"
 msgstr "連線暫時中斷，LuCI 恢復後將繼續顯示進度。%s"
 
-#: htdocs/luci-static/carbon/carbon.js:1429
+#: htdocs/luci-static/carbon/carbon.js:1506
 msgid "Connections"
 msgstr "作用中連線"
 
-#: htdocs/luci-static/carbon/carbon.js:1458
+#: htdocs/luci-static/carbon/carbon.js:1535
 msgid "CPU"
 msgstr "CPU"
 
-#: htdocs/luci-static/carbon/carbon.js:656
+#: htdocs/luci-static/carbon/carbon.js:658
 msgid "Dark"
 msgstr "深色"
 
-#: htdocs/luci-static/carbon/carbon.js:1428
+#: htdocs/luci-static/carbon/carbon.js:1505
 msgid "Devices"
 msgstr "線上裝置"
 
-#: htdocs/luci-static/carbon/carbon.js:1099
+#: htdocs/luci-static/carbon/carbon.js:1101
 msgid "DHCP client"
 msgstr "DHCP 用戶端"
 
-#: htdocs/luci-static/carbon/carbon.js:1489
+#: htdocs/luci-static/carbon/carbon.js:1566
 msgid "DHCP clients"
 msgstr "DHCP 用戶端"
 
-#: htdocs/luci-static/carbon/carbon.js:1384
-#: htdocs/luci-static/carbon/carbon.js:1456
+#: htdocs/luci-static/carbon/carbon.js:1461
+#: htdocs/luci-static/carbon/carbon.js:1533
 msgid "Download"
 msgstr "下載"
 
@@ -203,33 +199,33 @@ msgstr "正在下載更新…"
 msgid "Enter an HTTPS mirror prefix such as https://mirror.example.com/ (letters, digits and . _ ~ % + - only)."
 msgstr "請輸入 HTTPS 鏡像前綴，例如 https://mirror.example.com/（僅限字母、數字及 . _ ~ % + -）。"
 
-#: htdocs/luci-static/carbon/carbon.js:356
-#: htdocs/luci-static/carbon/carbon.js:681
+#: htdocs/luci-static/carbon/carbon.js:358
+#: htdocs/luci-static/carbon/carbon.js:683
 msgid "Expand sidebar"
 msgstr "展開側邊欄"
 
-#: htdocs/luci-static/carbon/carbon.js:1502
+#: htdocs/luci-static/carbon/carbon.js:1583
 msgid "Fixed IP"
 msgstr "固定 IP"
 
-#: htdocs/luci-static/carbon/carbon.js:1701
-#: htdocs/luci-static/carbon/carbon.js:1705
+#: htdocs/luci-static/carbon/carbon.js:1786
+#: htdocs/luci-static/carbon/carbon.js:1790
 msgid "Free"
 msgstr "可用"
 
-#: htdocs/luci-static/carbon/carbon.js:1140
+#: htdocs/luci-static/carbon/carbon.js:1142
 msgid "Game console"
 msgstr "遊戲主機"
 
-#: htdocs/luci-static/carbon/carbon.js:672
+#: htdocs/luci-static/carbon/carbon.js:674
 msgid "GitHub (opens in a new tab)"
 msgstr "GitHub（在新分頁開啟）"
 
-#: htdocs/luci-static/carbon/carbon.js:1549
+#: htdocs/luci-static/carbon/carbon.js:1634
 msgid "Hidden network"
 msgstr "隱藏網路"
 
-#: htdocs/luci-static/carbon/carbon.js:1815
+#: htdocs/luci-static/carbon/carbon.js:1900
 msgid "Hide detailed status"
 msgstr "收合詳細狀態"
 
@@ -257,12 +253,12 @@ msgstr "目前版本"
 msgid "Installing update…"
 msgstr "正在安裝更新…"
 
-#: htdocs/luci-static/carbon/carbon.js:1448
-#: htdocs/luci-static/carbon/carbon.js:1613
+#: htdocs/luci-static/carbon/carbon.js:1525
+#: htdocs/luci-static/carbon/carbon.js:1698
 msgid "Interfaces"
 msgstr "網路介面"
 
-#: htdocs/luci-static/carbon/carbon.js:300
+#: htdocs/luci-static/carbon/carbon.js:302
 msgid "Internet & Network"
 msgstr "上網與網路"
 
@@ -274,14 +270,14 @@ msgstr "更新要求無效。"
 msgid "IPK updates are downloaded over HTTPS and checked against the release SHA-256 and file size."
 msgstr "IPK 更新透過 HTTPS 下載，並核對發布檔案的 SHA-256 與大小。"
 
-#: htdocs/luci-static/carbon/carbon.js:1376
+#: htdocs/luci-static/carbon/carbon.js:1453
 msgid "LAN IP"
 msgstr "區域網路 IP"
 
-#: htdocs/luci-static/carbon/carbon.js:565
-#: htdocs/luci-static/carbon/carbon.js:570
-#: htdocs/luci-static/carbon/carbon.js:578
-#: htdocs/luci-static/carbon/carbon.js:723
+#: htdocs/luci-static/carbon/carbon.js:567
+#: htdocs/luci-static/carbon/carbon.js:572
+#: htdocs/luci-static/carbon/carbon.js:580
+#: htdocs/luci-static/carbon/carbon.js:725
 msgid "Language"
 msgstr "語言"
 
@@ -289,37 +285,37 @@ msgstr "語言"
 msgid "Latest stable version"
 msgstr "最新穩定版"
 
-#: htdocs/luci-static/carbon/carbon.js:656
+#: htdocs/luci-static/carbon/carbon.js:658
 msgid "Light"
 msgstr "淺色"
 
-#: htdocs/luci-static/carbon/carbon.js:1390
+#: htdocs/luci-static/carbon/carbon.js:1467
 msgid "Live Traffic"
 msgstr "即時流量"
 
-#: htdocs/luci-static/carbon/carbon.js:1430
+#: htdocs/luci-static/carbon/carbon.js:1507
 msgid "Load"
 msgstr "系統負載"
 
-#: htdocs/luci-static/carbon/carbon.js:1721
+#: htdocs/luci-static/carbon/carbon.js:1806
 msgid "Load average"
 msgstr "平均負載"
 
-#: htdocs/luci-static/carbon/carbon.js:734
-#: htdocs/luci-static/carbon/carbon.js:735
+#: htdocs/luci-static/carbon/carbon.js:736
+#: htdocs/luci-static/carbon/carbon.js:737
 msgid "Log out"
 msgstr "登出"
 
-#: htdocs/luci-static/carbon/carbon.js:1360
+#: htdocs/luci-static/carbon/carbon.js:1437
 msgid "Manage"
 msgstr "管理"
 
-#: htdocs/luci-static/carbon/carbon.js:1407
-#: htdocs/luci-static/carbon/carbon.js:1459
+#: htdocs/luci-static/carbon/carbon.js:1484
+#: htdocs/luci-static/carbon/carbon.js:1536
 msgid "Memory"
 msgstr "記憶體"
 
-#: htdocs/luci-static/carbon/carbon.js:627
+#: htdocs/luci-static/carbon/carbon.js:629
 msgid "Menu"
 msgstr "選單"
 
@@ -327,15 +323,15 @@ msgstr "選單"
 msgid "Mirror prefix"
 msgstr "鏡像前綴"
 
-#: htdocs/luci-static/carbon/carbon.js:795
+#: htdocs/luci-static/carbon/carbon.js:797
 msgid "Need more settings? Switch to"
 msgstr "需要更多設定？切換到"
 
-#: htdocs/luci-static/carbon/carbon.js:1614
+#: htdocs/luci-static/carbon/carbon.js:1699
 msgid "Network devices"
 msgstr "網路裝置"
 
-#: htdocs/luci-static/carbon/carbon.js:1491
+#: htdocs/luci-static/carbon/carbon.js:1568
 msgid "No devices yet"
 msgstr "目前沒有裝置"
 
@@ -343,7 +339,7 @@ msgstr "目前沒有裝置"
 msgid "No installation log yet."
 msgstr "尚無安裝記錄。"
 
-#: htdocs/luci-static/carbon/carbon.js:1555
+#: htdocs/luci-static/carbon/carbon.js:1640
 msgid "No wireless"
 msgstr "未偵測到無線網卡"
 
@@ -351,7 +347,7 @@ msgstr "未偵測到無線網卡"
 msgid "Not checked"
 msgstr "尚未檢查"
 
-#: htdocs/luci-static/carbon/carbon.js:1578
+#: htdocs/luci-static/carbon/carbon.js:1663
 msgid "Not connected"
 msgstr "未連線"
 
@@ -359,77 +355,81 @@ msgstr "未連線"
 msgid "Not enough temporary storage or unable to create update files."
 msgstr "暫存空間不足或無法建立更新檔案。"
 
-#: htdocs/luci-static/carbon/carbon.js:1393
-#: htdocs/luci-static/carbon/carbon.js:999
+#: htdocs/luci-static/carbon/carbon.js:1001
+#: htdocs/luci-static/carbon/carbon.js:1470
 msgid "Now"
 msgstr "現在"
 
-#: htdocs/luci-static/carbon/carbon.js:1737
+#: htdocs/luci-static/carbon/carbon.js:1822
 msgid "of %s max"
 msgstr "上限 %s"
 
-#: htdocs/luci-static/carbon/carbon.js:1559
+#: htdocs/luci-static/carbon/carbon.js:1644
 msgid "Off"
 msgstr "已關閉"
 
-#: htdocs/luci-static/carbon/carbon.js:1657
+#: htdocs/luci-static/carbon/carbon.js:1742
 msgid "Offline"
 msgstr "未連上網路"
 
-#: htdocs/luci-static/carbon/carbon.js:1559
+#: htdocs/luci-static/carbon/carbon.js:1644
 msgid "On"
 msgstr "已開啟"
 
-#: htdocs/luci-static/carbon/carbon.js:1657
+#: htdocs/luci-static/carbon/carbon.js:1742
 msgid "Online"
 msgstr "已連上網路"
+
+#: htdocs/luci-static/carbon/carbon.js:1143
+msgid "Optical modem"
+msgstr "光貓"
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js:151
 msgid "Optional. If GitHub downloads are slow or blocked, enter an HTTPS prefix that proxies GitHub links, for example https://mirror.example.com/ for https://mirror.example.com/https://github.com/…. Release information is still read from GitHub, and the downloaded file must match the size and SHA-256 published there; GitHub is tried if the mirror fails."
 msgstr "選填。若 GitHub 下載緩慢或無法連線，可填寫代理 GitHub 連結的 HTTPS 前綴，例如 https://mirror.example.com/ 對應 https://mirror.example.com/https://github.com/…。版本資訊仍從 GitHub 讀取，下載的檔案必須與 GitHub 公布的大小及 SHA-256 一致；鏡像失敗時會自動改用 GitHub。"
 
-#: htdocs/luci-static/carbon/carbon.js:1353
-#: htdocs/luci-static/carbon/carbon.js:299
+#: htdocs/luci-static/carbon/carbon.js:1430
+#: htdocs/luci-static/carbon/carbon.js:301
 msgid "Overview"
 msgstr "概覽"
 
-#: htdocs/luci-static/carbon/carbon.js:306
+#: htdocs/luci-static/carbon/carbon.js:308
 msgid "Password"
 msgstr "管理密碼"
 
-#: htdocs/luci-static/carbon/carbon.js:1139
+#: htdocs/luci-static/carbon/carbon.js:1141
 msgid "Phone"
 msgstr "手機"
 
-#: htdocs/luci-static/carbon/carbon.js:1099
+#: htdocs/luci-static/carbon/carbon.js:1101
 msgid "PPPoE"
 msgstr "PPPoE 撥號"
 
-#: htdocs/luci-static/carbon/carbon.js:1140
+#: htdocs/luci-static/carbon/carbon.js:1142
 msgid "Printer"
 msgstr "印表機"
 
-#: htdocs/luci-static/carbon/carbon.js:1517
+#: htdocs/luci-static/carbon/carbon.js:1598
 msgid "Private"
 msgstr "私人位址"
 
-#: htdocs/luci-static/carbon/carbon.js:700
+#: htdocs/luci-static/carbon/carbon.js:702
 msgid "Pro"
 msgstr "專業"
 
-#: htdocs/luci-static/carbon/carbon.js:797
+#: htdocs/luci-static/carbon/carbon.js:799
 msgid "Pro mode"
 msgstr "專業模式"
 
-#: htdocs/luci-static/carbon/carbon.js:1517
+#: htdocs/luci-static/carbon/carbon.js:1598
 msgid "Randomised MAC address"
 msgstr "裝置使用隨機 MAC 位址，無法透過 MAC 辨識品牌"
 
-#: htdocs/luci-static/carbon/carbon.js:308
+#: htdocs/luci-static/carbon/carbon.js:310
 msgid "Reboot"
 msgstr "重新啟動"
 
-#: htdocs/luci-static/carbon/carbon.js:1489
+#: htdocs/luci-static/carbon/carbon.js:1566
 msgid "Recently active"
 msgstr "最近活躍"
 
@@ -450,7 +450,7 @@ msgstr "檢查後顯示更新說明。"
 msgid "Reload page"
 msgstr "重新整理頁面"
 
-#: htdocs/luci-static/carbon/carbon.js:1402
+#: htdocs/luci-static/carbon/carbon.js:1479
 msgid "Resources"
 msgstr "系統資源"
 
@@ -466,65 +466,69 @@ msgstr "已儲存。下載時會先嘗試鏡像，再使用 GitHub。"
 msgid "Saved. Downloads use GitHub directly."
 msgstr "已儲存。下載將直接使用 GitHub。"
 
-#: htdocs/luci-static/carbon/carbon.js:1525
+#: htdocs/luci-static/carbon/carbon.js:1606
 msgid "Show all %d devices"
 msgstr "顯示全部 %d 台裝置"
 
-#: htdocs/luci-static/carbon/carbon.js:1815
+#: htdocs/luci-static/carbon/carbon.js:1900
 msgid "Show detailed status"
 msgstr "顯示詳細狀態"
 
-#: htdocs/luci-static/carbon/carbon.js:1525
+#: htdocs/luci-static/carbon/carbon.js:1606
 msgid "Show less"
 msgstr "收合"
 
-#: htdocs/luci-static/carbon/carbon.js:699
+#: htdocs/luci-static/carbon/carbon.js:701
 msgid "Simple"
 msgstr "簡易"
 
-#: htdocs/luci-static/carbon/carbon.js:1725
+#: htdocs/luci-static/carbon/carbon.js:1810
 msgid "Since %s"
 msgstr "自 %s 起"
 
-#: htdocs/luci-static/carbon/carbon.js:1782
+#: htdocs/luci-static/carbon/carbon.js:1867
 msgid "Since boot"
 msgstr "開機以來"
 
-#: htdocs/luci-static/carbon/carbon.js:1140
+#: htdocs/luci-static/carbon/carbon.js:1142
 msgid "Smart device"
 msgstr "智慧裝置"
 
-#: htdocs/luci-static/carbon/carbon.js:304
+#: htdocs/luci-static/carbon/carbon.js:306
 msgid "Software"
 msgstr "套件"
 
-#: htdocs/luci-static/carbon/carbon.js:1139
+#: htdocs/luci-static/carbon/carbon.js:1141
 msgid "Speaker"
 msgstr "喇叭"
 
-#: htdocs/luci-static/carbon/carbon.js:1499
+#: htdocs/luci-static/carbon/carbon.js:1580
 msgid "Static"
 msgstr "靜態分配"
 
-#: htdocs/luci-static/carbon/carbon.js:1099
+#: htdocs/luci-static/carbon/carbon.js:1101
 msgid "Static address"
 msgstr "靜態位址"
 
-#: htdocs/luci-static/carbon/carbon.js:1140
-#: htdocs/luci-static/carbon/carbon.js:1460
+#: htdocs/luci-static/carbon/carbon.js:1142
+#: htdocs/luci-static/carbon/carbon.js:1537
 msgid "Storage"
 msgstr "儲存空間"
 
-#: htdocs/luci-static/carbon/carbon.js:303
+#: htdocs/luci-static/carbon/carbon.js:1143
+msgid "Switch"
+msgstr "交換器"
+
+#: htdocs/luci-static/carbon/carbon.js:305
 msgid "System"
 msgstr "系統"
 
-#: htdocs/luci-static/carbon/carbon.js:1139
+#: htdocs/luci-static/carbon/carbon.js:1141
 msgid "Tablet"
 msgstr "平板"
 
-#: htdocs/luci-static/carbon/carbon.js:1746
-#: htdocs/luci-static/carbon/carbon.js:1748
+#: htdocs/luci-static/carbon/carbon.js:1831
+#: htdocs/luci-static/carbon/carbon.js:1833
 msgid "Temperature"
 msgstr "溫度"
 
@@ -552,11 +556,11 @@ msgstr "發布資訊已變更、過期或不再是新版本，請重新檢查更
 msgid "The update was interrupted. Check the installed version before trying again."
 msgstr "更新已中斷，請確認目前版本後再試一次。"
 
-#: htdocs/luci-static/carbon/carbon.js:1387
+#: htdocs/luci-static/carbon/carbon.js:1464
 msgid "Traffic interface"
 msgstr "流量統計介面"
 
-#: htdocs/luci-static/carbon/carbon.js:1139
+#: htdocs/luci-static/carbon/carbon.js:1141
 msgid "TV"
 msgstr "電視"
 
@@ -564,14 +568,14 @@ msgstr "電視"
 msgid "Unable to access update state storage."
 msgstr "無法存取更新狀態目錄。"
 
-#: htdocs/luci-static/carbon/carbon.js:1490
-#: htdocs/luci-static/carbon/carbon.js:1555
-#: htdocs/luci-static/carbon/carbon.js:1565
-#: htdocs/luci-static/carbon/carbon.js:1714
-#: htdocs/luci-static/carbon/carbon.js:1729
-#: htdocs/luci-static/carbon/carbon.js:1730
-#: htdocs/luci-static/carbon/carbon.js:1740
-#: htdocs/luci-static/carbon/carbon.js:1768
+#: htdocs/luci-static/carbon/carbon.js:1567
+#: htdocs/luci-static/carbon/carbon.js:1640
+#: htdocs/luci-static/carbon/carbon.js:1650
+#: htdocs/luci-static/carbon/carbon.js:1799
+#: htdocs/luci-static/carbon/carbon.js:1814
+#: htdocs/luci-static/carbon/carbon.js:1815
+#: htdocs/luci-static/carbon/carbon.js:1825
+#: htdocs/luci-static/carbon/carbon.js:1853
 msgid "Unavailable"
 msgstr "無法讀取"
 
@@ -579,11 +583,11 @@ msgstr "無法讀取"
 msgid "Unknown"
 msgstr "未知"
 
-#: htdocs/luci-static/carbon/carbon.js:1496
+#: htdocs/luci-static/carbon/carbon.js:1577
 msgid "Unknown device"
 msgstr "未知裝置"
 
-#: htdocs/luci-static/carbon/carbon.js:1099
+#: htdocs/luci-static/carbon/carbon.js:1101
 msgid "Unmanaged"
 msgstr "未管理"
 
@@ -603,17 +607,17 @@ msgstr "更新失敗。"
 msgid "Update the theme without changing your router configuration."
 msgstr "線上更新主題，保留路由器設定。"
 
-#: htdocs/luci-static/carbon/carbon.js:1385
-#: htdocs/luci-static/carbon/carbon.js:1456
+#: htdocs/luci-static/carbon/carbon.js:1462
+#: htdocs/luci-static/carbon/carbon.js:1533
 msgid "Upload"
 msgstr "上傳"
 
-#: htdocs/luci-static/carbon/carbon.js:1431
+#: htdocs/luci-static/carbon/carbon.js:1508
 msgid "Uptime"
 msgstr "運行時間"
 
-#: htdocs/luci-static/carbon/carbon.js:1701
-#: htdocs/luci-static/carbon/carbon.js:1705
+#: htdocs/luci-static/carbon/carbon.js:1786
+#: htdocs/luci-static/carbon/carbon.js:1790
 msgid "Used"
 msgstr "已用"
 
@@ -625,20 +629,20 @@ msgstr "正在驗證更新…"
 msgid "View releases on GitHub"
 msgstr "在 GitHub 查看發布版本"
 
-#: htdocs/luci-static/carbon/carbon.js:1376
+#: htdocs/luci-static/carbon/carbon.js:1453
 msgid "WAN IP"
 msgstr "外部 IP"
 
-#: htdocs/luci-static/carbon/carbon.js:1369
+#: htdocs/luci-static/carbon/carbon.js:1446
 msgid "WAN IPv6"
 msgstr "外部 IPv6"
 
-#: htdocs/luci-static/carbon/carbon.js:1516
-#: htdocs/luci-static/carbon/carbon.js:301
+#: htdocs/luci-static/carbon/carbon.js:1597
+#: htdocs/luci-static/carbon/carbon.js:303
 msgid "Wi-Fi"
 msgstr "無線 Wi‑Fi"
 
-#: htdocs/luci-static/carbon/carbon.js:1447
+#: htdocs/luci-static/carbon/carbon.js:1524
 msgid "Wireless"
 msgstr "無線網路"
 

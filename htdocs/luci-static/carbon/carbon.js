@@ -182,6 +182,8 @@
 		printer: '<path d="M7 9V4h10v5"/><rect x="3.5" y="9" width="17" height="7.5" rx="2"/><path d="M7 14h10v6H7z"/>',
 		camera: '<rect x="3" y="7" width="13" height="10" rx="2"/><path d="M16 10.5l5-3v9l-5-3"/>',
 		nas: '<rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M5 9.5h14M5 15h14"/><circle cx="15.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/><circle cx="15.5" cy="12.2" r=".8" fill="currentColor" stroke="none"/>',
+		switch: '<rect x="3.5" y="8.5" width="17" height="8" rx="2"/><path d="M7 12v1.5M10 12v1.5M13 12v1.5M16 12v1.5"/>',
+		modem: '<rect x="3" y="11" width="18" height="7.5" rx="2"/><path d="M7 18.5v2M17 18.5v2M12 11V7.5"/><circle cx="12" cy="5.2" r="1.6"/>',
 		iot: '<rect x="7" y="7" width="10" height="10" rx="2"/><path d="M10 3.5V7M14 3.5V7M10 17v3.5M14 17v3.5M3.5 10H7M3.5 14H7M17 10h3.5M17 14h3.5"/>'
 	};
 	const icon = C.icon = (name) =>
@@ -1137,9 +1139,72 @@
 	 * ------------------------------------------------------------------ */
 	const TYPE_LABEL = {
 		phone: N_('Phone'), tablet: N_('Tablet'), pc: N_('Computer'), tv: N_('TV'), speaker: N_('Speaker'),
-		game: N_('Game console'), printer: N_('Printer'), camera: N_('Camera'), nas: N_('Storage'), iot: N_('Smart device')
+		game: N_('Game console'), printer: N_('Printer'), camera: N_('Camera'), nas: N_('Storage'), iot: N_('Smart device'),
+		switch: N_('Switch'), modem: N_('Optical modem')
 	};
 	const TYPE_GLYPH = { game: 'gamepad' };
+
+	/* ------------------------------------------------------------------
+	 * Operator overrides (uci: config device)
+	 *   option match 'aa:bb:cc'           MAC prefix, IPv4/IPv6, or a
+	 *                                     substring of the host name
+	 *   option name  'Optical modem'      label shown instead
+	 *   option icon  'modem'              carbon icon name
+	 *   option type  'modem'              device type, see TYPE_LABEL
+	 * A hand-written entry beats every heuristic below.
+	 * ------------------------------------------------------------------ */
+	C.deviceOverrides = [];
+
+	C.setDeviceOverrides = function (list) {
+		C.deviceOverrides = Array.isArray(list) ? list.filter((r) => r && r.match) : [];
+	};
+
+	C.deviceOverride = function (d) {
+		const mac = String(d.macaddr || '').toLowerCase();
+		const ips = [String(d.ipaddr || ''), String(d.ip6addr || '')];
+		const host = String(d.hostname || '').toLowerCase();
+		const hit = (r, exact) => {
+			const match = String(r.match || '').trim().toLowerCase();
+			if (!match) return false;
+			if (match.indexOf(':') >= 0) {
+				const m = match.replace(/[^0-9a-f:]/g, '');
+				if (!m || !mac) return false;
+				return exact ? mac === m : mac.indexOf(m) === 0;
+			}
+			if (/^[0-9.]+$/.test(match)) return ips.indexOf(match) >= 0;
+			if (!host) return false;
+			return exact ? host === match : host.indexOf(match) >= 0;
+		};
+		/* Exact names first: `soundbox-oh2` must not swallow `soundbox-oh2p`. */
+		return C.deviceOverrides.find((r) => hit(r, true)) ||
+			C.deviceOverrides.find((r) => hit(r, false)) || null;
+	};
+
+	/* DHCP host names arrive as slugs (`xiaomi-ap-node-1`). Show them as words
+	   with the capitalisation people expect: known acronyms and Apple-style
+	   names keep their spelling, model codes (m28, l2628dw) go uppercase. */
+	const WORD_CASE = {
+		iphone: 'iPhone', ipad: 'iPad', macbook: 'MacBook', imac: 'iMac',
+		airpods: 'AirPods', appletv: 'Apple TV', tv: 'TV', pc: 'PC', ap: 'AP',
+		nas: 'NAS', pve: 'PVE', sms: 'SMS', iot: 'IoT', wifi: 'Wi-Fi',
+		usb: 'USB', hd: 'HD', ac: 'AC', ip: 'IP', dns: 'DNS', vpn: 'VPN', dcp: 'DCP',
+		vps: 'VPS', arm: 'ARM', haos: 'HAOS', tcl: 'TCL'
+	};
+
+	C.prettyName = function (name) {
+		const words = String(name || '').split(/[-_.\s]+/).filter(Boolean);
+		if (!words.length) return '';
+		return words.map((w) => {
+			const lower = w.toLowerCase();
+			if (WORD_CASE[lower]) return WORD_CASE[lower];
+			if (/^[0-9]+$/.test(w)) return w;
+			/* already mixed case (`iPhone`, `xPON`): keep the author's choice */
+			if (/[a-z]/.test(w) && /[A-Z]/.test(w)) return w;
+			/* model codes such as m28, r24r00, l2628dw, oh2p */
+			if (/[0-9]/.test(w)) return w.toUpperCase();
+			return lower.charAt(0).toUpperCase() + lower.slice(1);
+		}).join(' ');
+	};
 
 	let brandsPromise = null, hostRules = null, ouiMap = null;
 
@@ -1180,23 +1245,31 @@
 		if (!hostRules) buildIndex(data);
 
 		const host = String(hostname || '');
+		let named = false;
 		for (const r of hostRules) {
 			if (r[0].test(host)) {
 				res.key = r[1];
 				res.type = r[2];
+				named = true;
 				break;
 			}
 		}
-		if (!res.key && m.length === 12 && !res.priv) {
+		/* a name the user chose says more than the chip vendor behind it, so a
+		   host rule (brand or bare type) wins over the OUI lookup */
+		if (!named && !res.key && m.length === 12 && !res.priv) {
 			const k = ouiMap.get(parseInt(m.slice(0, 6), 16));
 			if (k) res.key = k;
 		}
 		if (res.key && data.brands[res.key]) {
 			res.brand = data.brands[res.key];
-			if (!res.brand.n) {          /* chip-vendor hint only, e.g. Intel Wi‑Fi → computer */
-				res.type = res.type || (res.brand.g === 'pc' ? 'pc' : null);
-				res.brand = null;
-				res.key = null;
+			if (!res.brand.n) {
+				res.type = res.type || res.brand.t || res.brand.g || null;
+				/* a glyph-only entry is a vendor hint (Intel Wi‑Fi → computer);
+				   one that carries a logo keeps it, just without a vendor name */
+				if (!res.brand.p) {
+					res.brand = null;
+					res.key = null;
+				}
 			}
 		}
 		return res;
@@ -1267,6 +1340,10 @@
 			d.ipaddr = d.ipaddr || firstAddr(hint.ipaddrs || hint.ipv4);
 			d.ip6addr = d.ip6addr || firstAddr(hint.ip6addrs || hint.ipv6);
 		});
+		/* rpcd appends the local domain (dnsmasq's "lan") to lease-sourced
+		   names but not to statically configured ones, so the list would mix
+		   "foo.lan" and "bar". Show the bare host name everywhere. */
+		list.forEach((d) => { d.hostname = String(d.hostname || '').replace(/\.lan$/i, ''); });
 		return list.sort((a, b) => (!a.ipaddr - !b.ipaddr) || (ipNum(a.ipaddr) - ipNum(b.ipaddr)) || a.macaddr.localeCompare(b.macaddr));
 	};
 
@@ -1328,13 +1405,13 @@
 	function deviceAvatar(l, id) {
 		const b = id.brand;
 		if (b) {
-			const cls = 'cb-avatar cb-avatar-brand' + (b.inv ? ' inv' : '');
+			const cls = 'cb-avatar cb-avatar-brand' + (b.inv ? ' inv' : '') + (b.wm ? ' cb-wordmark' : '');
 			const style = b.bg ? '--c:' + b.bg + (b.fg ? ';--f:' + b.fg : '') : (b.fg ? '--f:' + b.fg : null);
 			let inner;
-			if (b.p) inner = '<svg class="cb-logo" viewBox="0 0 24 24" aria-hidden="true"><path d="' + esc(b.p) + '"/></svg>';
+			if (b.p) inner = '<svg class="cb-logo" viewBox="' + esc(b.vb || '0 0 24 24') + '" aria-hidden="true"><path d="' + esc(b.p) + '"/></svg>';
 			else if (b.m) inner = '<b>' + esc(b.m) + '</b>';
 			else inner = icon(TYPE_GLYPH[b.g] || b.g);
-			return h('span', { class: cls, style: style, title: b.n, html: inner });
+			return h('span', { class: cls, style: style, title: b.n || null, html: inner });
 		}
 		if (id.type)
 			return h('span', { class: 'cb-avatar cb-type', title: t(TYPE_LABEL[id.type]), html: icon(TYPE_GLYPH[id.type] || id.type) });
@@ -1491,9 +1568,13 @@
 				if (!list.length) { ui.clients.appendChild(h('li', { class: 'cb-empty', text: t('No devices yet') })); }
 				const limit = st.showAll ? list.length : 8;
 				list.slice(0, limit).forEach((l) => {
+					const ov = C.deviceOverride(l);
 					const id = C.identify(l.hostname, l.macaddr);
-					const kind = id.brand ? id.brand.n : (id.type ? t(TYPE_LABEL[id.type]) : null);
-					const name = l.hostname || (kind ? t('%s device', kind) : t('Unknown device'));
+					const kind = ov && ov.type ? t(TYPE_LABEL[ov.type] || ov.type) :
+						((id.brand && id.brand.n) ? id.brand.n : (id.type ? t(TYPE_LABEL[id.type]) : null));
+					const label = (ov && ov.name) || (l.hostname ? C.prettyName(l.hostname) : '');
+					/* falls back to the type, so don't print it twice underneath */
+					const name = label || kind || t('Unknown device');
 					let lease = '';
 					if (l.lease) {
 						if (l.expires === false || l.expires == null || l.expires < 0) lease = t('Static');
@@ -1502,11 +1583,11 @@
 					else if (l.active && !l.wifi) lease = t('Fixed IP');
 					const wifi = l.wifi ? [l.wifi.band, l.wifi.signal != null ? l.wifi.signal + ' dBm' : null].filter(Boolean).join(' · ') : '';
 					ui.clients.appendChild(h('li', null, [
-						deviceAvatar(l, id),
+						(ov && ov.icon) ? h('span', { class: 'cb-avatar cb-type', title: name, html: icon(ov.icon) }) : deviceAvatar(l, id),
 						h('div', { class: 'cb-list-main' }, [
 							h('span', { class: 'cb-list-title', text: name }),
 							h('span', { class: 'cb-list-sub' }, [
-								kind ? h('span', { class: 'cb-kind', text: kind }) : null,
+								label && kind ? h('span', { class: 'cb-kind', text: kind }) : null,
 								h('span', { class: 'cb-mono', text: l.ipaddr || l.ip6addr || '' })
 							])
 						]),
@@ -1528,6 +1609,10 @@
 			}
 			ui.clientMore.addEventListener('click', () => { st.showAll = !st.showAll; renderClients(); });
 			C.loadBrands().then((d) => { if (d && st.devices) renderClients(); });
+			if (opts.overrides) Promise.resolve(opts.overrides).then((list) => {
+				C.setDeviceOverrides(list);
+				if (st.devices) renderClients();
+			});
 
 			function renderWireless(w) {
 				ui.wifi.innerHTML = '';

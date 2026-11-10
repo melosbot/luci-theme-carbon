@@ -164,6 +164,78 @@
 	/* stacked-table button cells keep the regular button size; only the
 	   horizontal padding is trimmed so four actions fit one row */
 	.td.cbi-value-field[data-widget="CBI.ButtonValue"] .cbi-button { padding-left: 8px; padding-right: 8px; }
+	/* Interfaces page: the diagram sat in a 50% column while the
+	   description text was pinned with white-space:nowrap, so long
+	   counters ran off the screen. Give the diagram a narrow fixed
+	   column and let the description take the rest and wrap. */
+	#cbi-network-interface .cbi-section-table-row { flex-wrap: wrap; }
+	#cbi-network-interface .cbi-section-table-row > .td:nth-child(1) { flex: 1 1 100%; width: auto; padding: 0 10px 6px; }
+	#cbi-network-interface .cbi-section-table-row > .td:nth-child(2) {
+		flex: 1 1 0;
+		min-width: 0;
+		padding-left: 10px;
+		overflow: visible;
+		text-overflow: clip;
+	}
+	#cbi-network-interface .cbi-section-table-row > .td:nth-child(3) { flex: 1 1 100%; }
+	/* on a phone the diagram becomes one pill: [name] icon · device, where the
+	   type-coloured name sits inset as a capsule inside a neutral chip */
+	#cbi-network-interface .cbi-section-table-row > .td:nth-child(1) { flex: 1 1 100%; width: auto; padding: 0 10px 6px; }
+	#cbi-network-interface .ifacebox {
+		display: inline-flex;
+		flex-direction: row;
+		align-items: center;
+		width: auto;
+		max-width: 100%;
+		min-width: 0;
+		margin: 0;
+		padding: 3px 10px 3px 3px;
+		border-radius: 12px;
+		background: var(--cb-fill-2);
+		box-shadow: none;
+		white-space: normal;
+	}
+	#cbi-network-interface .ifacebox-head {
+		order: 0;
+		flex: none;
+		padding: 4px 9px;
+		font-size: 11.5px;
+		line-height: 1.4;
+		border-radius: 9px;
+	}
+	#cbi-network-interface .ifacebox::before { order: 1; width: 15px; height: 15px; margin: 0 0 0 8px; }
+	#cbi-network-interface .ifacebox-body { display: contents; }
+	#cbi-network-interface .ifacebox-body small { order: 2; margin-left: 6px; font-size: 11.5px; color: var(--cb-text-2); }
+	#cbi-network-interface .ifacebox-body > span { order: 2; }
+	/* the status lines flow as small label/value blocks, like the DHCP
+	   lease cards, instead of one long "label: value" line each */
+	#cbi-network-interface [id$="-ifc-description"],
+	#cbi-network-interface [id$="-ifc-description"] .nowrap { white-space: normal; }
+	#cbi-network-interface [id$="-ifc-description"] {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: 7px 14px;
+	}
+	/* proto and link state are short: pair them side by side, everything else
+	   (counters, addresses) keeps the full width so nothing has to wrap */
+	#cbi-network-interface [id$="-ifc-description"] > span { grid-column: 1 / -1; }
+	#cbi-network-interface [id$="-ifc-description"] > span:nth-of-type(1) { grid-column: 1; }
+	#cbi-network-interface [id$="-ifc-description"] > span:nth-of-type(2) { grid-column: 2; }
+	#cbi-network-interface [id$="-ifc-description"] > br { display: none; }
+	#cbi-network-interface [id$="-ifc-description"] > span {
+		display: grid;
+		grid-template-columns: max-content minmax(0, 1fr);
+		gap: 12px;
+		align-items: baseline;
+		min-width: 0;
+		overflow-wrap: break-word;
+		line-height: 1.35;
+	}
+	#cbi-network-interface [id$="-ifc-description"] strong {
+		font-size: 12.5px;
+		font-weight: 500;
+		color: var(--cb-text-2);
+	}
 	.tr.placeholder > .td { position: static; }
 	.col-1 { flex: 1 1 30px !important; }
 	.col-2 { flex: 2 2 60px !important; }

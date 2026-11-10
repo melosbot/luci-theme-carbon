@@ -5,6 +5,7 @@
 'require rpc';
 'require fs';
 'require poll';
+'require uci';
 
 /*
  * Carbon — LuCI glue.
@@ -85,6 +86,14 @@ const provider = {
 	leases: () => callLeases().then((r) => (r && Array.isArray(r.dhcp_leases)) ? r : null),
 	wireless: () => callWireless(),
 	hostHints: () => callHostHints(),
+	/* Operator labels/icons for connected devices, from `config device` in
+	   /etc/config/carbon. Read-only and optional: without ACL access the
+	   list is simply empty. */
+	deviceOverrides: () => uci.load('carbon')
+		.then(() => (uci.sections('carbon', 'device') || [])
+			.map((s) => ({ match: s.match, name: s.name, icon: s.icon, type: s.type }))
+			.filter((r) => r && r.match))
+		.catch(() => []),
 	/* associated Wi‑Fi stations of the given AP interfaces */
 	stations: (ifnames) => Promise.all((ifnames || []).map((dev) => callAssoc(dev)
 		.then((list) => Array.isArray(list) ? list.map((st) => Object.assign({ ifname: dev }, st)) : null)
@@ -93,7 +102,10 @@ const provider = {
 		if (lists.length && lists.every((l) => l === null)) return null;
 		return [].concat.apply([], lists.filter(Boolean));
 	}),
-	neighbors: () => fs.read('/proc/net/arp'),
+	/* rpcd's file.read truncates at 4 KiB, which silently drops the tail of a
+	   busy neighbour table (devices simply vanish from the list); cgi-download
+	   has no such cap. */
+	neighbors: () => fs.read_direct('/proc/net/arp').catch(() => null),
 	conntrack: () => Promise.all([
 		fs.read('/proc/sys/net/netfilter/nf_conntrack_count'),
 		fs.read('/proc/sys/net/netfilter/nf_conntrack_max').catch(() => null)
@@ -250,6 +262,7 @@ return baseclass.extend({
 		main.insertBefore(host, (view && view.parentNode === main) ? view : null);
 
 		C.Dashboard.mount(host, provider, {
+			overrides: provider.deviceOverrides(),
 			urls: {
 				network: link('network/network'),
 				wireless: link('network/wireless'),

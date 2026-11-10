@@ -26,6 +26,7 @@ function load({ uci = {}, lang = 'en' } = {}) {
 	const listeners = {};
 	const context = {
 		baseclass: { extend: (v) => v }, session: {}, fs: {}, poll,
+		uci: { load: () => Promise.resolve(), sections: () => [] },
 		ui: { menu: {}, hideIndicator: (id) => indicators.push(id) },
 		rpc: { declare },
 		L: { resolveDefault: (p, d) => Promise.resolve(p).catch(() => d) },

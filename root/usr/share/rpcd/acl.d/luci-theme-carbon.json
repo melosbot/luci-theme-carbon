@@ -25,7 +25,7 @@
 				"/sys/class/hwmon/hwmon*/name": [ "read" ],
 				"/sys/class/hwmon/hwmon*/temp*_input": [ "read" ]
 			},
-			"uci": [ "luci" ]
+			"uci": [ "luci", "carbon" ]
 		},
 		"write": {
 			"ubus": {

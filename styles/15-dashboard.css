@@ -286,6 +286,8 @@
 .cb-avatar.cb-avatar-brand { color: var(--f, #fff); }
 .cb-avatar.cb-avatar-brand.inv { background-color: var(--cb-text); color: var(--cb-card); }
 .cb-avatar .cb-logo { width: 17px; height: 17px; fill: currentColor; }
+/* word marks are wide and short: give them the full width of the disc */
+.cb-avatar.cb-wordmark .cb-logo { width: 24px; height: 24px; }
 .cb-avatar b { font-size: 15px; font-weight: 700; line-height: 1; text-transform: none; }
 .cb-avatar.cb-type {
 	background: var(--cb-fill);
