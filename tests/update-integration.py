@@ -46,6 +46,10 @@ done
 [ ! -f /tmp/network-fail ] || { echo 'fixture network failure' >&2; exit 7; }
 [ ! -f /tmp/slow-download ] || sleep 2
 case "$url" in
+  https://mirror.test/https://github.com/mrjoechen/luci-theme-carbon/releases/download/v*/luci-theme-carbon-*.apk)
+    echo "$url" >> /tmp/mirror-hits
+    [ ! -f /tmp/mirror-fail ] || exit 7
+    if [ -f /tmp/mirror-corrupt ]; then printf corrupt > "$out"; else cp /tmp/candidate.apk "$out"; fi ;;
   https://api.github.com/repos/mrjoechen/luci-theme-carbon/releases/latest) cp /tmp/metadata.json "$out" ;;
   https://github.com/mrjoechen/luci-theme-carbon/releases/download/v*/luci-theme-carbon-*.apk) cp /tmp/candidate.apk "$out" ;;
   *) echo 'Unexpected download URL' >&2; exit 22 ;;
@@ -85,6 +89,7 @@ esac
     def setUp(self):
         self.shell('apk --repositories-file /dev/null del luci-theme-carbon >/dev/null 2>&1 || true; '
                    'rm -rf /tmp/carbon-update; rm -f /tmp/network-fail /tmp/slow-download /tmp/carbon-install-count; '
+                   'rm -f /tmp/mirror-hits /tmp/mirror-fail /tmp/mirror-corrupt /etc/config/carbon; '
                    'cp /source/.cache/update-tests/keys/carbon-apk.pem /usr/share/carbon/keys/; '
                    'apk --keys-dir /usr/share/carbon/keys --repositories-file /dev/null --no-network add '
                    '/source/.cache/update-tests/luci-theme-carbon-1.0.0-r1.apk >/dev/null')
@@ -174,6 +179,34 @@ esac
         self.put('/tmp/carbon-update/release.json', json.dumps(cached))
         self.assertFalse(self.rpc('status')['can_upgrade'])
         self.assertEqual(self.rpc('upgrade', dict(version='1.1.0-r1'))['error'], 'stale')
+
+    def test_mirror_setting_is_validated(self):
+        for bad in ['http://mirror.test/', 'https://mirror.test/;reboot', 'https://user@mirror.test/', 'ftp://x/', 'https://-bad/']:
+            self.assertEqual(self.rpc('configure', dict(mirror=bad)).get('error'), 'invalid_mirror', bad)
+        self.assertEqual(self.rpc('configure', dict(mirror=' https://mirror.test ')), dict(mirror='https://mirror.test/'))
+        self.assertEqual(self.rpc('status')['mirror'], 'https://mirror.test/')
+        self.assertEqual(self.rpc('configure', dict(mirror='')), dict(mirror=''))
+        self.assertEqual(self.rpc('status')['mirror'], '')
+
+    def test_mirror_download_is_used_and_verified(self):
+        self.rpc('configure', dict(mirror='https://mirror.test/'))
+        self.checked()
+        self.assertTrue(self.rpc('upgrade', dict(version='1.1.0-r1'))['started'])
+        result = self.wait()
+        self.assertEqual((result['state'], result['current']), ('success', '1.1.0-r1'), result)
+        self.assertEqual(self.shell('wc -l < /tmp/mirror-hits').strip(), '1')
+
+    def test_bad_or_unreachable_mirror_falls_back_to_github(self):
+        self.rpc('configure', dict(mirror='https://mirror.test/'))
+        for flag in ['mirror-corrupt', 'mirror-fail']:
+            self.setUp()
+            self.rpc('configure', dict(mirror='https://mirror.test/'))
+            self.shell('touch /tmp/' + flag)
+            self.checked()
+            self.assertTrue(self.rpc('upgrade', dict(version='1.1.0-r1'))['started'])
+            result = self.wait()
+            self.assertEqual((result['state'], result['current']), ('success', '1.1.0-r1'), (flag, result))
+            self.assertIn('Downloading from github', result['log'])
 
     def test_downgrade_rejected(self):
         self.candidate('luci-theme-carbon-1.0.0-r1.apk', tag_name='v0.9.0')

@@ -1,5 +1,7 @@
 #!/bin/sh
 # Carbon updater. RPC callers can select a checked version, never a URL or command.
+# An optional HTTPS download mirror (uci carbon.update.mirror) only carries the
+# package bytes; release metadata, size and SHA-256 always come from GitHub.
 . /usr/share/libubox/jshn.sh
 umask 077
 state_dir=/tmp/carbon-update
@@ -7,6 +9,13 @@ key_dir=/usr/share/carbon/keys
 repository=mrjoechen/luci-theme-carbon
 package_name=luci-theme-carbon
 
+valid_mirror() {
+	[ "${#1}" -le 200 ] && printf '%s\n' "$1" | grep -Eq '^https://[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?(:[0-9]{1,5})?(/[A-Za-z0-9._~%+-]+)*/$'
+}
+mirror_prefix() {
+	mirror=$(uci -q get carbon.update.mirror 2>/dev/null) || mirror=''
+	valid_mirror "$mirror" || mirror=''
+}
 valid_version() { [ "${#1}" -le 40 ] && printf '%s\n' "$1" | grep -Eq '^[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4}-r[0-9]{1,6}$'; }
 prepare() {
 	[ ! -L "$state_dir" ] && mkdir -p "$state_dir" &&
@@ -80,6 +89,7 @@ status_reply() {
 	json_add_string state "$phase"; json_add_string error "$error"; json_add_string log "$log"
 	json_add_string current "$current"; json_add_string manager "$manager"
 	json_add_string latest "$target"; json_add_string tag "$tag"; json_add_string notes "$notes"
+	mirror_prefix; json_add_string mirror "$mirror"
 	json_add_int checked_at "$checked"; json_add_boolean busy "$busy"
 	json_add_boolean can_upgrade "$can_upgrade"; json_add_string reason "$reason"
 	json_dump
@@ -142,9 +152,25 @@ install_release() {
 	free=$(df -Pk "$state_dir" | awk 'END {print $4}')
 	[ "$free" -ge "$((size / 1024 * 3 + 2048))" ] || { failure=space; return 1; }
 	package="$job/$filename"
-	download "https://github.com/$repository/releases/download/$tag/$filename" "$package" 90 || { failure=network; return 1; }
-	write_status verifying
-	[ "$(wc -c < "$package")" = "$size" ] && [ "$(sha256sum "$package" | awk '{print $1}')" = "$digest" ] || { failure=checksum; return 1; }
+	url="https://github.com/$repository/releases/download/$tag/$filename"
+	mirror_prefix
+	# Mirror first when configured, then GitHub. Each copy must match GitHub's size and SHA-256.
+	failure=network
+	for source in ${mirror:+mirror} github; do
+		case "$source" in mirror) from="$mirror$url" ;; *) from=$url ;; esac
+		echo "Downloading from $source: $from"
+		write_status downloading
+		rm -f "$package"
+		download "$from" "$package" 90 || { echo "Download from $source failed"; failure=network; continue; }
+		write_status verifying
+		if [ "$(wc -c < "$package")" = "$size" ] && [ "$(sha256sum "$package" | awk '{print $1}')" = "$digest" ]; then
+			failure=''
+			break
+		fi
+		echo "Size or SHA-256 mismatch from $source"
+		failure=checksum
+	done
+	[ -z "$failure" ] || return 1
 	case "$manager" in
 		apk)
 			apk --keys-dir "$key_dir" --repositories-file /dev/null --no-network verify "$package" 9>&- || { failure=signature; return 1; }
@@ -189,12 +215,24 @@ start_job() {
 	json_init; json_add_boolean started 1; json_dump
 }
 
+configure() {
+	json_load "$input" 2>/dev/null && json_get_var value mirror || { error_reply invalid_mirror; return; }
+	value=$(printf '%s' "$value" | tr -d ' \t\r\n')
+	[ -z "$value" ] || case "$value" in */) ;; *) value="$value/" ;; esac
+	[ -z "$value" ] || valid_mirror "$value" || { error_reply invalid_mirror; return; }
+	[ -f /etc/config/carbon ] || touch /etc/config/carbon
+	uci -q get carbon.update >/dev/null || uci set carbon.update=update
+	if [ -n "$value" ]; then uci set "carbon.update.mirror=$value"; else uci -q delete carbon.update.mirror || :; fi
+	uci commit carbon || { error_reply state; return; }
+	json_init; json_add_string mirror "$value"; json_dump
+}
+
 case "$1" in
-	list) printf '%s\n' '{"status":{},"check":{},"upgrade":{"version":""}}' ;;
+	list) printf '%s\n' '{"status":{},"check":{},"upgrade":{"version":""},"configure":{"mirror":""}}' ;;
 	call)
 		input=$(cat)
 		prepare || { error_reply state; exit 0; }
-		case "$2" in status) status_reply ;; check|upgrade) start_job "$2" ;; *) error_reply invalid ;; esac
+		case "$2" in status) status_reply ;; check|upgrade) start_job "$2" ;; configure) configure ;; *) error_reply invalid ;; esac
 		;;
 	worker)
 		job=${0%/*}; requested=${3:-}; failure=interrupted; complete=0

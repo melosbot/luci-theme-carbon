@@ -39,10 +39,18 @@ jobs:
             exit 1
           fi
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
       - name: Lint
         run: |
           node --check htdocs/luci-static/carbon/carbon.js
           node --check htdocs/luci-static/carbon/brands.js
+          for f in htdocs/luci-static/carbon/i18n/*.js; do node --check "$f"; done
+          python3 -I scripts/build-css.py --check
+          python3 -I scripts/gen-i18n.py --check --github
+          sh scripts/check-version.sh
           node -e "new Function(require('fs').readFileSync('htdocs/luci-static/resources/menu-carbon.js', 'utf8'))"
           node -e "new Function(require('fs').readFileSync('htdocs/luci-static/resources/view/system/carbon-update.js', 'utf8'))"
           node --test tests/*.test.js
@@ -51,7 +59,11 @@ jobs:
           python3 -m json.tool root/usr/share/luci/menu.d/luci-theme-carbon.json > /dev/null
           for f in scripts/*.sh tests/*.sh root/etc/uci-defaults/* root/usr/libexec/rpcd/*; do sh -n "$f"; done
           cmp keys/carbon-apk.pem root/usr/share/carbon/keys/carbon-apk.pem
-          test "$(cat root/usr/share/carbon/version)" = "$(sed -n 's/^PKG_VERSION:=//p' Makefile)-r$(sed -n 's/^PKG_RELEASE:=//p' Makefile)"
+
+      - name: Minify release assets
+        run: |
+          npm ci --no-audit --no-fund
+          node scripts/minify.mjs
 
       - name: Build install script and .ipk
         run: |
@@ -78,6 +90,31 @@ jobs:
           ref: ${{ inputs.release_tag && format('refs/tags/{0}', inputs.release_tag) || github.ref }}
       - run: python3 tests/update-integration.py
       - run: python3 tests/opkg-update.py
+      - name: Render theme templates with OpenWrt ucode
+        run: |
+          docker run --rm --mount "type=bind,source=$GITHUB_WORKSPACE,target=/source,readonly" \
+            openwrt/rootfs:x86_64-24.10.8@sha256:9972a4b4747cd136abd597475d7b88c51a49fd849d0d53f069a2f4bf446061b9 \
+            sh /source/tests/template-render.sh
+
+  browser:
+    name: Browser tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.release_tag && format('refs/tags/{0}', inputs.release_tag) || github.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: .cache/screenshots
 
   # Official release SDKs: 24.10 (opkg → .ipk) and 25.12 (apk → .apk)
   sdk:
@@ -97,6 +134,20 @@ jobs:
         with:
           ref: ${{ inputs.release_tag && format('refs/tags/{0}', inputs.release_tag) || github.ref }}
           path: feed/luci-theme-carbon
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Packages ship minified CSS/JS; the sources in git stay readable.
+      # Tooling is installed outside the feed so the SDK never scans it.
+      - name: Minify release assets
+        run: |
+          tools="$RUNNER_TEMP/carbon-tools"
+          mkdir -p "$tools"
+          cp feed/luci-theme-carbon/package.json feed/luci-theme-carbon/package-lock.json feed/luci-theme-carbon/scripts/minify.mjs "$tools/"
+          npm ci --prefix "$tools" --no-audit --no-fund
+          node "$tools/minify.mjs" feed/luci-theme-carbon
 
       - name: Check out SDK action
         uses: actions/checkout@v4
@@ -160,7 +211,7 @@ jobs:
   release:
     name: Publish release
     if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.release_tag != '')
-    needs: [package, sdk, updater]
+    needs: [package, sdk, updater, browser]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

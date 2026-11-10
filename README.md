@@ -26,13 +26,14 @@ A clean, glass-style LuCI theme for OpenWrt — built for everyday users.
 
 ## Features
 
-- **Dashboard** on *Status → Overview*: live traffic chart, CPU / memory / storage rings, memory breakdown, load sparkline, connection count, uptime, connected devices and interface status. LuCI's original status widgets are kept behind *Show detailed status*.
-- **Device brand icons** — connected devices are recognised by hostname and MAC vendor prefix (35 brands, ~9,200 IEEE OUI prefixes).
+- **Dashboard** on *Status → Overview*: live traffic chart for any interface, CPU / memory / storage rings, memory breakdown, load sparkline, connection count, uptime, temperature sensors (thermal zones and hwmon), WAN IPv4/IPv6, connected devices and interface status. LuCI's original status widgets are kept behind *Show detailed status* and stop polling while collapsed.
+- **Connected devices** — DHCPv4/v6 leases, Wi‑Fi stations (band and signal) and ARP neighbours are merged, so static-IP clients show up too. Devices are recognised by hostname and MAC vendor prefix (35 brands, ~9,200 IEEE OUI prefixes).
 - **Simple / Pro navigation** — *Simple* shows only the pages most people need (overview, internet, Wi‑Fi, software, password, backup, reboot); *Pro* shows the full LuCI menu with an icon for every page.
 - **Frosted-glass sidebar** that collapses into an icon rail (button on the sidebar edge or <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>\\</kbd>); hovering a rail icon opens its sub-menu.
-- **Light / dark / auto** theme switch (top-right) and **中文 / English** language switch (bottom-left).
+- **Light / dark / auto** theme switch (top-right) and a **language switch** (bottom-left) for every installed LuCI language. Theme strings ship in English, Simplified and Traditional Chinese; more can be added as gettext files in `po/`.
+- **Keyboard and touch friendly** — arrow keys in segmented controls, a focus-managed phone drawer, and rail sub-menus that open with a tap, <kbd>Enter</kbd> or <kbd>→</kbd>.
 - **Mobile friendly** — drawer navigation and tables that reflow into cards.
-- **Online updates** — check and install stable releases from *System → Carbon Theme Settings*. APK signatures remain verified; download size and SHA-256 are checked before installation.
+- **Online updates** — check and install stable releases from *System → Carbon Theme Settings*, optionally through an HTTPS download mirror. APK signatures remain verified; download size and SHA-256 are checked against GitHub before installation.
 - Existing LuCI pages and plugins keep working; the updater only installs the Carbon theme package.
 - Architecture independent: one theme package for every router.
 
@@ -96,7 +97,8 @@ Carbon becomes the default theme. Refresh the page, then **log out and log in on
 | Simple / Pro menu | segmented control at the top of the sidebar |
 | Collapse sidebar | round button on the sidebar edge, or <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>\\</kbd> |
 | Light / dark / auto | top-right of the toolbar |
-| 中文 / English | bottom-left of the sidebar (changes LuCI's language, same as *System → Language*) |
+| Language | bottom-left of the sidebar (changes LuCI's language, same as *System → Language*; a list when more than two are installed) |
+| Live traffic interface | picker in the *Live Traffic* card (remembered per browser) |
 | GitHub project | icon at the top-right of the toolbar |
 | Check and install theme updates | System → Carbon Theme Settings (Simple and Pro modes) |
 | LuCI's original status page | *Show detailed status* under the dashboard |
@@ -106,6 +108,8 @@ Carbon becomes the default theme. Refresh the page, then **log out and log in on
 Install v1.1.0 or newer through the native package manager once. Open **System → Carbon Theme Settings** (**Carbon Update** in v1.1.0), click **Check for updates**, then **Install update** and confirm. The page shows release notes, progress and installation logs; refreshing it resumes monitoring. Theme preferences and router configuration are retained. Same-version installs, downgrades and expired update requests are rejected.
 
 APK updates verify the bundled Carbon public key, then use APK's normal signature verification again during installation. They use already-installed dependencies without fetching firmware indexes. This does not change `/etc/apk/keys`; standard LuCI package uploads still need the one-time key import above. IPK updates use HTTPS plus the release asset's SHA-256 and size checks. Update checks need router access to GitHub and correct system time. See [online update details](docs/online-update.md).
+
+If GitHub downloads are slow or blocked, enter an HTTPS **Download mirror** prefix on the same page. Only the package bytes use the mirror; version, size and SHA-256 still come from GitHub, and the updater falls back to GitHub if the mirror fails.
 
 Required packages: `curl`, `ca-bundle`, `flock` (installed as native package dependencies). Script-only installations must first install the native APK/IPK package; the script does not create a package-manager database entry.
 
@@ -134,6 +138,30 @@ sh scripts/build-ipk.sh
 **APK signing**: raw SDK APKs are unsigned. See [signing setup and validation](docs/apk-signing.md) for local signing and the `APK_SIGNING_KEY` Actions secret required for releases.
 
 **Brand data** (`brands.js`) is regenerated with `python3 -I scripts/gen-brands.py`.
+
+### Development
+
+| Source | Generated | Command |
+|---|---|---|
+| `styles/NN-*.css` (one file per section) | `htdocs/luci-static/carbon/carbon.css` | `python3 -I scripts/build-css.py` |
+| `po/<lang>/carbon.po` (gettext) | `po/templates/carbon.pot`, `htdocs/luci-static/carbon/i18n/<lang>.js` | `python3 -I scripts/gen-i18n.py` |
+| `Makefile` `PKG_VERSION` / `PKG_RELEASE` | `root/usr/share/carbon/version` (keep in sync) | `sh scripts/check-version.sh` |
+
+Generated files are committed so every install path works without a build step; CI fails if they are stale (`--check`). The version file is the only version source: the theme template appends it to asset URLs and `carbon.js` reads it from there.
+
+To add a language, create `po/<lang>/carbon.po` (copy the template), translate it and run `gen-i18n.py`. The SDK also builds it into a `luci-i18n-carbon-<lang>` package.
+
+Release packages ship minified CSS/JS (`node scripts/minify.mjs`, run by CI on a disposable checkout). Tests:
+
+```bash
+npm ci && npm test
+```
+
+```bash
+npx playwright install chromium && npm run test:browser
+```
+
+See [tests/README.md](tests/README.md) for the Docker-based updater and template tests.
 
 ## Notices
 

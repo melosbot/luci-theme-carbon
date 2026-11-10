@@ -22,6 +22,8 @@ PATHS="
 /usr/share/carbon
 /usr/libexec/rpcd/luci.carbon_update
 /www/luci-static/resources/view/system/carbon-update.js
+/www/luci-static/resources/carbon
+/etc/config/carbon
 "
 
 say() { printf '%s\n' "$*"; }

@@ -66,9 +66,9 @@ test('status polling keeps the notes DOM, selection and scroll when content is u
 		};
 	}
 	let current = { current: '1.1.2-r1', notes: '# First', manager: 'apk' };
-	const subject = new Function('view', 'rpc', 'poll', 'ui', 'markdown', 'document', 'E', 'L', fs.readFileSync('htdocs/luci-static/resources/view/system/carbon-update.js', 'utf8'))(
+	const subject = new Function('view', 'rpc', 'poll', 'ui', 'markdown', 'document', 'E', 'L', 'window', '_', fs.readFileSync('htdocs/luci-static/resources/view/system/carbon-update.js', 'utf8'))(
 		baseclass, { declare: () => async () => current }, { add() {} }, {}, markdown,
-		{ documentElement: { lang: 'zh' } }, E, { hasViewPermission: () => true });
+		{ documentElement: { lang: 'zh' } }, E, { hasViewPermission: () => true }, {}, s => s);
 	subject.render(current);
 	assert.equal(writes, 1);
 	await subject.pollStatus();

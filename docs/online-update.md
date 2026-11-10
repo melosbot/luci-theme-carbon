@@ -12,9 +12,18 @@ v1.1.0 / v1.1.1 的旧菜单名称缓存问题已在 v1.1.2 修复。可以直�
 
 更新保留 LuCI 语言、当前主题选择及浏览器中的浅色/深色、导航偏好。安装过程中请不要断电或同时操作其他软件包。安装失败时会显示原生包管理器日志；更新器不会声称自动回滚，也不会强制覆盖文件或忽略依赖。
 
-当前源码中的更新说明支持本地 Markdown 预览，包括标题、列表、表格、引用、链接和代码块。原始 HTML 作为文本显示，不执行其中的脚本；链接在新标签页打开，状态轮询不会重建内容。此功能尚未包含在 v1.1.2 Release 中。
+更新说明以本地 Markdown 预览显示（v1.1.2 之后的版本），包括标题、列表、表格、引用、链接和代码块。原始 HTML 作为文本显示，不执行其中的脚本；链接在新标签页打开，状态轮询不会重建内容。
 
 只读 LuCI 用户可以查看状态和检查更新，安装操作单独要求 `luci-theme-carbon-update` 的写权限。没有安装权限时升级按钮禁用。后台只接受已检查的目标版本，不接受浏览器传入下载地址、包路径、Shell 命令或密钥。
+
+## 下载镜像（可选）
+
+GitHub 下载缓慢或无法访问时，在同一页面的「下载镜像」中填写一个 HTTPS 前缀，例如 `https://mirror.example.com/`。下载地址变为前缀加原始链接：`https://mirror.example.com/https://github.com/mrjoechen/luci-theme-carbon/releases/download/…`。设置保存在 `/etc/config/carbon`（`carbon.update.mirror`），升级时保留。
+
+- 镜像只用于下载安装包。版本、文件大小和 SHA-256 仍直接从 `api.github.com` 读取；镜像返回的文件必须与之完全一致，APK 还要通过签名校验。镜像无法篡改要安装的内容。
+- 镜像失败或文件不一致时，自动改用 GitHub 直连；日志会显示每次尝试的来源。
+- 只接受 `https://` 前缀，主机名和路径仅允许字母、数字及 `. _ ~ % + -`，最长 200 字符。留空即关闭。
+- 检查更新本身仍需能访问 `api.github.com`。
 
 ## 签名与下载
 
@@ -46,10 +55,14 @@ The updater only accepts newer stable releases from the fixed Carbon repository.
 
 Preferences and router configuration are retained. Script-only installations must first use the native package manager. Failed installations display logs and do not promise rollback; check the actual installed version before retrying. GitHub connectivity, correct system time, `curl`, `ca-bundle` and `flock` are required.
 
+### Download mirror
+
+If GitHub downloads are slow or blocked, set an optional HTTPS prefix under **Download mirror** on the same page (stored as `carbon.update.mirror` in `/etc/config/carbon`). The package URL becomes `<prefix>https://github.com/…`. Only the package bytes use the mirror: release metadata, size and SHA-256 still come from `api.github.com`, and APKs are signature-checked as before, so a mirror cannot change what gets installed. If the mirror fails or returns a mismatching file, the updater falls back to GitHub. Checking for updates still needs `api.github.com`.
+
 ## Maintainers
 
 Publish version tags matching `Makefile`; GitHub Release asset names must remain `luci-theme-carbon-VERSION-rN.apk` and `luci-theme-carbon_VERSION-rN_all.ipk`. GitHub supplies each asset's SHA-256 digest through its release API. Upload APKs only after signing. Keep `root/usr/share/carbon/version` in sync with the package version and the bundled public key identical to `keys/carbon-apk.pem`. The CI checks both.
 
-Run `python tests/update-integration.py` with Docker to test the production RPC script against OpenWrt's real APK manager, disposable signed packages and deterministic download fixtures. Signing and installation are never mocked. This suite checks bad signatures, bad checksums, incorrect metadata, network errors, expired requests, downgrades, concurrency, progress recovery and configuration preservation.
+Run `python tests/update-integration.py` with Docker to test the production RPC script against OpenWrt's real APK manager, disposable signed packages and deterministic download fixtures. Signing and installation are never mocked. This suite checks bad signatures, bad checksums, incorrect metadata, network errors, expired requests, downgrades, concurrency, progress recovery, configuration preservation, mirror validation and fallback from a failing or tampered mirror.
 
 Run `python tests/opkg-update.py` for the native OpenWrt 24.10 IPK upgrade regression, including legacy removal hooks that reset the theme. Both suites run before Release publication.

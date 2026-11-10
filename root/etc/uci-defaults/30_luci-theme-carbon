@@ -14,4 +14,11 @@ fi
 
 [ "$changed" = 1 ] && uci commit luci
 
+# Updater settings (download mirror); kept across upgrades.
+[ -f /etc/config/carbon ] || touch /etc/config/carbon
+if ! uci -q get carbon.update >/dev/null 2>&1; then
+	uci set carbon.update=update
+	uci commit carbon
+fi
+
 exit 0

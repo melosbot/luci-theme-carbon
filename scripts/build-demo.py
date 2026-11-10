@@ -6,6 +6,7 @@ import shutil
 ROOT = Path(__file__).resolve().parent.parent
 OUTPUT = ROOT / "dist" / "demo"
 THEME_PREFIX = "../htdocs/luci-static/carbon/"
+VERSION = (ROOT / "root" / "usr" / "share" / "carbon" / "version").read_text(encoding="utf-8").strip()
 
 
 def build():
@@ -19,11 +20,14 @@ def build():
         content = (ROOT / "preview" / name).read_text(encoding="utf-8")
         if name.endswith(".html"):
             content = content.replace(THEME_PREFIX, "assets/carbon/")
+            # Same cache-busting version parameter the theme header adds.
+            content = content.replace('assets/carbon/carbon.js"', f'assets/carbon/carbon.js?v={VERSION}"')
         (OUTPUT / name).write_text(content, encoding="utf-8")
     assets = OUTPUT / "assets" / "carbon"
     assets.mkdir(parents=True)
     for name in ("carbon.css", "carbon.js", "brands.js", "logo.svg"):
         shutil.copyfile(ROOT / "htdocs" / "luci-static" / "carbon" / name, assets / name)
+    shutil.copytree(ROOT / "htdocs" / "luci-static" / "carbon" / "i18n", assets / "i18n")
     shutil.copyfile(ROOT / "LICENSE", OUTPUT / "LICENSE")
     (OUTPUT / ".nojekyll").touch()
     print(f"Built Carbon demo: {OUTPUT}")

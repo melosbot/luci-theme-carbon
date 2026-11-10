@@ -9,6 +9,8 @@
 	<script>
 		/* ?lang=en switches the preview language */
 		(function () { var m = /[?&]lang=([\w-]+)/.exec(location.search); if (m) document.documentElement.lang = m[1]; })();
+		/* the theme header loads the matching catalogue the same way */
+		if (/^zh/i.test(document.documentElement.lang)) document.write('<script src="../htdocs/luci-static/carbon/i18n/zh-cn.js"><\/script>');
 	</script>
 	<link rel="stylesheet" href="../htdocs/luci-static/carbon/carbon.css">
 	<link rel="stylesheet" href="demo.css">

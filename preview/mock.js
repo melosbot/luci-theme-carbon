@@ -142,7 +142,20 @@
 				{ ifname: 'phy1-ap0', config: { mode: 'ap', ssid: 'Carbon-Home-5G', encryption: 'sae-mixed' } }
 			] }
 		}),
+		/* Wi‑Fi clients, a static-IP NAS seen only in ARP, and host hints for names */
+		stations: (ifnames) => wait([
+			['phy1-ap0', 'a6:83:e7:2c:91:0f', -48], ['phy1-ap0', 'f0:ee:7a:91:aa:12', -55], ['phy0-ap0', '28:6c:07:1a:44:9d', -63],
+			['phy1-ap0', '58:d7:59:0c:13:71', -51], ['phy0-ap0', '8c:d0:b2:8a:2f:01', -71], ['phy1-ap0', '64:1b:2f:77:31:aa', -58],
+			['phy0-ap0', 'd4:8a:fc:11:22:33', -67], ['phy1-ap0', '6e:11:22:33:44:55', -60]
+		].filter((st) => ifnames.includes(st[0])).map((st) => ({ ifname: st[0], mac: st[1], signal: st[2] + Math.round(rnd(-2, 2)) }))),
+		neighbors: () => wait('IP address       HW type     Flags       HW address            Mask     Device\n' + [
+			['192.168.1.20', 'e4:c7:67:12:7d:c4'], ['192.168.1.5', '00:11:32:aa:bb:cc'], ['100.64.0.1', '00:00:5e:00:01:01', 'pppoe-wan']
+		].map((n) => n[0].padEnd(17) + '0x1         0x2         ' + n[1] + '     *        ' + (n[2] || 'br-lan')).join('\n') + '\n'),
+		hostHints: () => wait({ '00:11:32:AA:BB:CC': { name: 'DiskStation', ipaddrs: ['192.168.1.5'] } }),
 		conntrack: () => wait([String(Math.round(1284 + rnd(-60, 60))), '16384']),
-		temperature: () => wait(String(Math.round(52300 + rnd(-800, 800))))
+		temperatures: () => wait([
+			{ name: 'cpu-thermal', value: Math.round(52300 + rnd(-800, 800)) },
+			{ name: 'mt7986_phy1', value: Math.round(47800 + rnd(-500, 500)) }
+		])
 	};
 })();

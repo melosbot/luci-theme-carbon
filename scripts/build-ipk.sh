@@ -78,6 +78,7 @@ if [ "$(uci -q get luci.main.mediaurlbase)" = "/luci-static/carbon" ]; then
 	fi
 fi
 uci commit luci
+rm -f /etc/config/carbon
 rm -f /tmp/luci-indexcache* 2>/dev/null
 /etc/init.d/rpcd reload 2>/dev/null
 exit 0

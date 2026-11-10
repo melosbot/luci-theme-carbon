@@ -36,6 +36,7 @@ jobs:
           node --check preview/demo.js
           node --check htdocs/luci-static/carbon/carbon.js
           node --check htdocs/luci-static/carbon/brands.js
+          for f in htdocs/luci-static/carbon/i18n/*.js; do node --check "$f"; done
       - name: Build static demo
         run: python3 scripts/build-demo.py
       - name: Upload Pages artifact

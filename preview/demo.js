@@ -56,10 +56,14 @@
 	C.initShell({
 		logoutUrl: 'login.html?lang=' + document.documentElement.lang,
 		language: {
-			current: T('en', 'zh'),
+			current: document.documentElement.lang,
+			load: () => Promise.resolve({
+				options: [{ code: 'en', label: 'English', short: 'EN' }, { code: 'zh_cn', label: '简体中文', short: '中' }],
+				selected: T('en', 'zh_cn')
+			}),
 			set(code) {
 				const next = new URL(location.href);
-				next.searchParams.set('lang', code === 'zh' ? 'zh-Hans' : 'en');
+				next.searchParams.set('lang', /^zh/.test(code) ? 'zh-Hans' : 'en');
 				next.searchParams.set('page', active);
 				location.assign(next.href);
 				return new Promise(() => {});

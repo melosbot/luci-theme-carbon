@@ -1,3 +1,22 @@
+# Tests
+
+| Suite | Command | Needs |
+|---|---|---|
+| Unit: formatting, i18n, devices, ARP, IPv6, brands (`carbon.test.js`) | `npm test` | Node 18+ |
+| Unit: LuCI glue — poll pause, language list/switch, menu cache | `npm test` | Node 18+ |
+| Unit: release-notes Markdown | `npm test` | Node 18+ |
+| Browser: preview pages, accessibility, minified build parity | `npm run test:browser` | `npm ci`, `npx playwright install chromium` |
+| Theme templates rendered by OpenWrt's ucode | see below | Docker |
+| Updater (APK and IPK) | see [online-update.md](../docs/online-update.md#maintainers) | Docker |
+
+The browser suite serves the repository and a minified copy locally, runs `tests/navigation.html` at 390 × 844, loads the preview in Chinese/English × light/dark × desktop/phone (screenshots go to `.cache/screenshots/`), checks the dashboard data, the language switch, keyboard/touch behaviour of the rail and drawer, and compares computed styles of the minified release build with the sources.
+
+Render the templates with the real ucode runtime:
+
+```bash
+docker run --rm --mount "type=bind,source=$PWD,target=/source,readonly" openwrt/rootfs:x86_64-24.10.8 sh /source/tests/template-render.sh
+```
+
 # Navigation and menu cache regressions
 
 Run `node --test tests/menu-cache.test.js` from the repository root. This executes the production LuCI menu module with both menu-cache layers and checks version invalidation, retained session data, unchanged-version reuse and retry after failure. CI runs this suite before packaging.

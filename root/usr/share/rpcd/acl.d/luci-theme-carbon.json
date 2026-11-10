@@ -7,15 +7,23 @@
 				"network.interface": [ "dump" ],
 				"network.device": [ "status" ],
 				"network.wireless": [ "status" ],
-				"luci-rpc": [ "getDHCPLeases", "getNetworkDevices" ],
-				"file": [ "read" ],
+				"iwinfo": [ "assoclist" ],
+				"luci-rpc": [ "getDHCPLeases", "getNetworkDevices", "getHostHints" ],
+				"file": [ "list", "read" ],
 				"uci": [ "get" ]
 			},
 			"file": {
 				"/proc/stat": [ "read" ],
+				"/proc/net/arp": [ "read" ],
 				"/proc/sys/net/netfilter/nf_conntrack_count": [ "read" ],
 				"/proc/sys/net/netfilter/nf_conntrack_max": [ "read" ],
-				"/sys/class/thermal/thermal_zone0/temp": [ "read" ]
+				"/sys/class/thermal": [ "list" ],
+				"/sys/class/thermal/thermal_zone*/temp": [ "read" ],
+				"/sys/class/thermal/thermal_zone*/type": [ "read" ],
+				"/sys/class/hwmon": [ "list" ],
+				"/sys/class/hwmon/hwmon*": [ "list" ],
+				"/sys/class/hwmon/hwmon*/name": [ "read" ],
+				"/sys/class/hwmon/hwmon*/temp*_input": [ "read" ]
 			},
 			"uci": [ "luci" ]
 		},

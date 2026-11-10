@@ -12,10 +12,12 @@
 	'use strict';
 
 	const C = window.Carbon = window.Carbon || {};
-	C.version = '1.1.2';
 
-	/* directory this script was loaded from (…/luci-static/carbon/) */
-	const BASE = ((document.currentScript && document.currentScript.src) || '').replace(/[?#].*$/, '').replace(/[^/]*$/, '');
+	/* directory this script was loaded from (…/luci-static/carbon/). The theme
+	   template appends ?v=<package version>, the single version source. */
+	const SRC = (document.currentScript && document.currentScript.src) || '';
+	const BASE = SRC.replace(/[?#].*$/, '').replace(/[^/]*$/, '');
+	C.version = (/[?&]v=([0-9A-Za-z._-]+)/.exec(SRC) || [])[1] || C.version || 'dev';
 
 	/* ------------------------------------------------------------------
 	 * Storage (never throws)
@@ -31,111 +33,32 @@
 	};
 
 	/* ------------------------------------------------------------------
-	 * i18n — theme strings only; LuCI menus use LuCI's own catalogs
+	 * i18n — theme strings come from po/<lang>/carbon.po, compiled into
+	 * i18n/<lang>.js (C.I18N) by scripts/gen-i18n.py and loaded before this
+	 * file. Strings without a bundled translation fall back to LuCI's own
+	 * catalogues (window._), then English. N_() only marks table strings
+	 * for extraction.
 	 * ------------------------------------------------------------------ */
-	const ZH = {
-		'Simple': '简洁',
-		'Pro': '专业',
-		'Common': '常用',
-		'System': '系统',
-		'Overview': '概览',
-		'Internet & Network': '上网与网络',
-		'Wi-Fi': '无线 Wi‑Fi',
-		'Software': '软件包',
-		'Carbon Theme Settings': 'Carbon 主题设置',
-		'Password': '管理密码',
-		'Backup & Upgrade': '备份与升级',
-		'Reboot': '重启',
-		'Log out': '退出',
-		'Need more settings? Switch to': '需要更多设置？切换到',
-		'Pro mode': '专业模式',
-		'Auto': '自动',
-		'Light': '浅色',
-		'Dark': '深色',
-		'Menu': '菜单',
-		'Online': '已联网',
-		'Offline': '未联网',
-		'WAN IP': '外网 IP',
-		'LAN IP': '局域网 IP',
-		'Uptime': '运行时间',
-		'Live Traffic': '实时流量',
-		'Download': '下载',
-		'Upload': '上传',
-		'Since boot': '开机以来',
-		'2 min ago': '2 分钟前',
-		'Now': '现在',
-		'%ds ago': '%d 秒前',
-		'Resources': '系统资源',
-		'CPU': 'CPU',
-		'Memory': '内存',
-		'Storage': '存储',
-		'Used': '已用',
-		'Cache': '缓存',
-		'Free': '可用',
-		'%d cores': '%d 核',
-		'Temperature': '温度',
-		'Load average': '平均负载',
-		'Devices': '在线设备',
-		'Connections': '活动连接',
-		'Load': '系统负载',
-		'DHCP clients': 'DHCP 客户端',
-		'of %s max': '上限 %s',
-		'1 min average': '1 分钟平均',
-		'Since %s': '自 %s 起',
-		'Connected Devices': '已连接设备',
-		'Unknown device': '未知设备',
-		'No devices yet': '暂时没有设备',
-		'Static': '静态分配',
-		'%s left': '剩余 %s',
-		'Show all %d devices': '显示全部 %d 台设备',
-		'Show less': '收起',
-		'Wireless': '无线网络',
-		'Interfaces': '网络接口',
-		'Connected': '已连接',
-		'Not connected': '未连接',
-		'On': '已开启',
-		'Off': '已关闭',
-		'No wireless': '未检测到无线网卡',
-		'Manage': '管理',
-		'Show detailed status': '显示详细状态',
-		'Hide detailed status': '收起详细状态',
-		'Unavailable': '无法读取',
-		'Static address': '静态地址',
-		'DHCP client': 'DHCP 客户端',
-		'PPPoE': 'PPPoE 拨号',
-		'Unmanaged': '未管理',
-		'Firmware': '固件',
-		'Kernel': '内核',
-		'Hidden network': '隐藏网络',
-		'Phone': '手机',
-		'Tablet': '平板',
-		'Computer': '电脑',
-		'TV': '电视',
-		'Speaker': '音箱',
-		'Game console': '游戏机',
-		'Printer': '打印机',
-		'Camera': '摄像头',
-		'Storage': '存储',
-		'Smart device': '智能设备',
-		'%s device': '%s 设备',
-		'Private': '私有地址',
-		'Expand sidebar': '展开侧边栏',
-		'Collapse sidebar': '收起侧边栏',
-		'click to switch': '点击切换',
-		'Appearance': '外观',
-		'GitHub (opens in a new tab)': 'GitHub（在新标签页打开）',
-		'Language': '语言',
-		'All settings': '全部设置',
-		'Randomised MAC address': '设备使用了随机 MAC 地址，无法通过 MAC 识别品牌'
-	};
-
-	const langAttr = (document.documentElement.getAttribute('lang') || navigator.language || 'en').toLowerCase();
-	C.lang = langAttr.indexOf('zh') === 0 ? 'zh' : 'en';
+	const langAttr = (document.documentElement.getAttribute('lang') || navigator.language || 'en').replace(/_/g, '-');
+	/* LuCI language code → catalogue code (same table as the theme header and
+	   scripts/gen-i18n.py) */
+	const LANG_ALIAS = C.LANG_ALIAS = { 'zh-hans': 'zh-cn', 'zh-sg': 'zh-cn', 'zh-hant': 'zh-tw', 'zh-hk': 'zh-tw', 'zh-mo': 'zh-tw' };
+	const LOCALE_ALIAS = { 'zh-cn': 'zh-CN', 'zh-tw': 'zh-TW' };
+	C.locale = LOCALE_ALIAS[LANG_ALIAS[langAttr.toLowerCase()] || langAttr.toLowerCase()] || langAttr;
+	try { new Intl.NumberFormat(C.locale); } catch (e) { C.locale = 'en-US'; }
+	C.lang = C.locale.split('-')[0].toLowerCase();
+	const N_ = (s) => s;
 	C.t = function (s) {
-		let out = (C.lang === 'zh' && ZH[s]) || s;
-		for (let i = 1; i < arguments.length; i++)
-			out = out.replace(/%[sd]/, arguments[i]);
-		return out;
+		const dict = C.I18N || {};
+		let out = Object.prototype.hasOwnProperty.call(dict, s) && dict[s] ? dict[s] : null;
+		if (out == null && C.lang !== 'en' && typeof window._ === 'function') {
+			try { out = window._(s); } catch (e) { out = null; }
+		}
+		if (typeof out !== 'string' || !out) out = s;
+		const args = Array.prototype.slice.call(arguments, 1);
+		let i = 0;
+		/* one pass, literal values: arguments may contain "%s" or "$&" */
+		return args.length ? out.replace(/%[sd]/g, (m) => (i < args.length ? String(args[i++]) : m)) : out;
 	};
 	const t = C.t;
 
@@ -200,26 +123,21 @@
 		},
 		num(n) {
 			if (n == null || isNaN(n)) return '—';
-			try { return Number(n).toLocaleString(C.lang === 'zh' ? 'zh-CN' : 'en-US'); }
+			try { return Number(n).toLocaleString(C.locale); }
 			catch (e) { return String(n); }
 		},
 		duration(sec) {
 			if (sec == null || isNaN(sec)) return '—';
 			sec = Math.max(0, Math.floor(sec));
 			const d = Math.floor(sec / 86400), hr = Math.floor(sec % 86400 / 3600), m = Math.floor(sec % 3600 / 60);
-			if (C.lang === 'zh') {
-				if (d) return d + ' 天 ' + hr + ' 小时';
-				if (hr) return hr + ' 小时 ' + m + ' 分';
-				return (m || '<1') + ' 分钟';
-			}
-			if (d) return d + 'd ' + hr + 'h';
-			if (hr) return hr + 'h ' + m + 'm';
-			return (m || '<1') + ' min';
+			if (d) return t('%dd %dh', d, hr);
+			if (hr) return t('%dh %dm', hr, m);
+			return m ? t('%d min', m) : t('<1 min');
 		},
 		since(sec) {
 			const dt = new Date(Date.now() - sec * 1000);
 			try {
-				return dt.toLocaleString(C.lang === 'zh' ? 'zh-CN' : 'en-US',
+				return dt.toLocaleString(C.locale,
 					{ month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 			}
 			catch (e) { return dt.toISOString().slice(5, 16).replace('T', ' '); }
@@ -376,17 +294,17 @@
 
 	/* Simple mode: hand-picked LuCI pages (first existing path wins) */
 	C.SIMPLE_MENU = [
-		{ group: 'Common', items: [
-			{ title: 'Overview', icon: 'gauge', paths: ['status/overview'] },
-			{ title: 'Internet & Network', icon: 'globe', paths: ['network/network'] },
-			{ title: 'Wi-Fi', icon: 'wifi', paths: ['network/wireless'] }
+		{ group: N_('Common'), items: [
+			{ title: N_('Overview'), icon: 'gauge', paths: ['status/overview'] },
+			{ title: N_('Internet & Network'), icon: 'globe', paths: ['network/network'] },
+			{ title: N_('Wi-Fi'), icon: 'wifi', paths: ['network/wireless'] }
 		] },
-		{ group: 'System', items: [
-			{ title: 'Software', icon: 'box', paths: ['system/package-manager', 'system/opkg'] },
-			{ title: 'Carbon Theme Settings', icon: 'carbon', paths: ['system/carbon-update'] },
-			{ title: 'Password', icon: 'key', paths: ['system/admin'] },
-			{ title: 'Backup & Upgrade', icon: 'download', paths: ['system/flash'] },
-			{ title: 'Reboot', icon: 'power', paths: ['system/reboot'] }
+		{ group: N_('System'), items: [
+			{ title: N_('Software'), icon: 'box', paths: ['system/package-manager', 'system/opkg'] },
+			{ title: N_('Carbon Theme Settings'), icon: 'carbon', paths: ['system/carbon-update'] },
+			{ title: N_('Password'), icon: 'key', paths: ['system/admin'] },
+			{ title: N_('Backup & Upgrade'), icon: 'download', paths: ['system/flash'] },
+			{ title: N_('Reboot'), icon: 'power', paths: ['system/reboot'] }
 		] }
 	];
 
@@ -446,14 +364,31 @@
 	/* ------------------------------------------------------------------
 	 * Segmented control
 	 * ------------------------------------------------------------------ */
-	function segmented(options, value, onChange, label) {
+	/* Radio group: arrow keys move between options (and select them unless
+	   `manual`, used where selecting is expensive, e.g. a page reload). */
+	function segmented(options, value, onChange, label, manual) {
 		const seg = h('div', { class: 'cb-seg', role: 'radiogroup', 'aria-label': label || null });
 		const buttons = [];
 		const select = (idx, fire) => {
 			seg.style.setProperty('--i', idx);
-			buttons.forEach((b, i) => b.setAttribute('aria-checked', i === idx ? 'true' : 'false'));
+			buttons.forEach((b, i) => {
+				b.setAttribute('aria-checked', i === idx ? 'true' : 'false');
+				b.tabIndex = i === idx ? 0 : -1;
+			});
 			if (fire) onChange(options[idx].value);
 		};
+		seg.addEventListener('keydown', (e) => {
+			const cur = buttons.indexOf(document.activeElement);
+			if (cur < 0) return;
+			const n = buttons.length;
+			const next = { ArrowRight: cur + 1, ArrowDown: cur + 1, ArrowLeft: cur - 1, ArrowUp: cur - 1, Home: 0, End: n - 1 }[e.key];
+			if (next == null) return;
+			e.preventDefault();
+			const idx = (next + n) % n;
+			buttons[idx].focus();
+			if (manual) buttons.forEach((b, i) => { b.tabIndex = i === idx ? 0 : -1; });
+			else select(idx, true);
+		});
 		seg.style.setProperty('--n', options.length);
 		options.forEach((o, i) => {
 			const b = h('button', {
@@ -474,6 +409,7 @@
 	 * Flyout (collapsed rail): label or sub-menu next to a hovered icon
 	 * ------------------------------------------------------------------ */
 	let fly = null, flyTimer = null, flyOwner = null;
+	const flyOpenFor = (owner) => !!(fly && fly.classList.contains('show') && flyOwner === owner);
 
 	function hideFlyout(now) {
 		clearTimeout(flyTimer);
@@ -481,18 +417,35 @@
 		if (now) go(); else flyTimer = setTimeout(go, 160);
 	}
 
-	function showFlyout(owner, title, items) {
+	function showFlyout(owner, title, items, focusFirst) {
 		if (!railActive()) return;
 		clearTimeout(flyTimer);
 		if (!fly) {
-			fly = h('div', { class: 'cb-fly', role: 'menu' });
+			fly = h('div', { class: 'cb-fly' });
 			fly.addEventListener('mouseenter', () => clearTimeout(flyTimer));
 			fly.addEventListener('mouseleave', () => hideFlyout());
+			fly.addEventListener('focusin', () => clearTimeout(flyTimer));
+			fly.addEventListener('focusout', (e) => { if (!fly.contains(e.relatedTarget)) hideFlyout(); });
+			fly.addEventListener('keydown', (e) => {
+				const links = Array.from(fly.querySelectorAll('a'));
+				const cur = links.indexOf(document.activeElement);
+				if (e.key === 'Escape') {
+					const owner = flyOwner;
+					hideFlyout(true);
+					if (owner) owner.focus();
+				}
+				else if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && links.length) {
+					e.preventDefault();
+					links[(cur + (e.key === 'ArrowDown' ? 1 : -1) + links.length) % links.length].focus();
+				}
+			});
 			document.body.appendChild(fly);
 		}
 		if (flyOwner !== owner) {
 			fly.innerHTML = '';
 			fly.classList.toggle('cb-fly-tip', !items);
+			if (items) fly.setAttribute('role', 'menu');
+			else fly.removeAttribute('role');
 			fly.appendChild(h('div', { class: 'cb-fly-title', text: title }));
 			(items || []).forEach((it) => {
 				fly.appendChild(h('a', { class: 'cb-nav-item' + (it.active ? ' active' : ''), href: it.url, role: 'menuitem' }, [
@@ -511,14 +464,25 @@
 		const fh = fly.offsetHeight;
 		const top = items ? r.top - 6 : r.top + r.height / 2 - fh / 2;
 		fly.style.top = Math.max(8, Math.min(top, window.innerHeight - fh - 8)) + 'px';
+		if (focusFirst && items) {
+			const first = fly.querySelector('a.active') || fly.querySelector('a');
+			if (first) first.focus();
+		}
 	}
 
+	/* Mouse: hover. Touch / pen: a tap toggles the sub-menu (see the group
+	   head). Keyboard: focus previews it, Enter or → moves into it. */
+	const focusVisible = (el) => { try { return el.matches(':focus-visible'); } catch (e) { return true; } };
 	function bindFlyout(el, title, items) {
-		el.addEventListener('mouseenter', () => showFlyout(el, title, items));
-		el.addEventListener('mouseleave', () => hideFlyout());
-		el.addEventListener('focus', () => showFlyout(el, title, items));
+		el.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') showFlyout(el, title, items); });
+		el.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') hideFlyout(); });
+		el.addEventListener('focus', () => { if (focusVisible(el)) showFlyout(el, title, items); });
 		el.addEventListener('blur', () => hideFlyout());
+		if (items) el.addEventListener('keydown', (e) => {
+			if (e.key === 'ArrowRight' && railActive()) { e.preventDefault(); showFlyout(el, title, items, true); }
+		});
 	}
+	let lastPointer = 'mouse';
 
 	/* Keep the active route / form tab visible without moving focus or the page.
 	 * LuCI inserts form tabs asynchronously and can reveal nested tab groups. */
@@ -569,6 +533,62 @@
 	};
 
 	/* ------------------------------------------------------------------
+	 * Language switch (rendered once the installed catalogues are known)
+	 * ------------------------------------------------------------------ */
+	const normLang = (c) => String(c || '').toLowerCase().replace(/_/g, '-');
+	C.matchLanguage = function (options, current) {
+		const cur = normLang(current), base = cur.split('-')[0];
+		const want = LANG_ALIAS[cur] || cur;
+		return options.find((o) => normLang(o.code) === want) ||
+			options.find((o) => normLang(o.code).split('-')[0] === base) || options[0];
+	};
+
+	function renderLanguage(wrap, L10N, info) {
+		const options = info.options;
+		const active = C.matchLanguage(options, L10N.current);
+		const currentValue = options.length === 2 ? active.code : info.selected;
+		let reset = () => {};
+		const go = (v) => {
+			if (v === currentValue || wrap.classList.contains('busy')) return;
+			wrap.classList.add('busy');
+			Promise.resolve().then(() => L10N.set(v)).then(() => window.location.reload()).catch((err) => {
+				reset();
+				wrap.classList.remove('busy');
+				wrap.classList.add('err');
+				wrap.title = (err && err.message) || String(err);
+				setTimeout(() => wrap.classList.remove('err'), 1600);
+				if (window.console) console.warn('[carbon] language switch failed:', err);
+			});
+		};
+		const mini = h('button', { type: 'button', class: 'cb-mini cb-lang-mini', text: active.short || active.code.slice(0, 2).toUpperCase() });
+		mini.title = t('Language') + ' · ' + active.label;
+		wrap.appendChild(h('span', { class: 'cb-lang-ico', html: icon('globe') }));
+
+		if (options.length === 2) {
+			const label = (o) => (o.short === '中' ? '中文' : o.label);
+			const seg = segmented(options.map((o) => ({ value: o.code, label: label(o), title: o.label })), active.code, go, t('Language'), true);
+			reset = () => seg._select(active.code);
+			const other = options.find((o) => o !== active);
+			mini.title += ' · ' + t('click to switch');
+			mini.addEventListener('click', () => go(other.code));
+			wrap.appendChild(seg);
+		}
+		else {
+			const select = h('select', { class: 'cb-lang-select', 'aria-label': t('Language') },
+				[{ code: 'auto', label: t('Auto') }].concat(options).map((o) =>
+					h('option', { value: o.code, selected: o.code === info.selected }, o.label)));
+			reset = () => { select.value = info.selected; };
+			select.addEventListener('change', () => go(select.value));
+			/* the rail has no room for a list: expand, then focus the select */
+			mini.addEventListener('click', () => { C.sidebar.set(false); select.focus(); });
+			wrap.classList.add('cb-lang-many');
+			wrap.appendChild(select);
+		}
+		mini.setAttribute('aria-label', mini.title);
+		wrap.appendChild(mini);
+	}
+
+	/* ------------------------------------------------------------------
 	 * Shell: drawer, collapse, mode switch, appearance switch, logout
 	 * ------------------------------------------------------------------ */
 	C.initShell = function (opts) {
@@ -577,15 +597,50 @@
 		const body = document.body;
 		const burger = document.getElementById('cb-burger');
 		const scrim = document.getElementById('cb-scrim');
-		const close = () => body.classList.remove('cb-nav-open');
+		const main = document.querySelector('.cb-main');
+		const sidebar = document.getElementById('cb-sidebar');
+		const drawerMode = () => !!(window.matchMedia && window.matchMedia('(max-width: 1023px)').matches);
+		/* mobile drawer: the page behind is inert while it is open; focus moves in and back */
+		/* the off-canvas drawer must not be reachable with Tab while it is closed */
+		const syncSidebar = () => {
+			if (!sidebar) return;
+			if (drawerMode() && !body.classList.contains('cb-nav-open')) sidebar.setAttribute('inert', '');
+			else sidebar.removeAttribute('inert');
+		};
+		const setDrawer = (on, restoreFocus) => {
+			const was = body.classList.contains('cb-nav-open');
+			on = !!on && drawerMode();
+			body.classList.toggle('cb-nav-open', on);
+			syncSidebar();
+			if (burger) burger.setAttribute('aria-expanded', on ? 'true' : 'false');
+			if (main) { if (on) main.setAttribute('inert', ''); else main.removeAttribute('inert'); }
+			if (on && !was && sidebar) {
+				const first = sidebar.querySelector('.cb-nav a.active') || sidebar.querySelector('.cb-nav a, .cb-nav button');
+				if (first) first.focus({ preventScroll: true });
+			}
+			if (!on && was && restoreFocus && burger) burger.focus();
+		};
+		const close = () => setDrawer(false, sidebar && sidebar.contains(document.activeElement));
 
 		if (burger) {
 			burger.setAttribute('aria-label', t('Menu'));
-			burger.addEventListener('click', () => body.classList.toggle('cb-nav-open'));
+			burger.setAttribute('aria-controls', 'cb-sidebar');
+			burger.setAttribute('aria-expanded', 'false');
+			burger.addEventListener('click', () => setDrawer(!body.classList.contains('cb-nav-open')));
 		}
 		if (scrim) scrim.addEventListener('click', close);
+		window.addEventListener('resize', () => {
+			if (!drawerMode() && body.classList.contains('cb-nav-open')) setDrawer(false);
+			else syncSidebar();
+		});
+		syncSidebar();
+		document.addEventListener('pointerdown', (e) => {
+			lastPointer = e.pointerType || 'mouse';
+			if (fly && fly.classList.contains('show') && !fly.contains(e.target) && !(flyOwner && flyOwner.contains(e.target)))
+				hideFlyout(true);
+		}, true);
 		document.addEventListener('keydown', (e) => {
-			if (e.key === 'Escape') { close(); hideFlyout(true); }
+			if (e.key === 'Escape') { if (body.classList.contains('cb-nav-open')) close(); hideFlyout(true); }
 			/* Ctrl/Cmd + \ toggles the rail */
 			if ((e.ctrlKey || e.metaKey) && e.key === '\\') { e.preventDefault(); C.sidebar.toggle(); }
 		});
@@ -597,7 +652,8 @@
 		/* theme switch — toolbar, top-right */
 		const APPEARANCES = ['auto', 'light', 'dark'];
 		const APPEARANCE_ICON = { auto: 'auto', light: 'sun', dark: 'moon' };
-		const appearanceLabel = (v) => t(v[0].toUpperCase() + v.slice(1));
+		const APPEARANCE_LABEL = { auto: N_('Auto'), light: N_('Light'), dark: N_('Dark') };
+		const appearanceLabel = (v) => t(APPEARANCE_LABEL[v]);
 		const themeHost = document.getElementById('cb-appearance');
 		if (themeHost) {
 			themeHost.innerHTML = '';
@@ -634,6 +690,7 @@
 				seg._select(v);
 				mini.innerHTML = icon(v === 'pro' ? 'sliders' : 'sparkle');
 				mini.title = t(v === 'pro' ? 'Pro' : 'Simple') + ' · ' + t('click to switch');
+				mini.setAttribute('aria-label', mini.title);
 				if (C._navModel) C.renderNav(C._navModel);
 				if (typeof opts.onModeChange === 'function') opts.onModeChange(v);
 			};
@@ -645,43 +702,32 @@
 			mini.addEventListener('click', () => apply(C.mode.get() === 'pro' ? 'simple' : 'pro'));
 			mini.innerHTML = icon(C.mode.get() === 'pro' ? 'sliders' : 'sparkle');
 			mini.title = t(C.mode.get() === 'pro' ? 'Pro' : 'Simple') + ' · ' + t('click to switch');
+			mini.setAttribute('aria-label', mini.title);
 			modeHost.appendChild(seg);
 			modeHost.appendChild(mini);
 		}
 
 		/* language switch — sidebar footer, bottom-left.
-		   opts.language = { current: 'zh'|'en', set(code) → Promise } */
+		   opts.language = {
+		     current: '<html lang>',
+		     load() → Promise<{ options: [{ code, label, short }], selected: code|'auto' }>,
+		     set(code) → Promise
+		   }
+		   Two catalogues → segmented control; more → a native select. */
 		const foot = document.getElementById('cb-sidebar-foot');
 		if (foot) {
 			foot.innerHTML = '';
-			if (opts.language) {
+			if (opts.language && typeof opts.language.load === 'function') {
 				const L10N = opts.language;
 				const wrap = h('div', { class: 'cb-lang', title: t('Language') });
-				const label = (v) => (v === 'zh' ? '中' : 'EN');
-				let seg = null;
-				const go = (v) => {
-					if (v === L10N.current || wrap.classList.contains('busy')) return;
-					wrap.classList.add('busy');
-					Promise.resolve().then(() => L10N.set(v)).then(() => window.location.reload()).catch((err) => {
-						seg._select(L10N.current);
-						wrap.classList.remove('busy');
-						wrap.classList.add('err');
-						wrap.title = (err && err.message) || String(err);
-						setTimeout(() => wrap.classList.remove('err'), 1600);
-						if (window.console) console.warn('[carbon] language switch failed:', err);
-					});
-				};
-				seg = segmented([
-					{ value: 'zh', label: '中文', title: '中文' },
-					{ value: 'en', label: 'English', title: 'English' }
-				], L10N.current, go, t('Language'));
-				const mini = h('button', { type: 'button', class: 'cb-mini cb-lang-mini', text: label(L10N.current) });
-				mini.title = t('Language') + ' · ' + t('click to switch');
-				mini.addEventListener('click', () => go(L10N.current === 'zh' ? 'en' : 'zh'));
-				wrap.appendChild(h('span', { class: 'cb-lang-ico', html: icon('globe') }));
-				wrap.appendChild(seg);
-				wrap.appendChild(mini);
 				foot.appendChild(wrap);
+				Promise.resolve().then(() => L10N.load()).then((info) => {
+					if (!info || !info.options || info.options.length < 2) { wrap.remove(); return; }
+					renderLanguage(wrap, L10N, info);
+				}).catch((err) => {
+					wrap.remove();
+					if (window.console) console.warn('[carbon] languages unavailable:', err);
+				});
 			}
 			if (opts.logoutUrl) {
 				const out = h('a', { class: 'cb-logout', href: opts.logoutUrl, html: icon('logout') + '<span>' + esc(t('Log out')) + '</span>' });
@@ -771,16 +817,22 @@
 				const on = isActive(cat.path);
 				const open = on || !!openSet[cat.name];
 				const grp = h('div', { class: 'cb-nav-group' + (open ? ' open' : '') + (on ? ' active' : '') });
-				const head = h('button', { type: 'button', class: 'cb-nav-head', 'aria-expanded': open ? 'true' : 'false' }, [
+				const head = h('button', { type: 'button', class: 'cb-nav-head', 'aria-expanded': open ? 'true' : 'false', 'aria-haspopup': 'menu' }, [
 					h('span', { class: 'cb-nav-ico', html: icon(catIcon) }),
 					h('span', { class: 'cb-nav-label', text: cat.title }),
 					h('span', { class: 'cb-chev', html: icon('chevron') })
 				]);
 				const subs = cat.children.map((ch) => ({ title: ch.title, url: ch.url, icon: pageIcon(ch.name), active: isActive(ch.path) }));
 
-				head.addEventListener('click', () => {
-					if (railActive()) {          /* on the rail a click opens the first page */
-						if (subs.length) window.location.href = (subs.find((s) => s.active) || subs[0]).url;
+				head.addEventListener('click', (e) => {
+					if (railActive()) {
+						/* keyboard: move into the sub-menu; touch: toggle it; mouse: open the current/first page */
+						if (e.detail === 0) showFlyout(head, cat.title, subs, true);
+						else if (lastPointer !== 'mouse') {
+							if (flyOpenFor(head)) hideFlyout(true);
+							else showFlyout(head, cat.title, subs);
+						}
+						else if (subs.length) window.location.href = (subs.find((s) => s.active) || subs[0]).url;
 						return;
 					}
 					const now = grp.classList.toggle('open');
@@ -888,6 +940,11 @@
 			s.data.push(Math.max(0, +values[i] || 0));
 			while (s.data.length > this.n) s.data.shift();
 		});
+		this.draw();
+	};
+	AreaChart.prototype.reset = function () {
+		this.series.forEach((s) => { s.data = new Array(this.n).fill(0); });
+		this.hover = null;
 		this.draw();
 	};
 	AreaChart.prototype.draw = function () {
@@ -1025,14 +1082,18 @@
 	 *   devStats(dev)      → { rx_bytes, tx_bytes }
 	 *   leases()           → luci-rpc getDHCPLeases
 	 *   wireless()         → ubus network.wireless status
+	 *   stations(ifnames)  → [{ ifname, mac, signal }] from iwinfo assoclist (optional)
+	 *   neighbors()        → contents of /proc/net/arp (optional)
+	 *   hostHints()        → luci-rpc getHostHints (optional)
 	 *   conntrack()        → [count, max]
-	 *   temperature()      → millidegrees string
+	 *   temperatures()     → [{ name, value (millidegrees) }]
+	 *                        (temperature() → millidegrees string is still accepted)
 	 * opts.urls: { network, wireless, devices }
 	 * ------------------------------------------------------------------ */
 	const AVATAR_COLORS = ['blue', 'green', 'orange', 'purple', 'teal', 'indigo', 'pink'];
 	const hash = (s) => { let x = 0; for (let i = 0; i < s.length; i++) x = (x * 31 + s.charCodeAt(i)) | 0; return Math.abs(x); };
 	const ipNum = (ip) => String(ip || '').split('.').reduce((a, b) => a * 256 + (+b || 0), 0);
-	const PROTO = { static: 'Static address', dhcp: 'DHCP client', pppoe: 'PPPoE', none: 'Unmanaged' };
+	const PROTO = { static: N_('Static address'), dhcp: N_('DHCP client'), pppoe: N_('PPPoE'), none: N_('Unmanaged') };
 
 	function parseCpu(text) {
 		const lines = String(text || '').split('\n');
@@ -1040,6 +1101,28 @@
 		const v = lines[0].trim().split(/\s+/).slice(1).map(Number);
 		const total = v.slice(0, 8).reduce((a, b) => a + (b || 0), 0);
 		return { idle: (v[3] || 0) + (v[4] || 0), total: total, cores: lines.filter((l) => /^cpu\d/.test(l)).length };
+	}
+
+	function radioBand(cfg) {
+		cfg = cfg || {};
+		const band = cfg.band ? ({ '2g': '2.4 GHz', '5g': '5 GHz', '6g': '6 GHz', '60g': '60 GHz' })[cfg.band] : null;
+		return band || (cfg.hwmode ? (/a/.test(cfg.hwmode) ? '5 GHz' : '2.4 GHz') : null);
+	}
+
+	/* AP interfaces that are up → { ifnames: [...], bands: { ifname: '5 GHz' } } */
+	function apInterfaces(w) {
+		const out = { ifnames: [], bands: {} };
+		Object.keys(w || {}).forEach((radio) => {
+			const r = w[radio] || {}, cfg = r.config || {};
+			if (!r.up || r.disabled || cfg.disabled) return;
+			(r.interfaces || []).forEach((i) => {
+				const ic = i.config || {};
+				if (!i.ifname || ic.disabled || (ic.mode && ic.mode !== 'ap')) return;
+				out.ifnames.push(i.ifname);
+				out.bands[i.ifname] = radioBand(cfg);
+			});
+		});
+		return out;
 	}
 
 	function hasDefaultRoute(iface) {
@@ -1050,8 +1133,8 @@
 	 * Device brand recognition (data in brands.js, loaded on demand)
 	 * ------------------------------------------------------------------ */
 	const TYPE_LABEL = {
-		phone: 'Phone', tablet: 'Tablet', pc: 'Computer', tv: 'TV', speaker: 'Speaker',
-		game: 'Game console', printer: 'Printer', camera: 'Camera', nas: 'Storage', iot: 'Smart device'
+		phone: N_('Phone'), tablet: N_('Tablet'), pc: N_('Computer'), tv: N_('TV'), speaker: N_('Speaker'),
+		game: N_('Game console'), printer: N_('Printer'), camera: N_('Camera'), nas: N_('Storage'), iot: N_('Smart device')
 	};
 	const TYPE_GLYPH = { game: 'gamepad' };
 
@@ -1116,6 +1199,96 @@
 		return res;
 	};
 
+	/* ------------------------------------------------------------------
+	 * Connected devices: DHCPv4/v6 leases + Wi‑Fi stations + ARP neighbours
+	 * (static-IP clients) + LuCI host hints for names. Keyed by MAC.
+	 *
+	 * src = { leases, leases6, stations, arp, hints, bands: { ifname: '5 GHz' } }
+	 * → [{ macaddr, hostname, ipaddr, ip6addr, expires, lease, active, wifi }]
+	 * ------------------------------------------------------------------ */
+	const MAC_RE = /^([0-9a-f]{2}:){5}[0-9a-f]{2}$/;
+	C.parseArp = function (text, devices) {
+		return String(text || '').split('\n').slice(1).map((line) => line.trim().split(/\s+/)).filter((f) =>
+			f.length >= 6 && (parseInt(f[2], 16) & 2) && MAC_RE.test(f[3].toLowerCase()) && f[3] !== '00:00:00:00:00:00' &&
+			(!devices || devices.indexOf(f[5]) >= 0)
+		).map((f) => ({ ip: f[0], mac: f[3].toLowerCase(), dev: f[5] }));
+	};
+
+	C.mergeDevices = function (src) {
+		src = src || {};
+		const byMac = new Map(), list = [];
+		const get = (mac) => {
+			mac = String(mac || '').toLowerCase();
+			if (!MAC_RE.test(mac) || mac === '00:00:00:00:00:00') return null;
+			let d = byMac.get(mac);
+			if (!d) {
+				d = { macaddr: mac, hostname: '', ipaddr: '', ip6addr: '', expires: null, lease: false, active: false, wifi: null };
+				byMac.set(mac, d);
+				list.push(d);
+			}
+			return d;
+		};
+		const firstAddr = (v) => String((Array.isArray(v) ? v[0] : v) || '').replace(/\/\d+$/, '');
+
+		(src.leases || []).forEach((l) => {
+			const d = get(l.macaddr);
+			if (!d) return;
+			d.hostname = d.hostname || l.hostname || '';
+			d.ipaddr = d.ipaddr || l.ipaddr || '';
+			d.expires = l.expires;
+			d.lease = true;
+		});
+		(src.leases6 || []).forEach((l) => {
+			const d = (l.macaddr && get(l.macaddr)) || (l.hostname ? list.find((x) => x.hostname === l.hostname) : null);
+			if (!d) return;
+			d.ip6addr = d.ip6addr || firstAddr(l.ip6addrs || l.ip6addr);
+			d.hostname = d.hostname || l.hostname || '';
+		});
+		(src.arp || []).forEach((n) => {
+			const d = get(n.mac);
+			if (!d) return;
+			d.ipaddr = d.ipaddr || n.ip;
+			d.active = true;
+		});
+		(src.stations || []).forEach((st) => {
+			const d = get(st.mac);
+			if (!d) return;
+			d.active = true;
+			d.wifi = { band: (src.bands || {})[st.ifname] || null, signal: st.signal != null && st.signal < 0 ? st.signal : null };
+		});
+		const hints = src.hints || {};
+		list.forEach((d) => {
+			const hint = hints[d.macaddr.toUpperCase()] || hints[d.macaddr];
+			if (!hint) return;
+			d.hostname = d.hostname || hint.name || '';
+			d.ipaddr = d.ipaddr || firstAddr(hint.ipaddrs || hint.ipv4);
+			d.ip6addr = d.ip6addr || firstAddr(hint.ip6addrs || hint.ipv6);
+		});
+		return list.sort((a, b) => (!a.ipaddr - !b.ipaddr) || (ipNum(a.ipaddr) - ipNum(b.ipaddr)) || a.macaddr.localeCompare(b.macaddr));
+	};
+
+	/* LAN-side devices for ARP: skip uplinks (non-static interfaces with a default route) */
+	C.lanDevices = function (ifs) {
+		if (!Array.isArray(ifs)) return null;
+		const devs = [];
+		ifs.forEach((i) => {
+			if (!i.up || i.interface === 'loopback' || (hasDefaultRoute(i) && i.proto !== 'static')) return;
+			[i.l3_device, i.device].forEach((d) => { if (d && devs.indexOf(d) < 0) devs.push(d); });
+		});
+		return devs;
+	};
+
+	/* first global IPv6 address of the interface carrying the IPv6 default route */
+	C.wanIPv6 = function (ifs) {
+		const up = (ifs || []).filter((i) => i.up && (i.route || []).some((r) => r.target === '::' && r.mask === 0));
+		for (const i of up) {
+			const addrs = (i['ipv6-address'] || []).concat(i['ipv6-prefix-assignment'] || [], i['ipv6-prefix'] || []);
+			const a = addrs.find((x) => x && x.address && !/^fe80:/i.test(x.address));
+			if (a) return { address: a.address, mask: a.mask, iface: i.interface };
+		}
+		return null;
+	};
+
 	/* avatar element for a device */
 	function deviceAvatar(l, id) {
 		const b = id.brand;
@@ -1157,12 +1330,15 @@
 			ui.net = h('span', { class: 'cb-pill off', text: '…' });
 			ui.wan = h('span', { class: 'cb-meta-val cb-mono', text: '—' });
 			ui.lan = h('span', { class: 'cb-meta-val cb-mono', text: '—' });
+			ui.wan6 = h('span', { class: 'cb-meta-val cb-mono cb-ip6', text: '—' });
+			ui.wan6Item = metaItem(t('WAN IPv6'), ui.wan6);
+			ui.wan6Item.classList.add('hidden');
 			dash.appendChild(h('div', { class: 'cb-card cb-hero span-12' }, [
 				h('div', { class: 'cb-hero-id' }, [
 					h('div', { class: 'cb-hero-icon', html: LOGO }),
 					h('div', { class: 'cb-hero-text' }, [ui.host, ui.sub])
 				]),
-				h('div', { class: 'cb-hero-meta' }, [ui.net, metaItem(t('WAN IP'), ui.wan), metaItem(t('LAN IP'), ui.lan)])
+				h('div', { class: 'cb-hero-meta' }, [ui.net, metaItem(t('WAN IP'), ui.wan), ui.wan6Item, metaItem(t('LAN IP'), ui.lan)])
 			]));
 
 			/* traffic */
@@ -1173,9 +1349,10 @@
 			ui.dl = rate(t('Download'), COLORS.blue);
 			ui.ul = rate(t('Upload'), COLORS.purple);
 			ui.totals = h('div', { class: 'cb-totals' });
-			ui.trafficNote = h('span', { class: 'cb-card-note' });
+			ui.trafficSel = h('select', { class: 'cb-traffic-select', 'aria-label': t('Traffic interface') });
+			ui.trafficSel.appendChild(h('option', { value: 'auto' }, t('Auto')));
 			ui.chart = h('div', { class: 'cb-chart' });
-			dash.appendChild(card('cb-traffic span-8', t('Live Traffic'), ui.trafficNote, [
+			dash.appendChild(card('cb-traffic span-8', t('Live Traffic'), ui.trafficSel, [
 				h('div', { class: 'cb-rates' }, [ui.dl.el, ui.ul.el, ui.totals]),
 				ui.chart,
 				h('div', { class: 'cb-chart-foot' }, [h('span', { text: t('2 min ago') }), h('span', { text: t('Now') })])
@@ -1249,7 +1426,10 @@
 			const loadSpark = new Sparkline(ui.tLoad.extra, { color: COLORS.indigo, points: 30 });
 
 			/* ---------------- data ---------------- */
-			const st = { dev: null, devAlt: null, prevNet: null, prevCpu: null, showAll: false, leases: [] };
+			const st = {
+				dev: null, devAlt: null, prevNet: null, prevCpu: null, showAll: false, devices: [], wifiCount: null,
+				traffic: store.get('carbon.traffic', 'auto'), trafficKey: '', ifs: null, hints: null, hintsAt: 0, aps: null
+			};
 			const safe = (fn) => {
 				if (typeof fn !== 'function') return Promise.resolve(null);
 				try { return Promise.resolve(fn()).catch(() => null); }
@@ -1265,11 +1445,12 @@
 			}
 
 			function renderClients() {
-				const list = st.leases;
+				const list = st.devices;
 				ui.clients.innerHTML = '';
 				ui.clientCount.textContent = list ? String(list.length) : '';
 				ui.tDevices.val.textContent = list ? String(list.length) : '—';
-				ui.tDevices.sub.textContent = t('DHCP clients');
+				ui.tDevices.sub.textContent = st.wifiCount != null ? t('%d on Wi-Fi', st.wifiCount) :
+					(list && list.some((d) => !d.lease) ? t('Recently active') : t('DHCP clients'));
 				if (!list) { ui.clients.appendChild(h('li', { class: 'cb-empty', text: t('Unavailable') })); return; }
 				if (!list.length) { ui.clients.appendChild(h('li', { class: 'cb-empty', text: t('No devices yet') })); }
 				const limit = st.showAll ? list.length : 8;
@@ -1278,20 +1459,25 @@
 					const kind = id.brand ? id.brand.n : (id.type ? t(TYPE_LABEL[id.type]) : null);
 					const name = l.hostname || (kind ? t('%s device', kind) : t('Unknown device'));
 					let lease = '';
-					if (l.expires === false || l.expires == null || l.expires < 0) lease = t('Static');
-					else if (l.expires > 0) lease = t('%s left', fmt.duration(l.expires));
+					if (l.lease) {
+						if (l.expires === false || l.expires == null || l.expires < 0) lease = t('Static');
+						else if (l.expires > 0) lease = t('%s left', fmt.duration(l.expires));
+					}
+					else if (l.active && !l.wifi) lease = t('Fixed IP');
+					const wifi = l.wifi ? [l.wifi.band, l.wifi.signal != null ? l.wifi.signal + ' dBm' : null].filter(Boolean).join(' · ') : '';
 					ui.clients.appendChild(h('li', null, [
 						deviceAvatar(l, id),
 						h('div', { class: 'cb-list-main' }, [
 							h('span', { class: 'cb-list-title', text: name }),
 							h('span', { class: 'cb-list-sub' }, [
 								kind ? h('span', { class: 'cb-kind', text: kind }) : null,
-								h('span', { class: 'cb-mono', text: l.ipaddr || '' })
+								h('span', { class: 'cb-mono', text: l.ipaddr || l.ip6addr || '' })
 							])
 						]),
 						h('div', { class: 'cb-list-aside' }, [
 							h('span', { class: 'cb-mono cb-hide-sm', text: (l.macaddr || '').toUpperCase() }),
 							h('span', null, [
+								l.wifi ? h('span', { class: 'cb-tag cb-tag-wifi', title: t('Connected over Wi-Fi') + (wifi ? ' · ' + wifi : ''), 'aria-label': wifi || t('Wi-Fi'), html: icon('wifi') + '<span class="cb-tag-text">' + esc(wifi || t('Wi-Fi')) + '</span>' }) : null,
 								id.priv ? h('span', { class: 'cb-tag', title: t('Randomised MAC address'), text: t('Private') }) : null,
 								lease
 							])
@@ -1305,7 +1491,7 @@
 				else ui.clientMore.classList.add('hidden');
 			}
 			ui.clientMore.addEventListener('click', () => { st.showAll = !st.showAll; renderClients(); });
-			C.loadBrands().then((d) => { if (d && st.leases) renderClients(); });
+			C.loadBrands().then((d) => { if (d && st.devices) renderClients(); });
 
 			function renderWireless(w) {
 				ui.wifi.innerHTML = '';
@@ -1319,8 +1505,7 @@
 				const rows = [];
 				if (w) Object.keys(w).sort().forEach((radio) => {
 					const r = w[radio] || {}, cfg = r.config || {};
-					let band = cfg.band ? ({ '2g': '2.4 GHz', '5g': '5 GHz', '6g': '6 GHz', '60g': '60 GHz' })[cfg.band] : null;
-					if (!band && cfg.hwmode) band = /a/.test(cfg.hwmode) ? '5 GHz' : '2.4 GHz';
+					const band = radioBand(cfg);
 					(r.interfaces || []).forEach((i) => {
 						const ic = i.config || {};
 						if (ic.mode && ic.mode !== 'ap') return;
@@ -1359,40 +1544,102 @@
 				});
 			}
 
+			function uplinks(ifs) {
+				const wan = ifs.find((i) => i.up && hasDefaultRoute(i) && i['ipv4-address'] && i['ipv4-address'].length) ||
+					ifs.find((i) => i.up && hasDefaultRoute(i)) ||
+					ifs.find((i) => i.interface === 'wan');
+				return { wan: wan, lan: ifs.find((i) => i.interface === 'lan') };
+			}
+
+			/* traffic source: "auto" follows the uplink, or a device the user picked */
+			function updateTraffic() {
+				const ifs = st.ifs;
+				if (!ifs) return;
+				const groups = [];
+				ifs.forEach((i) => {
+					const dev = i.l3_device || i.device;
+					if (!i.up || i.interface === 'loopback' || !dev) return;
+					let g = groups.find((x) => x.dev === dev);
+					if (!g) groups.push(g = { dev: dev, alt: i.device, names: [] });
+					g.names.push((i.interface || '').toUpperCase());
+				});
+				const u = uplinks(ifs);
+				const auto = (u.wan && u.wan.up) ? u.wan : u.lan;
+				const autoDev = auto ? (auto.l3_device || auto.device) : null;
+				const key = groups.map((g) => g.dev + '=' + g.names.join(',')).join('|') + '#' + autoDev;
+				if (key !== st.trafficKey) {
+					st.trafficKey = key;
+					ui.trafficSel.innerHTML = '';
+					ui.trafficSel.appendChild(h('option', { value: 'auto' },
+						t('Auto') + (auto ? ' · ' + (auto.interface || '').toUpperCase() + (autoDev ? ' (' + autoDev + ')' : '') : '')));
+					groups.forEach((g) => ui.trafficSel.appendChild(h('option', { value: g.dev }, g.names.join(' / ') + ' (' + g.dev + ')')));
+				}
+				const pick = groups.find((g) => g.dev === st.traffic);
+				ui.trafficSel.value = pick ? pick.dev : 'auto';
+				const dev = pick ? pick.dev : autoDev;
+				if (dev !== st.dev) {
+					st.prevNet = null;
+					chart.reset();
+					setRate(ui.dl, 0);
+					setRate(ui.ul, 0);
+				}
+				st.dev = dev;
+				st.devAlt = pick ? pick.alt : (auto ? auto.device : null);
+			}
+			ui.trafficSel.addEventListener('change', () => {
+				st.traffic = ui.trafficSel.value;
+				store.set('carbon.traffic', st.traffic);
+				updateTraffic();
+			});
+
 			async function slow() {
-				const r = await Promise.all([safe(P.interfaces), safe(P.leases), safe(P.wireless)]);
+				const hintsDue = Date.now() - st.hintsAt > 30000;
+				/* stations use the AP list from the previous tick, so everything goes in one batch */
+				const known = st.aps;
+				const r = await Promise.all([
+					safe(P.interfaces), safe(P.leases), safe(P.wireless), safe(P.neighbors),
+					hintsDue ? safe(P.hostHints) : Promise.resolve(st.hints),
+					known && known.length && P.stations ? safe(() => P.stations(known)) : Promise.resolve(null)
+				]);
 				const ifs = Array.isArray(r[0]) ? r[0] : null;
+				st.ifs = ifs;
 
 				if (ifs) {
-					const wan = ifs.find((i) => i.up && hasDefaultRoute(i) && i['ipv4-address'] && i['ipv4-address'].length) ||
-						ifs.find((i) => i.up && hasDefaultRoute(i)) ||
-						ifs.find((i) => i.interface === 'wan');
-					const lan = ifs.find((i) => i.interface === 'lan');
+					const u = uplinks(ifs);
 					const online = ifs.some((i) => i.up && hasDefaultRoute(i));
 					ui.net.className = 'cb-pill ' + (online ? 'ok' : 'bad');
 					ui.net.textContent = online ? t('Online') : t('Offline');
-					const wv4 = wan && (wan['ipv4-address'] || [])[0];
+					const wv4 = u.wan && (u.wan['ipv4-address'] || [])[0];
 					ui.wan.textContent = wv4 ? wv4.address : '—';
-					const lv4 = lan && (lan['ipv4-address'] || [])[0];
+					const lv4 = u.lan && (u.lan['ipv4-address'] || [])[0];
 					ui.lan.textContent = lv4 ? lv4.address : '—';
-
-					const tgt = (wan && wan.up) ? wan : lan;
-					const dev = tgt ? (tgt.l3_device || tgt.device) : null;
-					if (dev !== st.dev) st.prevNet = null;
-					st.dev = dev;
-					st.devAlt = tgt ? tgt.device : null;
-					ui.trafficNote.textContent = tgt ? (tgt.interface || '').toUpperCase() + (dev ? ' · ' + dev : '') : '';
+					const v6 = C.wanIPv6(ifs);
+					ui.wan6Item.classList.toggle('hidden', !v6);
+					ui.wan6.textContent = v6 ? v6.address : '—';
+					ui.wan6.title = v6 ? v6.address + (v6.mask ? '/' + v6.mask : '') : '';
+					updateTraffic();
 				}
 				renderIfaces(ifs);
 
-				const leases = r[1] ? (r[1].dhcp_leases || []) : null;
-				st.leases = leases ? leases.slice().sort((a, b) => ipNum(a.ipaddr) - ipNum(b.ipaddr)) : null;
+				if (hintsDue && r[4] && typeof r[4] === 'object') { st.hints = r[4]; st.hintsAt = Date.now(); }
+				const w = r[2] && typeof r[2] === 'object' ? r[2] : null;
+				const aps = apInterfaces(w);
+				const same = known && known.join() === aps.ifnames.join();
+				st.aps = aps.ifnames;
+				/* first tick, or the AP set changed: one extra request */
+				const stations = same ? r[5] : (aps.ifnames.length && P.stations ? await safe(() => P.stations(aps.ifnames)) : null);
+				const leases = r[1] && Array.isArray(r[1].dhcp_leases) ? r[1].dhcp_leases : null;
+				const arp = r[3] != null ? C.parseArp(r[3], C.lanDevices(ifs)) : null;
+				st.devices = (leases || arp || stations) ? C.mergeDevices({
+					leases: leases, leases6: r[1] && r[1].dhcp6_leases, stations: stations, arp: arp, hints: st.hints, bands: aps.bands
+				}) : null;
+				st.wifiCount = (st.devices && Array.isArray(stations)) ? st.devices.filter((d) => d.wifi).length : null;
 				renderClients();
-				renderWireless(r[2]);
+				renderWireless(w || (r[2] == null ? null : {}));
 			}
 
 			async function mid() {
-				const r = await Promise.all([safe(P.info), safe(P.conntrack), safe(P.temperature)]);
+				const r = await Promise.all([safe(P.info), safe(P.conntrack), safe(P.temperatures || P.temperature)]);
 				const info = r[0];
 				ui.kv.innerHTML = '';
 				if (info) {
@@ -1446,15 +1693,22 @@
 				}
 				else ui.tConn.sub.textContent = t('Unavailable');
 
-				const temp = r[2] != null ? parseInt(r[2], 10) : NaN;
-				if (!isNaN(temp) && temp > 0)
-					ui.kv.appendChild(h('li', null, [h('span', { text: t('Temperature') }), h('span', { text: (temp / 1000).toFixed(1) + ' °C' })]));
+				/* sensors: [{ name, value (m°C) }] — or a bare reading from older providers */
+				const temps = (Array.isArray(r[2]) ? r[2] : (r[2] != null ? [{ name: '', value: parseInt(r[2], 10) }] : []))
+					.filter((x) => x && !isNaN(x.value) && x.value > 0).sort((a, b) => b.value - a.value);
+				const sensorName = (n) => String(n || '').replace(/[-_ ]?thermal$/i, '').replace(/[-_]+/g, ' ').trim();
+				const all = temps.map((x) => (sensorName(x.name) || t('Temperature')) + ': ' + (x.value / 1000).toFixed(1) + ' °C').join('\n');
+				temps.slice(0, 3).forEach((x) => {
+					const label = temps.length > 1 && sensorName(x.name) ? t('Temperature') + ' · ' + sensorName(x.name) : t('Temperature');
+					ui.kv.appendChild(h('li', { title: all }, [h('span', { text: label }), h('span', { text: (x.value / 1000).toFixed(1) + ' °C' })]));
+				});
 			}
 
 			async function fast() {
+				const dev = st.dev;
 				const r = await Promise.all([
 					safe(P.cpuStat),
-					st.dev ? safe(() => P.devStats(st.dev, st.devAlt)) : Promise.resolve(null)
+					dev ? safe(() => P.devStats(dev, st.devAlt)) : Promise.resolve(null)
 				]);
 
 				const cpu = parseCpu(r[0]);
@@ -1468,7 +1722,8 @@
 				else if (!st.prevCpu) rCpu.set(null, t('Unavailable'));
 
 				const s = r[1];
-				if (s && s.rx_bytes != null) {
+				/* the traffic source may have changed while this sample was in flight */
+				if (s && s.rx_bytes != null && dev === st.dev) {
 					const now = Date.now();
 					if (st.prevNet && s.rx_bytes >= st.prevNet.rx && s.tx_bytes >= st.prevNet.tx) {
 						const dt = (now - st.prevNet.t) / 1000 || 1;
@@ -1503,14 +1758,16 @@
 	};
 
 	/* Details toggle (LuCI's original status widgets live below) */
-	C.detailsToggle = function (host, defaultOpen) {
+	C.detailsToggle = function (host, defaultOpen, onToggle) {
 		const body = document.body;
 		const saved = store.get('carbon.details', '');
 		const open = saved ? saved === '1' : !!defaultOpen;
-		const btn = h('button', { type: 'button', class: 'cb-details-btn' });
+		const btn = h('button', { type: 'button', class: 'cb-details-btn', 'aria-controls': 'view' });
 		const sync = (on) => {
 			body.classList.toggle('cb-show-details', on);
+			btn.setAttribute('aria-expanded', on ? 'true' : 'false');
 			btn.innerHTML = esc(on ? t('Hide detailed status') : t('Show detailed status')) + icon('chevdown');
+			if (typeof onToggle === 'function') onToggle(on);
 		};
 		btn.addEventListener('click', () => {
 			const on = !body.classList.contains('cb-show-details');
