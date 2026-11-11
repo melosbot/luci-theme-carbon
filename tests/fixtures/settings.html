@@ -11,6 +11,8 @@
 <body>
 <div class="cb-app"><main class="cb-main" style="margin-left:0"><div id="maincontent" class="cb-content"><div id="view"></div></div></main></div>
 <script>
+/* E() with LuCI's dom.append rules (luci.js): array items that are not
+   elements become text, so a null item shows up as "null" like on a router */
 function E(tag, attrs, children) {
 	const el = document.createElement(tag);
 	for (const [k, v] of Object.entries(attrs || {})) {
@@ -18,8 +20,10 @@ function E(tag, attrs, children) {
 		if (typeof v === 'function') el.addEventListener(k, v);
 		else el.setAttribute(k, v === true ? '' : v);
 	}
-	const add = (c) => { if (c == null) return; if (Array.isArray(c)) c.forEach(add); else el.append(c instanceof Node ? c : String(c)); };
-	add(children);
+	if (Array.isArray(children))
+		children.forEach((c) => el.appendChild(c instanceof Node ? c : document.createTextNode(`${c}`)));
+	else if (children instanceof Node) el.appendChild(children);
+	else if (children != null) el.innerHTML = `${children}`;
 	return el;
 }
 const L = { hasViewPermission: () => true, env: { cgi_base: '/cgi-bin' } };

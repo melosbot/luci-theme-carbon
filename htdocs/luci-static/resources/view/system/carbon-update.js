@@ -60,10 +60,9 @@ const errors = {
 const message = code => errors[code] ? tr(errors[code]) : String(code || '');
 const writable = () => L.hasViewPermission();
 
-const section = (title, description, children) => E('section', { 'class': 'cbi-section' }, [
-	E('h3', {}, title),
-	description ? E('p', { 'class': 'cbi-section-descr' }, description) : null
-].concat(children));
+/* LuCI's E() renders a null array item as the text "null": never pass one */
+const section = (title, description, children) => E('section', { 'class': 'cbi-section' },
+	[E('h3', {}, title)].concat(description ? [E('p', { 'class': 'cbi-section-descr' }, description)] : [], children));
 const actions = (children) => E('div', { 'class': 'cb-update-actions' }, children);
 const external = (href, text) => E('a', { 'href': href, 'target': '_blank', 'rel': 'noopener noreferrer' }, text);
 

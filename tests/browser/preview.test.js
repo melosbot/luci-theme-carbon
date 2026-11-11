@@ -229,6 +229,9 @@ test('settings page: buttons, links, fields and status text share one centre lin
 			return { row: row.className, spread: Math.max(...Object.values(lines).map((m) => Math.max(...m) - Math.min(...m))) };
 		}));
 		assert.equal(rows.length, 3, JSON.stringify(rows));
+		const stray = await page.evaluate(() => [...document.querySelectorAll('#view *')].flatMap((el) => [...el.childNodes])
+			.filter((n) => n.nodeType === 3 && /^(null|undefined)$/.test(n.textContent.trim())).length);
+		assert.equal(stray, 0, 'no "null" / "undefined" text from absent children');
 		/* release notes from the built-in renderer: structure, safe links, local scrolling */
 		const notes = await page.evaluate(() => {
 			const box = document.querySelector('.cb-release-notes');
