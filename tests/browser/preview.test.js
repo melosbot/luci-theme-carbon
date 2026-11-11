@@ -229,6 +229,18 @@ test('settings page: buttons, links, fields and status text share one centre lin
 			return { row: row.className, spread: Math.max(...Object.values(lines).map((m) => Math.max(...m) - Math.min(...m))) };
 		}));
 		assert.equal(rows.length, 3, JSON.stringify(rows));
+		/* release notes from the built-in renderer: structure, safe links, local scrolling */
+		const notes = await page.evaluate(() => {
+			const box = document.querySelector('.cb-release-notes');
+			return {
+				tags: ['h2', 'h3', 'ul', 'li', 'strong', 'table', 'pre', 'code'].filter((t) => box.querySelector(t)),
+				links: [...box.querySelectorAll('a')].every((a) => a.target === '_blank' && a.rel === 'noopener noreferrer'),
+				fits: box.scrollWidth <= box.clientWidth + 1 || getComputedStyle(box).overflowX !== 'visible'
+			};
+		});
+		assert.deepEqual(notes.tags, ['h2', 'h3', 'ul', 'li', 'strong', 'table', 'pre', 'code']);
+		assert.ok(notes.links && notes.fits);
+		if (width === 1200) await page.screenshot({ path: path.join(SHOTS, 'settings-release-notes.png'), fullPage: true });
 		rows.forEach((r) => assert.ok(r.spread <= 0.5, `${width}px ${r.row}: ${r.spread}px off centre`));
 		assert.deepEqual(errors, []);
 		await context.close();

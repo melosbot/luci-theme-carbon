@@ -33,4 +33,4 @@ For signed APK and native IPK updater integration tests, see [online-update.md](
 
 ## Release notes
 
-Run `node --test tests/markdown.test.js` to check the bundled parser, rendered release structures, unsafe HTML/URLs and unchanged-content polling. In LuCI, check for updates and confirm the notes render as headings, lists, links, tables and code, in both appearance modes and at 390px width. Long code/table content must scroll inside the notes; status polling must retain the reading position and text selection. No external parser CDN is used.
+Run `node --test tests/markdown.test.js` to check the built-in Markdown renderer (`htdocs/luci-static/resources/carbon/markdown.js`): release-note structures, unsafe HTML/URLs, pathological input and unchanged-content polling. In LuCI, check for updates and confirm the notes render as headings, lists, links, tables and code, in both appearance modes and at 390px width. Long code/table content must scroll inside the notes; status polling must retain the reading position and text selection.
