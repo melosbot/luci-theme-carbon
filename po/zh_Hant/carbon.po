@@ -51,14 +51,6 @@ msgstr "<1 分鐘"
 msgid "A new version is available."
 msgstr "有新版本可用。"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Add it over SSH instead"
-msgstr "改用 SSH 新增"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Add software source"
-msgstr "新增軟體源"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "All settings"
 msgstr "全部設定"
@@ -209,10 +201,6 @@ msgstr "請輸入 HTTPS 鏡像前綴，例如 https://mirror.example.com/（僅�
 msgid "Expand sidebar"
 msgstr "展開側邊欄"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Feed setup page"
-msgstr "軟體源說明頁"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Fixed IP"
 msgstr "固定 IP"
@@ -337,10 +325,6 @@ msgstr "鏡像前綴"
 msgid "Need more settings? Switch to"
 msgstr "需要更多設定？切換到"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Neither apk nor opkg was found on this router."
-msgstr "這台路由器上找不到 apk 或 opkg。"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Network devices"
 msgstr "網路裝置"
@@ -356,10 +340,6 @@ msgstr "尚無安裝記錄。"
 #: htdocs/luci-static/carbon/carbon.js
 msgid "No wireless"
 msgstr "未偵測到無線網卡"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Not added."
-msgstr "尚未新增。"
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "Not checked"
@@ -396,10 +376,6 @@ msgstr "已開啟"
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Online"
 msgstr "已連上網路"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Optional. Adds Carbon's signed package feed on GitHub Pages to the package manager, so luci-theme-carbon can be found and upgraded in System → Software like any other package. Your other feeds are not changed."
-msgstr "選用。將 Carbon 在 GitHub Pages 上的簽章軟體源加入套件管理員，之後就能在「系統 → 軟體」中像其他套件一樣搜尋並升級 luci-theme-carbon。不會變更您的其他軟體源。"
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "Optional. If GitHub downloads are slow or blocked, enter an HTTPS prefix that proxies GitHub links, for example https://mirror.example.com/ for https://mirror.example.com/https://github.com/…. Release information is still read from GitHub, and the downloaded file must match the size and SHA-256 published there; GitHub is tried if the mirror fails."
@@ -473,10 +449,6 @@ msgstr "檢查後顯示更新說明。"
 msgid "Reload page"
 msgstr "重新整理頁面"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Remove software source"
-msgstr "移除軟體源"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Resources"
 msgstr "系統資源"
@@ -537,10 +509,6 @@ msgstr "智慧裝置"
 msgid "Software"
 msgstr "套件"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Software source"
-msgstr "軟體源"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Speaker"
 msgstr "喇叭"
@@ -570,10 +538,6 @@ msgid "Temperature"
 msgstr "溫度"
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "The Carbon software source is added. Update the lists in System → Software to see new versions."
-msgstr "已新增 Carbon 軟體源。在「系統 → 軟體」中更新清單即可看到新版本。"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The default logo is restored."
 msgstr "已還原預設 Logo。"
 
@@ -600,10 +564,6 @@ msgstr "套件已安裝，但還原主題偏好失敗，請檢查「系統 → �
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The release changed, expired, or is no longer newer. Check for updates again."
 msgstr "發布資訊已變更、過期或不再是新版本，請重新檢查更新。"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "The software source could not be added. Check that opkg-key (opkg) or /etc/apk/keys (apk) is available."
-msgstr "無法新增軟體源。請確認 opkg-key（opkg）或 /etc/apk/keys（apk）可用。"
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The update was interrupted. Check the installed version before trying again."

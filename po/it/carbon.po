@@ -51,14 +51,6 @@ msgstr "<1 min"
 msgid "A new version is available."
 msgstr "È disponibile una nuova versione."
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Add it over SSH instead"
-msgstr "Aggiungila via SSH"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Add software source"
-msgstr "Aggiungi sorgente pacchetti"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "All settings"
 msgstr "Tutte le impostazioni"
@@ -209,10 +201,6 @@ msgstr "Inserisci un prefisso mirror HTTPS come https://mirror.example.com/ (sol
 msgid "Expand sidebar"
 msgstr "Espandi barra laterale"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Feed setup page"
-msgstr "Pagina di configurazione della sorgente"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Fixed IP"
 msgstr "IP fisso"
@@ -337,10 +325,6 @@ msgstr "Prefisso mirror"
 msgid "Need more settings? Switch to"
 msgstr "Servono più impostazioni? Passa alla"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Neither apk nor opkg was found on this router."
-msgstr "Su questo router non è stato trovato né apk né opkg."
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Network devices"
 msgstr "Dispositivi di rete"
@@ -356,10 +340,6 @@ msgstr "Ancora nessun registro di installazione."
 #: htdocs/luci-static/carbon/carbon.js
 msgid "No wireless"
 msgstr "Nessun Wi-Fi"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Not added."
-msgstr "Non aggiunta."
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "Not checked"
@@ -396,10 +376,6 @@ msgstr "Acceso"
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Online"
 msgstr "Online"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Optional. Adds Carbon's signed package feed on GitHub Pages to the package manager, so luci-theme-carbon can be found and upgraded in System → Software like any other package. Your other feeds are not changed."
-msgstr "Facoltativo. Aggiunge al gestore pacchetti la sorgente firmata di Carbon su GitHub Pages, così luci-theme-carbon si può trovare e aggiornare in Sistema → Software come qualsiasi altro pacchetto. Le altre sorgenti non vengono modificate."
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "Optional. If GitHub downloads are slow or blocked, enter an HTTPS prefix that proxies GitHub links, for example https://mirror.example.com/ for https://mirror.example.com/https://github.com/…. Release information is still read from GitHub, and the downloaded file must match the size and SHA-256 published there; GitHub is tried if the mirror fails."
@@ -473,10 +449,6 @@ msgstr "Le note di rilascio appariranno dopo il controllo."
 msgid "Reload page"
 msgstr "Ricarica pagina"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Remove software source"
-msgstr "Rimuovi sorgente pacchetti"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Resources"
 msgstr "Risorse"
@@ -537,10 +509,6 @@ msgstr "Dispositivo smart"
 msgid "Software"
 msgstr "Software"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Software source"
-msgstr "Sorgente pacchetti"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Speaker"
 msgstr "Altoparlante"
@@ -570,10 +538,6 @@ msgid "Temperature"
 msgstr "Temperatura"
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "The Carbon software source is added. Update the lists in System → Software to see new versions."
-msgstr "La sorgente pacchetti di Carbon è stata aggiunta. Aggiorna gli elenchi in Sistema → Software per vedere le nuove versioni."
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The default logo is restored."
 msgstr "Il logo predefinito è stato ripristinato."
 
@@ -600,10 +564,6 @@ msgstr "Il pacchetto è stato installato, ma il ripristino delle preferenze del 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The release changed, expired, or is no longer newer. Check for updates again."
 msgstr "La release è cambiata, è scaduta o non è più più recente. Cerca di nuovo gli aggiornamenti."
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "The software source could not be added. Check that opkg-key (opkg) or /etc/apk/keys (apk) is available."
-msgstr "Impossibile aggiungere la sorgente pacchetti. Verifica che opkg-key (opkg) o /etc/apk/keys (apk) sia disponibile."
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The update was interrupted. Check the installed version before trying again."

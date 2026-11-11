@@ -16,7 +16,6 @@ const check = call('check');
 const upgrade = call('upgrade', [ 'version' ]);
 const configure = call('configure', [ 'mirror' ]);
 const setLogo = call('logo', [ 'action' ]);
-const setFeed = call('feed', [ 'action' ]);
 
 /* Must match the rpcd backend and its ACL (the only file cgi-upload may write). */
 const LOGO_UPLOAD = '/tmp/carbon-logo.upload';
@@ -56,10 +55,7 @@ const errors = {
 	logo_size: N_('The logo must be at most 256 KB.'),
 	logo_type: N_('Unsupported file. Use a PNG, JPEG, WebP, GIF or SVG image.'),
 	logo_unsafe: N_('This SVG contains scripts, event handlers, links or embedded documents and was rejected. Save it as a plain SVG or PNG.'),
-	logo_denied: N_('Permission denied. Log out and log in again once after updating Carbon, then retry.'),
-	/* software source */
-	feed_manager: N_('Neither apk nor opkg was found on this router.'),
-	feed_failed: N_('The software source could not be added. Check that opkg-key (opkg) or /etc/apk/keys (apk) is available.')
+	logo_denied: N_('Permission denied. Log out and log in again once after updating Carbon, then retry.')
 };
 const message = code => errors[code] ? tr(errors[code]) : String(code || '');
 const writable = () => L.hasViewPermission();
@@ -131,48 +127,6 @@ function logoSection(data) {
 
 	return section(tr('Logo'), tr('Shown in the sidebar, on the login page, on the overview and as the browser icon. PNG, JPEG, WebP, GIF or SVG up to 256 KB; a square image of at least 128 × 128 pixels looks best. The logo is kept across theme updates and firmware upgrades that keep settings.'), [
 		E('div', { 'class': 'cb-logo-row' }, [preview, E('div', { 'class': 'cb-logo-actions' }, [uploadButton, resetButton, input, state])])
-	]);
-}
-
-/* ---- software source: the signed package feed, for System → Software ---- */
-function feedSection(data) {
-	const base = data.feed_url || '';
-	let added = !!data.feed;
-	const state = E('p', { 'role': 'status', 'aria-live': 'polite' });
-	const button = E('button', { 'click': async () => {
-		button.disabled = true;
-		let issue = null;
-		try {
-			const result = await setFeed(added ? 'remove' : 'add');
-			if (result.error) issue = message(result.error);
-			else added = !!result.feed;
-		}
-		catch (e) { issue = e.message; }
-		paint();
-		if (issue) state.textContent = issue;
-	} });
-	const paint = () => {
-		state.textContent = added ?
-			tr('The Carbon software source is added. Update the lists in System → Software to see new versions.') : tr('Not added.');
-		button.textContent = added ? tr('Remove software source') : tr('Add software source');
-		button.className = 'cbi-button ' + (added ? 'cbi-button-reset' : 'cbi-button-action');
-		button.disabled = !writable() || !data.manager || !base;
-	};
-	const commands = data.manager === 'opkg' ? [
-		`wget -O /tmp/carbon-feed.pub ${base}/carbon-feed.pub && opkg-key add /tmp/carbon-feed.pub`,
-		`echo 'src/gz carbon ${base}/opkg' >> /etc/opkg/customfeeds.conf`,
-		'opkg update'
-	] : [
-		`wget -O /etc/apk/keys/carbon-apk.pem ${base}/carbon-apk.pem`,
-		`echo '${base}/apk/packages.adb' >> /etc/apk/repositories.d/customfeeds.list`,
-		'apk update'
-	];
-	paint();
-
-	return section(tr('Software source'), tr('Optional. Adds Carbon\'s signed package feed on GitHub Pages to the package manager, so luci-theme-carbon can be found and upgraded in System → Software like any other package. Your other feeds are not changed.'), [
-		state,
-		actions([button, base ? external(base + '/', tr('Feed setup page')) : null]),
-		base ? E('details', {}, [E('summary', {}, tr('Add it over SSH instead')), E('pre', { 'class': 'cb-feed-commands' }, commands.join('\n'))]) : null
 	]);
 }
 
@@ -311,7 +265,6 @@ return view.extend({
 			logoSection(data),
 			updates.main,
 			updates.notes,
-			feedSection(data),
 			mirrorSection(data),
 			updates.log
 		]);

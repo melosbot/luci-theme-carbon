@@ -1,8 +1,8 @@
 'use strict';
 /*
  * Theme settings backend (root/usr/libexec/rpcd/luci.carbon_update): custom
- * logo and software source. The real shell functions run with a minimal jshn
- * stand-in and temporary paths.
+ * logo. The real shell functions run with a minimal jshn stand-in and
+ * temporary paths.
  */
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -117,57 +117,4 @@ test('a symlinked upload is refused', () => {
 	fs.symlinkSync(path.join(b.dir, 'secret'), path.join(b.dir, 'upload'));
 	assert.deepEqual(b.call('set'), { error: 'logo_missing' });
 	assert.deepEqual(b.files(), []);
-});
-
-/* ---- software source (package feed) ---------------------------------- */
-function feedBackend(manager) {
-	const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'carbon-feed-rpc-'));
-	const body = SCRIPT
-		.replace('. /usr/share/libubox/jshn.sh', `. "${JSHN}"`)
-		.replace(/\ncase "\$1" in\n\tlist\)[\s\S]*$/, '\n');
-	fs.mkdirSync(path.join(dir, 'keys'));
-	fs.mkdirSync(path.join(dir, 'bin'));
-	fs.copyFileSync(path.join(__dirname, '..', 'keys/carbon-apk.pem'), path.join(dir, 'keys/carbon-apk.pem'));
-	fs.copyFileSync(path.join(__dirname, '..', 'keys/carbon-feed.pub'), path.join(dir, 'keys/carbon-feed.pub'));
-	fs.writeFileSync(path.join(dir, 'bin/opkg-key'), `#!/bin/sh\necho "$@" >> "${dir}/opkg-key.log"\n`, { mode: 0o755 });
-	const lib = path.join(dir, 'backend.sh');
-	fs.writeFileSync(lib, body + [
-		`key_dir="${dir}/keys"`, `apk_key_dir="${dir}/etc/apk/keys"`,
-		`apk_feed_list="${dir}/etc/apk/repositories.d/customfeeds.list"`, `opkg_feed_list="${dir}/etc/opkg/customfeeds.conf"`,
-		`installed() { manager=${manager}; }`, ''
-	].join('\n'));
-	const call = (action) => JSON.parse(execFileSync(process.env.CARBON_TEST_SH || 'sh', ['-c', `. "${lib}"; input='{"action":"${action}"}'; feed`],
-		{ encoding: 'utf8', env: Object.assign({}, process.env, { PATH: path.join(dir, 'bin') + ':' + process.env.PATH }) }));
-	const read = (rel) => fs.existsSync(path.join(dir, rel)) ? fs.readFileSync(path.join(dir, rel), 'utf8') : null;
-	const write = (rel, text) => { fs.mkdirSync(path.dirname(path.join(dir, rel)), { recursive: true }); fs.writeFileSync(path.join(dir, rel), text); };
-	return { dir, call, read, write };
-}
-
-test('apk: adding the software source trusts the key and appends one line', () => {
-	const b = feedBackend('apk');
-	const line = 'https://mrjoechen.github.io/luci-theme-carbon/feed/apk/packages.adb';
-	b.write('etc/apk/repositories.d/customfeeds.list', '# user feeds\nhttps://example.com/packages.adb');
-	assert.deepEqual(b.call('add'), { feed: 1 });
-	assert.equal(b.read('etc/apk/repositories.d/customfeeds.list'), `# user feeds\nhttps://example.com/packages.adb\n${line}\n`);
-	assert.equal(b.read('etc/apk/keys/carbon-apk.pem'), fs.readFileSync(path.join(__dirname, '..', 'keys/carbon-apk.pem'), 'utf8'));
-	assert.deepEqual(b.call('add'), { feed: 1 }, 'idempotent');
-	assert.equal(b.read('etc/apk/repositories.d/customfeeds.list').split(line).length, 2, 'line added once');
-	assert.deepEqual(b.call('remove'), { feed: 0 });
-	assert.equal(b.read('etc/apk/repositories.d/customfeeds.list'), '# user feeds\nhttps://example.com/packages.adb\n');
-	assert.ok(b.read('etc/apk/keys/carbon-apk.pem'), 'the key stays for LuCI uploads');
-	assert.deepEqual(b.call('remove'), { feed: 0 });
-	assert.deepEqual(b.call('bogus'), { error: 'invalid' });
-});
-
-test('opkg: adding the software source imports the usign key with opkg-key', () => {
-	const b = feedBackend('opkg');
-	assert.deepEqual(b.call('add'), { feed: 1 });
-	assert.equal(b.read('etc/opkg/customfeeds.conf'), 'src/gz carbon https://mrjoechen.github.io/luci-theme-carbon/feed/opkg\n');
-	assert.match(b.read('opkg-key.log'), /^add .*\/keys\/carbon-feed\.pub\n$/);
-	assert.deepEqual(b.call('remove'), { feed: 0 });
-	assert.equal(b.read('etc/opkg/customfeeds.conf'), '');
-});
-
-test('the software source needs apk or opkg', () => {
-	assert.deepEqual(feedBackend('').call('add'), { error: 'feed_manager' });
 });

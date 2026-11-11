@@ -58,9 +58,7 @@ jobs:
           python3 -m json.tool root/usr/share/rpcd/acl.d/luci-theme-carbon-update.json > /dev/null
           python3 -m json.tool root/usr/share/luci/menu.d/luci-theme-carbon.json > /dev/null
           for f in scripts/*.sh tests/*.sh root/etc/uci-defaults/* root/usr/libexec/rpcd/*; do sh -n "$f"; done
-          python3 -I -m py_compile scripts/build-feed.py scripts/usign.py
           cmp keys/carbon-apk.pem root/usr/share/carbon/keys/carbon-apk.pem
-          cmp keys/carbon-feed.pub root/usr/share/carbon/keys/carbon-feed.pub
 
       - name: Minify release assets
         run: |
@@ -225,7 +223,6 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: write
-      actions: write   # dispatch pages.yml so the package feed follows the release
     steps:
       - uses: actions/checkout@v4
         with:
@@ -282,7 +279,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # English, then 简体中文: docs/releases/<tag>.<lang>.md + install.<lang>.md
+          # docs/releases/<tag>.md + install.md: the English section, then 简体中文
           sh scripts/release-notes.sh "$RELEASE_TAG" "$GITHUB_REPOSITORY" > notes.md
           gh release create "$RELEASE_TAG" assets/* \
             --repo "$GITHUB_REPOSITORY" \
@@ -290,8 +287,3 @@ jobs:
             --title "Carbon $RELEASE_TAG" \
             --notes-file notes.md \
             --generate-notes
-
-      - name: Update the package feed on GitHub Pages
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref "${{ github.event.repository.default_branch }}"

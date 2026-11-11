@@ -51,14 +51,6 @@ msgstr "1분 미만"
 msgid "A new version is available."
 msgstr "새 버전이 있습니다."
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Add it over SSH instead"
-msgstr "SSH로 추가하기"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Add software source"
-msgstr "소프트웨어 소스 추가"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "All settings"
 msgstr "모든 설정"
@@ -209,10 +201,6 @@ msgstr "https://mirror.example.com/ 과 같은 HTTPS 미러 접두사를 입력�
 msgid "Expand sidebar"
 msgstr "사이드바 펼치기"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Feed setup page"
-msgstr "소스 설정 페이지"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Fixed IP"
 msgstr "고정 IP"
@@ -337,10 +325,6 @@ msgstr "미러 접두사"
 msgid "Need more settings? Switch to"
 msgstr "설정이 더 필요하신가요? 전환:"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Neither apk nor opkg was found on this router."
-msgstr "이 라우터에서 apk 또는 opkg를 찾을 수 없습니다."
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Network devices"
 msgstr "네트워크 장치"
@@ -356,10 +340,6 @@ msgstr "아직 설치 로그가 없습니다."
 #: htdocs/luci-static/carbon/carbon.js
 msgid "No wireless"
 msgstr "무선 없음"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Not added."
-msgstr "추가하지 않음."
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "Not checked"
@@ -396,10 +376,6 @@ msgstr "켜짐"
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Online"
 msgstr "온라인"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Optional. Adds Carbon's signed package feed on GitHub Pages to the package manager, so luci-theme-carbon can be found and upgraded in System → Software like any other package. Your other feeds are not changed."
-msgstr "선택 사항입니다. GitHub Pages에 있는 Carbon의 서명된 패키지 피드를 패키지 관리자에 추가하여 다른 패키지처럼 시스템 → 소프트웨어에서 luci-theme-carbon을 찾고 업그레이드할 수 있게 합니다. 다른 피드는 변경되지 않습니다."
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "Optional. If GitHub downloads are slow or blocked, enter an HTTPS prefix that proxies GitHub links, for example https://mirror.example.com/ for https://mirror.example.com/https://github.com/…. Release information is still read from GitHub, and the downloaded file must match the size and SHA-256 published there; GitHub is tried if the mirror fails."
@@ -473,10 +449,6 @@ msgstr "확인 후 릴리스 노트가 표시됩니다."
 msgid "Reload page"
 msgstr "페이지 새로 고침"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Remove software source"
-msgstr "소프트웨어 소스 제거"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Resources"
 msgstr "리소스"
@@ -537,10 +509,6 @@ msgstr "스마트 기기"
 msgid "Software"
 msgstr "소프트웨어"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Software source"
-msgstr "소프트웨어 소스"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Speaker"
 msgstr "스피커"
@@ -570,10 +538,6 @@ msgid "Temperature"
 msgstr "온도"
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "The Carbon software source is added. Update the lists in System → Software to see new versions."
-msgstr "Carbon 소프트웨어 소스를 추가했습니다. 시스템 → 소프트웨어에서 목록을 업데이트하면 새 버전이 표시됩니다."
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The default logo is restored."
 msgstr "기본 로고로 복원했습니다."
 
@@ -600,10 +564,6 @@ msgstr "패키지는 설치되었지만 테마 설정을 복원하지 못했습�
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The release changed, expired, or is no longer newer. Check for updates again."
 msgstr "릴리스가 변경되었거나 만료되었거나 더 이상 최신이 아닙니다. 업데이트를 다시 확인하세요."
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "The software source could not be added. Check that opkg-key (opkg) or /etc/apk/keys (apk) is available."
-msgstr "소프트웨어 소스를 추가하지 못했습니다. opkg-key(opkg) 또는 /etc/apk/keys(apk)를 사용할 수 있는지 확인하세요."
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The update was interrupted. Check the installed version before trying again."

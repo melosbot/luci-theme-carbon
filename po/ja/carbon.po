@@ -51,14 +51,6 @@ msgstr "1 分未満"
 msgid "A new version is available."
 msgstr "新しいバージョンがあります。"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Add it over SSH instead"
-msgstr "SSH で追加する"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Add software source"
-msgstr "ソフトウェアソースを追加"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "All settings"
 msgstr "すべての設定"
@@ -209,10 +201,6 @@ msgstr "https://mirror.example.com/ のような HTTPS ミラーのプレフィ�
 msgid "Expand sidebar"
 msgstr "サイドバーを展開"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Feed setup page"
-msgstr "ソース設定ページ"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Fixed IP"
 msgstr "固定 IP"
@@ -337,10 +325,6 @@ msgstr "ミラーのプレフィックス"
 msgid "Need more settings? Switch to"
 msgstr "さらに設定が必要ですか？切り替え："
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Neither apk nor opkg was found on this router."
-msgstr "このルーターには apk も opkg も見つかりません。"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Network devices"
 msgstr "ネットワークデバイス"
@@ -356,10 +340,6 @@ msgstr "インストールログはまだありません。"
 #: htdocs/luci-static/carbon/carbon.js
 msgid "No wireless"
 msgstr "無線なし"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Not added."
-msgstr "未追加です。"
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "Not checked"
@@ -396,10 +376,6 @@ msgstr "オン"
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Online"
 msgstr "オンライン"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Optional. Adds Carbon's signed package feed on GitHub Pages to the package manager, so luci-theme-carbon can be found and upgraded in System → Software like any other package. Your other feeds are not changed."
-msgstr "任意。GitHub Pages 上の署名付き Carbon パッケージフィードをパッケージマネージャーに追加し、ほかのパッケージと同じように「システム → ソフトウェア」で luci-theme-carbon を検索・更新できるようにします。ほかのフィードは変更されません。"
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "Optional. If GitHub downloads are slow or blocked, enter an HTTPS prefix that proxies GitHub links, for example https://mirror.example.com/ for https://mirror.example.com/https://github.com/…. Release information is still read from GitHub, and the downloaded file must match the size and SHA-256 published there; GitHub is tried if the mirror fails."
@@ -473,10 +449,6 @@ msgstr "確認後にリリースノートが表示されます。"
 msgid "Reload page"
 msgstr "ページを再読み込み"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Remove software source"
-msgstr "ソフトウェアソースを削除"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Resources"
 msgstr "リソース"
@@ -537,10 +509,6 @@ msgstr "スマートデバイス"
 msgid "Software"
 msgstr "ソフトウェア"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Software source"
-msgstr "ソフトウェアソース"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Speaker"
 msgstr "スピーカー"
@@ -570,10 +538,6 @@ msgid "Temperature"
 msgstr "温度"
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "The Carbon software source is added. Update the lists in System → Software to see new versions."
-msgstr "Carbon のソフトウェアソースを追加しました。「システム → ソフトウェア」でリストを更新すると新しいバージョンが表示されます。"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The default logo is restored."
 msgstr "デフォルトのロゴに戻しました。"
 
@@ -600,10 +564,6 @@ msgstr "パッケージはインストールされましたが、テーマ設定
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The release changed, expired, or is no longer newer. Check for updates again."
 msgstr "リリースが変更されたか、期限切れか、新しくなくなりました。もう一度更新を確認してください。"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "The software source could not be added. Check that opkg-key (opkg) or /etc/apk/keys (apk) is available."
-msgstr "ソフトウェアソースを追加できませんでした。opkg-key（opkg）または /etc/apk/keys（apk）が使えるか確認してください。"
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The update was interrupted. Check the installed version before trying again."

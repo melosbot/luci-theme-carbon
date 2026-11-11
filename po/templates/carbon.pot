@@ -50,14 +50,6 @@ msgstr ""
 msgid "A new version is available."
 msgstr ""
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Add it over SSH instead"
-msgstr ""
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Add software source"
-msgstr ""
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "All settings"
 msgstr ""
@@ -208,10 +200,6 @@ msgstr ""
 msgid "Expand sidebar"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Feed setup page"
-msgstr ""
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Fixed IP"
 msgstr ""
@@ -336,10 +324,6 @@ msgstr ""
 msgid "Need more settings? Switch to"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Neither apk nor opkg was found on this router."
-msgstr ""
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Network devices"
 msgstr ""
@@ -354,10 +338,6 @@ msgstr ""
 
 #: htdocs/luci-static/carbon/carbon.js
 msgid "No wireless"
-msgstr ""
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Not added."
 msgstr ""
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
@@ -394,10 +374,6 @@ msgstr ""
 
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Online"
-msgstr ""
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Optional. Adds Carbon's signed package feed on GitHub Pages to the package manager, so luci-theme-carbon can be found and upgraded in System → Software like any other package. Your other feeds are not changed."
 msgstr ""
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
@@ -472,10 +448,6 @@ msgstr ""
 msgid "Reload page"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Remove software source"
-msgstr ""
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Resources"
 msgstr ""
@@ -536,10 +508,6 @@ msgstr ""
 msgid "Software"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Software source"
-msgstr ""
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Speaker"
 msgstr ""
@@ -569,10 +537,6 @@ msgid "Temperature"
 msgstr ""
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "The Carbon software source is added. Update the lists in System → Software to see new versions."
-msgstr ""
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The default logo is restored."
 msgstr ""
 
@@ -598,10 +562,6 @@ msgstr ""
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The release changed, expired, or is no longer newer. Check for updates again."
-msgstr ""
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "The software source could not be added. Check that opkg-key (opkg) or /etc/apk/keys (apk) is available."
 msgstr ""
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js

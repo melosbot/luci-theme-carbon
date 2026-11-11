@@ -34,7 +34,6 @@ A clean, glass-style LuCI theme for OpenWrt — built for everyday users.
 - **Keyboard and touch friendly** — arrow keys in segmented controls, a focus-managed phone drawer, and rail sub-menus that open with a tap, <kbd>Enter</kbd> or <kbd>→</kbd>.
 - **Mobile friendly** — drawer navigation and tables that reflow into cards.
 - **Custom logo** — upload a PNG, JPEG, WebP, GIF or SVG in *System → Carbon Theme Settings*. It replaces the sidebar, login, overview and browser-tab logo, and is kept across theme and firmware upgrades. SVGs with scripts or embedded content are rejected.
-- **Package feed** — a signed opkg / apk feed on GitHub Pages: add it (one click in Carbon Theme Settings) and the theme can be found and upgraded in *System → Software*.
 - **Online updates** — check and install stable releases from *System → Carbon Theme Settings*, optionally through an HTTPS download mirror. APK signatures remain verified; download size and SHA-256 are checked against GitHub before installation.
 - Existing LuCI pages and plugins keep working;
 - Architecture independent: one theme package for every router.
@@ -97,22 +96,6 @@ opkg install /tmp/luci-theme-carbon_*_all.ipk
 
 Older LuCI needs a one-time SSH key import. See [APK configuration and troubleshooting](docs/apk-install.md) for the verified key fingerprint, commands and preserving the key across firmware upgrades. The old v1.0.0 APK is unsigned; download a new version. Repository `wget` / `packages.adb` errors are separate network/feed problems and still need fixing for reliable web installs.
 
-### Option 4 — package feed (search and upgrade in LuCI)
-
-Add Carbon's signed feed once, then install and upgrade `luci-theme-carbon` in **System → Software** like any other package. apk (25.x / snapshot):
-
-```bash
-wget -O /etc/apk/keys/carbon-apk.pem https://mrjoechen.github.io/luci-theme-carbon/feed/carbon-apk.pem && echo 'https://mrjoechen.github.io/luci-theme-carbon/feed/apk/packages.adb' >> /etc/apk/repositories.d/customfeeds.list && apk update && apk add luci-theme-carbon
-```
-
-opkg (23.05 / 24.10):
-
-```bash
-wget -O /tmp/carbon-feed.pub https://mrjoechen.github.io/luci-theme-carbon/feed/carbon-feed.pub && opkg-key add /tmp/carbon-feed.pub && echo 'src/gz carbon https://mrjoechen.github.io/luci-theme-carbon/feed/opkg' >> /etc/opkg/customfeeds.conf && opkg update && opkg install luci-theme-carbon
-```
-
-With Carbon already installed, **System → Carbon Theme Settings → Add software source** does the same. LuCI-only setup, key fingerprints and maintainer notes: [package feed](docs/feed.md).
-
 ### After installing
 
 Carbon becomes the default theme. Refresh the page, then **log out and log in once** so the dashboard gets its read-only permissions. Switch themes any time in *System → System → Language and Style*.
@@ -128,7 +111,6 @@ Carbon becomes the default theme. Refresh the page, then **log out and log in on
 | Live traffic interface | picker in the *Live Traffic* card: *Auto* follows the WAN; any interface or network device (e.g. an xPON port such as `pon0` that also carries IPTV) can be picked, remembered per browser |
 | Check and install theme updates | System → Carbon Theme Settings (Simple and Pro modes) |
 | Custom logo | System → Carbon Theme Settings → Logo (*Restore default* undoes it) |
-| Find Carbon in System → Software | System → Carbon Theme Settings → Software source |
 | LuCI's original status page | *Show detailed status* under the dashboard |
 
 ### Online upgrades (v1.1.0+)
@@ -179,7 +161,7 @@ Generated files are committed so every install path works without a build step; 
 
 To add a language, create `po/<lang>/carbon.po` (copy the template), translate it and run `gen-i18n.py`. The SDK also builds it into a `luci-i18n-carbon-<lang>` package.
 
-Release notes: write `docs/releases/vX.Y.Z.en.md` and `vX.Y.Z.zh-CN.md` (rename the `next.*` drafts). The release job assembles them with `scripts/release-notes.sh`: English first, then Simplified Chinese, each followed by its install guide (`docs/releases/install.*.md`).
+Release notes: write `docs/releases/vX.Y.Z.md` (start from `next.md`) with a `## English` and a `## 简体中文` section. The release job (`scripts/release-notes.sh`) appends the matching section of `docs/releases/install.md` to each, so every language reads through once.
 
 Release packages ship minified CSS/JS (`node scripts/minify.mjs`, run by CI on a disposable checkout). Tests:
 

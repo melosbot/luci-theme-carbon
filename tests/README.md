@@ -5,10 +5,8 @@
 | Unit: formatting, i18n, devices, ARP, IPv6, brands (`carbon.test.js`) | `npm test` | Node 18+ |
 | Unit: LuCI glue — poll pause, language list/switch, menu cache | `npm test` | Node 18+ |
 | Unit: release-notes Markdown | `npm test` | Node 18+ |
-| Unit: settings backend — logo upload validation (types, size, unsafe SVG), software source add/remove (`settings-backend.test.js`; `CARBON_TEST_SH=/bin/dash` for a strict shell) | `npm test` | Node 18+, `sh` |
-| Unit: release body — English then Simplified Chinese, install guides, legacy notes (`release-notes.test.js`) | `npm test` | Node 18+, `sh` |
-| Unit: package feed layout and usign keys (`feed.test.js`) | `npm test` | Node 18+, `python3`, `tar` (usign checks need Python `cryptography`) |
-| Package feed signed and used by real opkg / apk | `sh scripts/publish-feed.sh OUT` (CI: pages.yml) | Docker, GitHub CLI, signing keys |
+| Unit: settings backend — logo upload validation (types, size, unsafe SVG) (`settings-backend.test.js`; `CARBON_TEST_SH=/bin/dash` for a strict shell) | `npm test` | Node 18+, `sh` |
+| Unit: release body — one bilingual file per release, each language read through once, legacy notes (`release-notes.test.js`) | `npm test` | Node 18+, `sh` |
 | Browser: preview pages, accessibility, minified build parity | `npm run test:browser` | `npm ci`, `npx playwright install chromium` |
 | Installer control flow (stub apk/opkg/uci) | `npm test` | Node 18+, `sh`, `tar` |
 | Installer with real apk (25.12) and opkg (24.10) | `python3 tests/installer-integration.py` | Docker, network |

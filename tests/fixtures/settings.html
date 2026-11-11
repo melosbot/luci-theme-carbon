@@ -25,7 +25,7 @@ function E(tag, attrs, children) {
 const L = { hasViewPermission: () => true, env: { cgi_base: '/cgi-bin' } };
 const data = {
 	current: '1.1.3-r1', latest: '1.1.4-r1', can_upgrade: true, manager: 'opkg', notes: '### v1.1.4\n\n- Notes', mirror: '',
-	logo: '../../htdocs/luci-static/carbon/logo.svg', feed: false, feed_url: 'https://example.github.io/luci-theme-carbon/feed'
+	logo: '../../htdocs/luci-static/carbon/logo.svg'
 };
 const stubs = {
 	view: { extend: (o) => o }, rpc: { declare: () => async () => data, getSessionID: () => 'test' },

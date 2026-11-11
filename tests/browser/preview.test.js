@@ -228,7 +228,7 @@ test('settings page: buttons, links, fields and status text share one centre lin
 			});
 			return { row: row.className, spread: Math.max(...Object.values(lines).map((m) => Math.max(...m) - Math.min(...m))) };
 		}));
-		assert.equal(rows.length, 4, JSON.stringify(rows));
+		assert.equal(rows.length, 3, JSON.stringify(rows));
 		rows.forEach((r) => assert.ok(r.spread <= 0.5, `${width}px ${r.row}: ${r.spread}px off centre`));
 		assert.deepEqual(errors, []);
 		await context.close();

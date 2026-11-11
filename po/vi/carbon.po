@@ -51,14 +51,6 @@ msgstr "<1 phút"
 msgid "A new version is available."
 msgstr "Đã có phiên bản mới."
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Add it over SSH instead"
-msgstr "Thêm qua SSH"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Add software source"
-msgstr "Thêm nguồn phần mềm"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "All settings"
 msgstr "Tất cả cài đặt"
@@ -209,10 +201,6 @@ msgstr "Nhập tiền tố máy chủ gương HTTPS như https://mirror.example.
 msgid "Expand sidebar"
 msgstr "Mở rộng thanh bên"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Feed setup page"
-msgstr "Trang hướng dẫn nguồn"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Fixed IP"
 msgstr "IP cố định"
@@ -337,10 +325,6 @@ msgstr "Tiền tố máy chủ gương"
 msgid "Need more settings? Switch to"
 msgstr "Cần thêm cài đặt? Chuyển sang"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Neither apk nor opkg was found on this router."
-msgstr "Không tìm thấy apk hay opkg trên router này."
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Network devices"
 msgstr "Thiết bị mạng"
@@ -356,10 +340,6 @@ msgstr "Chưa có nhật ký cài đặt."
 #: htdocs/luci-static/carbon/carbon.js
 msgid "No wireless"
 msgstr "Không có Wi-Fi"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Not added."
-msgstr "Chưa thêm."
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "Not checked"
@@ -396,10 +376,6 @@ msgstr "Bật"
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Online"
 msgstr "Trực tuyến"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Optional. Adds Carbon's signed package feed on GitHub Pages to the package manager, so luci-theme-carbon can be found and upgraded in System → Software like any other package. Your other feeds are not changed."
-msgstr "Không bắt buộc. Thêm nguồn gói đã ký của Carbon trên GitHub Pages vào trình quản lý gói, để tìm và nâng cấp luci-theme-carbon trong Hệ thống → Phần mềm như mọi gói khác. Các nguồn khác của bạn không bị thay đổi."
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "Optional. If GitHub downloads are slow or blocked, enter an HTTPS prefix that proxies GitHub links, for example https://mirror.example.com/ for https://mirror.example.com/https://github.com/…. Release information is still read from GitHub, and the downloaded file must match the size and SHA-256 published there; GitHub is tried if the mirror fails."
@@ -473,10 +449,6 @@ msgstr "Ghi chú phát hành sẽ hiện sau khi kiểm tra."
 msgid "Reload page"
 msgstr "Tải lại trang"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Remove software source"
-msgstr "Gỡ nguồn phần mềm"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Resources"
 msgstr "Tài nguyên"
@@ -537,10 +509,6 @@ msgstr "Thiết bị thông minh"
 msgid "Software"
 msgstr "Phần mềm"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Software source"
-msgstr "Nguồn phần mềm"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Speaker"
 msgstr "Loa"
@@ -570,10 +538,6 @@ msgid "Temperature"
 msgstr "Nhiệt độ"
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "The Carbon software source is added. Update the lists in System → Software to see new versions."
-msgstr "Đã thêm nguồn phần mềm Carbon. Hãy cập nhật danh sách trong Hệ thống → Phần mềm để thấy phiên bản mới."
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The default logo is restored."
 msgstr "Đã khôi phục logo mặc định."
 
@@ -600,10 +564,6 @@ msgstr "Đã cài gói nhưng không khôi phục được tùy chọn giao di�
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The release changed, expired, or is no longer newer. Check for updates again."
 msgstr "Bản phát hành đã thay đổi, hết hạn hoặc không còn mới hơn. Hãy kiểm tra cập nhật lại."
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "The software source could not be added. Check that opkg-key (opkg) or /etc/apk/keys (apk) is available."
-msgstr "Không thể thêm nguồn phần mềm. Hãy kiểm tra opkg-key (opkg) hoặc /etc/apk/keys (apk) có sẵn không."
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The update was interrupted. Check the installed version before trying again."

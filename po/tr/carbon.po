@@ -51,14 +51,6 @@ msgstr "<1 dk"
 msgid "A new version is available."
 msgstr "Yeni bir sürüm mevcut."
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Add it over SSH instead"
-msgstr "Bunun yerine SSH ile ekleyin"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Add software source"
-msgstr "Yazılım kaynağı ekle"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "All settings"
 msgstr "Tüm ayarlar"
@@ -209,10 +201,6 @@ msgstr "https://mirror.example.com/ gibi bir HTTPS yansı öneki girin (yalnızc
 msgid "Expand sidebar"
 msgstr "Kenar çubuğunu genişlet"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Feed setup page"
-msgstr "Kaynak kurulum sayfası"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Fixed IP"
 msgstr "Sabit IP"
@@ -337,10 +325,6 @@ msgstr "Yansı öneki"
 msgid "Need more settings? Switch to"
 msgstr "Daha fazla ayar mı gerekiyor? Geçin:"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Neither apk nor opkg was found on this router."
-msgstr "Bu yönlendiricide apk veya opkg bulunamadı."
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Network devices"
 msgstr "Ağ aygıtları"
@@ -356,10 +340,6 @@ msgstr "Henüz kurulum günlüğü yok."
 #: htdocs/luci-static/carbon/carbon.js
 msgid "No wireless"
 msgstr "Kablosuz yok"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Not added."
-msgstr "Eklenmedi."
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "Not checked"
@@ -396,10 +376,6 @@ msgstr "Açık"
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Online"
 msgstr "Çevrimiçi"
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Optional. Adds Carbon's signed package feed on GitHub Pages to the package manager, so luci-theme-carbon can be found and upgraded in System → Software like any other package. Your other feeds are not changed."
-msgstr "İsteğe bağlı. Carbon'un GitHub Pages üzerindeki imzalı paket kaynağını paket yöneticisine ekler; böylece luci-theme-carbon, Sistem → Yazılım bölümünde diğer paketler gibi bulunup yükseltilebilir. Diğer kaynaklarınız değişmez."
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "Optional. If GitHub downloads are slow or blocked, enter an HTTPS prefix that proxies GitHub links, for example https://mirror.example.com/ for https://mirror.example.com/https://github.com/…. Release information is still read from GitHub, and the downloaded file must match the size and SHA-256 published there; GitHub is tried if the mirror fails."
@@ -473,10 +449,6 @@ msgstr "Sürüm notları denetimden sonra görünecek."
 msgid "Reload page"
 msgstr "Sayfayı yeniden yükle"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Remove software source"
-msgstr "Yazılım kaynağını kaldır"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Resources"
 msgstr "Kaynaklar"
@@ -537,10 +509,6 @@ msgstr "Akıllı cihaz"
 msgid "Software"
 msgstr "Yazılım"
 
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "Software source"
-msgstr "Yazılım kaynağı"
-
 #: htdocs/luci-static/carbon/carbon.js
 msgid "Speaker"
 msgstr "Hoparlör"
@@ -570,10 +538,6 @@ msgid "Temperature"
 msgstr "Sıcaklık"
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "The Carbon software source is added. Update the lists in System → Software to see new versions."
-msgstr "Carbon yazılım kaynağı eklendi. Yeni sürümleri görmek için Sistem → Yazılım bölümünde listeleri güncelleyin."
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The default logo is restored."
 msgstr "Varsayılan logo geri yüklendi."
 
@@ -600,10 +564,6 @@ msgstr "Paket kuruldu ancak tema tercihleri geri yüklenemedi. Sistem → Dil ve
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The release changed, expired, or is no longer newer. Check for updates again."
 msgstr "Sürüm değişti, süresi doldu veya artık daha yeni değil. Güncellemeleri yeniden denetleyin."
-
-#: htdocs/luci-static/resources/view/system/carbon-update.js
-msgid "The software source could not be added. Check that opkg-key (opkg) or /etc/apk/keys (apk) is available."
-msgstr "Yazılım kaynağı eklenemedi. opkg-key (opkg) veya /etc/apk/keys (apk) kullanılabilir olduğundan emin olun."
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "The update was interrupted. Check the installed version before trying again."

@@ -31,7 +31,6 @@
 - **键盘与触屏友好**：分段按钮支持方向键，手机抽屉菜单管理焦点，收起的侧栏可点按、<kbd>Enter</kbd> 或 <kbd>→</kbd> 打开子菜单。
 - **适配手机**：侧栏变为抽屉，表格自动变成卡片。
 - **自定义 Logo**：在「系统 → Carbon 主题设置」上传 PNG、JPEG、WebP、GIF 或 SVG，替换侧栏、登录页、概览页和浏览器标签上的 Logo；主题升级和保留配置的固件升级后仍然保留。含脚本或嵌入内容的 SVG 会被拒绝。
-- **软件源**：GitHub Pages 上提供签名的 opkg / apk 软件源，添加后（在 Carbon 主题设置中一键添加）即可在「系统 → 软件包」中搜索和升级主题。
 - **网页在线升级**：在「系统 → Carbon 主题设置」检查并安装稳定版，可选 HTTPS 下载镜像；APK 保留签名校验，安装前按 GitHub 公布的信息核对文件大小和 SHA-256。
 - 所有 LuCI 页面和插件照常使用；更新器仅安装 Carbon 主题包。
 - 与架构无关，所有路由器通用一个主题包。
@@ -94,22 +93,6 @@ opkg install /tmp/luci-theme-carbon_*_all.ipk
 
 旧版 LuCI 没有公钥管理页时，只需一次 SSH 导入。公钥指纹、导入命令、刷机保留配置及排错见 [APK 配置说明](docs/apk-install.md)。旧 v1.0.0 APK 未签名，请重新下载新版。`wget` / `packages.adb` 报错属于独立的软件源或网络问题，要稳定通过网页安装仍需修复软件源。
 
-### 方式四：软件源（在 LuCI 中搜索与升级）
-
-添加一次 Carbon 的签名软件源，之后即可在「系统 → 软件包」中像其他软件包一样安装和升级 `luci-theme-carbon`。apk（25.x / snapshot）：
-
-```bash
-wget -O /etc/apk/keys/carbon-apk.pem https://mrjoechen.github.io/luci-theme-carbon/feed/carbon-apk.pem && echo 'https://mrjoechen.github.io/luci-theme-carbon/feed/apk/packages.adb' >> /etc/apk/repositories.d/customfeeds.list && apk update && apk add luci-theme-carbon
-```
-
-opkg（23.05 / 24.10）：
-
-```bash
-wget -O /tmp/carbon-feed.pub https://mrjoechen.github.io/luci-theme-carbon/feed/carbon-feed.pub && opkg-key add /tmp/carbon-feed.pub && echo 'src/gz carbon https://mrjoechen.github.io/luci-theme-carbon/feed/opkg' >> /etc/opkg/customfeeds.conf && opkg update && opkg install luci-theme-carbon
-```
-
-已安装 Carbon 时，「系统 → Carbon 主题设置 → 添加软件源」可一键完成。仅用网页的添加方法、公钥指纹和维护说明见[软件源文档](docs/feed.md)。
-
 ### 安装之后
 
 Carbon 会自动设为默认主题。刷新页面，然后**退出并重新登录一次**，仪表盘才能读取 CPU、连接数等数据。随时可以在「系统 → 系统 → 语言和界面」切换回其他主题。
@@ -125,7 +108,6 @@ Carbon 会自动设为默认主题。刷新页面，然后**退出并重新登�
 | 实时流量统计接口 | 「实时流量」卡片右上角的选择框：「自动」跟随 WAN；也可选任意接口或网络设备（如同时承载 IPTV 的光口 `pon0`），按浏览器记住 |
 | 检查更新与一键升级 | 系统 → Carbon 主题设置（简洁、专业模式均可见） |
 | 自定义 Logo | 系统 → Carbon 主题设置 → Logo（「恢复默认」可撤销） |
-| 在「系统 → 软件包」中找到 Carbon | 系统 → Carbon 主题设置 → 软件源 |
 | LuCI 原版状态页 | 仪表盘下方「显示详细状态」 |
 
 ### 网页在线升级（v1.1.0 起）
@@ -176,7 +158,7 @@ sh scripts/build-ipk.sh
 
 新增语言：复制模板为 `po/<语言>/carbon.po`，翻译后运行 `gen-i18n.py`。使用 SDK 构建时还会生成 `luci-i18n-carbon-<语言>` 语言包。
 
-发布说明：编写 `docs/releases/vX.Y.Z.en.md` 和 `vX.Y.Z.zh-CN.md`（由 `next.*` 草稿改名）。发布任务用 `scripts/release-notes.sh` 组装：先英文、后简体中文，各自附上安装说明（`docs/releases/install.*.md`）。
+发布说明：编写 `docs/releases/vX.Y.Z.md`（由 `next.md` 改名），文件中分为 `## English` 和 `## 简体中文` 两节。发布任务（`scripts/release-notes.sh`）会把 `docs/releases/install.md` 中对应语言的安装说明接在各自一节后面，每种语言从头到尾连续阅读。
 
 发布包中的 CSS/JS 会被压缩（`node scripts/minify.mjs`，由 CI 在临时检出目录中执行）。测试：
 

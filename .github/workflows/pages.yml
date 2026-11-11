@@ -1,4 +1,4 @@
-name: Deploy demo and package feed to GitHub Pages
+name: Deploy demo to GitHub Pages
 
 on:
   push:
@@ -7,9 +7,6 @@ on:
       - 'preview/**'
       - 'htdocs/luci-static/carbon/**'
       - 'scripts/build-demo.py'
-      - 'scripts/build-feed.py'
-      - 'scripts/publish-feed.sh'
-      - 'keys/**'
       - '.github/workflows/pages.yml'
       - 'LICENSE'
   pull_request:
@@ -17,13 +14,8 @@ on:
       - 'preview/**'
       - 'htdocs/luci-static/carbon/**'
       - 'scripts/build-demo.py'
-      - 'scripts/build-feed.py'
-      - 'scripts/publish-feed.sh'
-      - 'keys/**'
       - '.github/workflows/pages.yml'
       - 'LICENSE'
-  # The release job in build.yml dispatches this workflow so the feed follows
-  # each release (releases created with GITHUB_TOKEN raise no release events).
   workflow_dispatch:
 
 permissions:
@@ -47,15 +39,6 @@ jobs:
           for f in htdocs/luci-static/carbon/i18n/*.js; do node --check "$f"; done
       - name: Build static demo
         run: python3 scripts/build-demo.py
-      # opkg/apk feed at <pages>/feed/ from the latest release, signed and then
-      # checked with real opkg/apk before deployment (see scripts/publish-feed.sh).
-      - name: Build package feed
-        if: github.event_name != 'pull_request'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          FEED_USIGN_KEY: ${{ secrets.FEED_USIGN_KEY }}
-          APK_SIGNING_KEY: ${{ secrets.APK_SIGNING_KEY }}
-        run: sh scripts/publish-feed.sh dist/demo/feed
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

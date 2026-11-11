@@ -1,0 +1,31 @@
+## English
+
+### What's new
+
+- **Custom logo.** Upload a PNG, JPEG, WebP, GIF or SVG (up to 256 KB) in System → Carbon Theme Settings. It replaces the logo in the sidebar, on the login page, on the overview and in the browser tab, and is kept across theme updates and firmware upgrades that keep settings. SVGs with scripts, event handlers or embedded documents are rejected.
+- **Ten more languages.** German, Spanish, French, Italian, Japanese, Korean, Brazilian Portuguese, Russian, Turkish and Vietnamese, alongside English and Simplified and Traditional Chinese.
+- **Language menu.** With more than two languages installed, the sidebar shows a Carbon-styled list instead of the browser's own select. It works with keyboard (arrows, type-ahead, Esc) and touch, and opens beside the collapsed rail.
+- **Live traffic.** Physical network devices, such as an xPON port carrying several VLANs, can be picked in addition to interfaces.
+- **Docker.** The Docker menu uses a whale icon, and each Docker page has its own icon.
+- **Plugins.** The DiskMan partition bar fits its card on desktops and phones; the ttyd terminal fills the window.
+- **Carbon Theme Settings.** Buttons, links and fields line up on one line.
+
+### Upgrade notes
+
+- If uploading a logo reports *Permission denied*, log out and back in once.
+
+## 简体中文
+
+### 更新内容
+
+- **自定义 Logo。** 在「系统 → Carbon 主题设置」上传 PNG、JPEG、WebP、GIF 或 SVG（不超过 256 KB），替换侧栏、登录页、概览页和浏览器标签上的 Logo；主题升级和保留配置的固件升级后仍会保留。含脚本、事件处理或嵌入文档的 SVG 会被拒绝。
+- **新增十种语言。** 德语、西班牙语、法语、意大利语、日语、韩语、巴西葡萄牙语、俄语、土耳其语和越南语，加上原有的英文、简体中文和繁体中文。
+- **语言菜单。** 安装了两种以上语言时，侧栏使用与主题风格一致的下拉列表，不再使用浏览器自带的下拉框；支持键盘（方向键、首字母跳转、Esc）和触屏，侧栏收起时在旁边弹出。
+- **实时流量。** 除接口外，还可以选择物理网络设备，例如承载多个 VLAN 的 xPON 光口。
+- **Docker。** Docker 菜单使用鲸鱼图标，各个 Docker 页面也有各自的图标。
+- **插件适配。** DiskMan 分区条在电脑和手机上都不再超出卡片；ttyd 终端铺满窗口。
+- **Carbon 主题设置。** 按钮、链接和输入框对齐在同一行。
+
+### 升级须知
+
+- 如果上传 Logo 时提示「权限不足」，请退出并重新登录一次。
