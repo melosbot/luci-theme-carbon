@@ -1615,7 +1615,7 @@
 			ui.clientCount = h('span', { class: 'cb-count' });
 			ui.clients = h('ul', { class: 'cb-list' });
 			ui.clientMore = h('button', { type: 'button', class: 'cb-more hidden' });
-			dash.appendChild(h('div', { class: 'cb-card span-8' }, [
+			dash.appendChild(h('div', { class: 'cb-card cb-clients span-8' }, [
 				h('div', { class: 'cb-card-head' }, [h('h3', null, [t('Connected Devices'), ui.clientCount]), manage(urls.devices)]),
 				ui.clients, ui.clientMore
 			]));
@@ -1668,7 +1668,9 @@
 					(list && list.some((d) => !d.lease) ? t('Recently active') : t('DHCP clients'));
 				if (!list) { ui.clients.appendChild(h('li', { class: 'cb-empty', text: t('Unavailable') })); return; }
 				if (!list.length) { ui.clients.appendChild(h('li', { class: 'cb-empty', text: t('No devices yet') })); }
-				const limit = st.showAll ? list.length : 8;
+				/* the two-column layout (wide screens) shows six rows, not four */
+				const collapsed = getComputedStyle(ui.clients).gridTemplateColumns.split(' ').length > 1 ? 12 : 8;
+				const limit = st.showAll ? list.length : collapsed;
 				list.slice(0, limit).forEach((l) => {
 					const id = C.identify(l.hostname, l.macaddr);
 					const kind = id.brand ? id.brand.n : (id.type ? t(TYPE_LABEL[id.type]) : null);
@@ -1699,7 +1701,7 @@
 						])
 					]));
 				});
-				if (list.length > 8) {
+				if (list.length > collapsed) {
 					ui.clientMore.classList.remove('hidden');
 					ui.clientMore.textContent = st.showAll ? t('Show less') : t('Show all %d devices', list.length);
 				}

@@ -70,6 +70,8 @@
 	--cb-ease: cubic-bezier(.25, .1, .25, 1);
 
 	--cb-content-max: 1240px;
+	/* dashboards and table pages grow with the screen (see 16-responsive) */
+	--cb-content-wide: 1240px;
 
 	color-scheme: light;
 }
@@ -2733,6 +2735,27 @@ body.cb-has-dash #maincontent > h2 { display: none; }
 /* ==========================================================================
    16. Responsive
    ========================================================================== */
+
+/* wide screens: pages that profit from width (the dashboard grid, tables)
+   grow in steps; plain forms keep a readable 1240px */
+@media (min-width: 1800px) { :root { --cb-content-wide: 1480px; } }
+@media (min-width: 2300px) { :root { --cb-content-wide: 1720px; } }
+body.cb-has-dash,
+body:has(#maincontent .table) { --cb-content-max: var(--cb-content-wide); }
+
+/* a wide devices card lays its list out in two columns */
+.cb-clients { container-type: inline-size; }
+@container (min-width: 880px) {
+	.cb-clients .cb-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; }
+	.cb-clients .cb-list > li:nth-child(2) { box-shadow: none; }
+	.cb-clients .cb-list > li:hover + li { box-shadow: 0 -.5px 0 var(--cb-sep); }
+	.cb-clients .cb-list > li:hover + li:nth-child(2) { box-shadow: none; }
+}
+/* columns too narrow for the MAC next to the name: keep the name readable */
+@container (min-width: 880px) and (max-width: 1099px) {
+	.cb-clients .cb-list .cb-hide-sm { display: none; }
+	.cb-clients .cb-tag-wifi .cb-tag-text { display: none; }
+}
 
 @media (max-width: 1180px) {
 	.cb-dash .span-8,
