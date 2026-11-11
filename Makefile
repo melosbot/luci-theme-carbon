@@ -32,6 +32,8 @@ if [ "$${PKG_UPGRADE}" = 1 ] || [ "$$1" = upgrade ]; then exit 0; fi
 	fi
 	uci commit luci
 	rm -f /etc/config/carbon
+	rm -rf /www/luci-static/carbon/custom
+	rmdir /www/luci-static/carbon 2>/dev/null
 }
 exit 0
 endef

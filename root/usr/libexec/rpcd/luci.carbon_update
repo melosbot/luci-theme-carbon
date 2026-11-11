@@ -1,13 +1,29 @@
 #!/bin/sh
-# Carbon updater. RPC callers can select a checked version, never a URL or command.
+# Carbon theme settings backend: verified theme updates and the custom logo.
+# RPC callers can select a checked version, never a URL or command.
 # An optional HTTPS download mirror (uci carbon.update.mirror) only carries the
 # package bytes; release metadata, size and SHA-256 always come from GitHub.
+# A custom logo is uploaded by LuCI's cgi-upload to $logo_upload (the only file
+# the ACL lets it write), validated here and published under $logo_dir, which
+# sysupgrade keeps (/lib/upgrade/keep.d/luci-theme-carbon).
 . /usr/share/libubox/jshn.sh
 umask 077
 state_dir=/tmp/carbon-update
 key_dir=/usr/share/carbon/keys
 repository=mrjoechen/luci-theme-carbon
 package_name=luci-theme-carbon
+logo_dir=/www/luci-static/carbon/custom
+logo_upload=/tmp/carbon-logo.upload
+logo_max=262144
+logo_exts='svg png webp jpg gif'
+# Package feed on GitHub Pages (scripts/publish-feed.sh): one fixed line per
+# package manager, signed with the keys shipped in $key_dir.
+feed_base=https://mrjoechen.github.io/luci-theme-carbon/feed
+apk_feed_list=/etc/apk/repositories.d/customfeeds.list
+apk_key_dir=/etc/apk/keys
+apk_feed_line=$feed_base/apk/packages.adb
+opkg_feed_list=/etc/opkg/customfeeds.conf
+opkg_feed_line="src/gz carbon $feed_base/opkg"
 
 valid_mirror() {
 	[ "${#1}" -le 200 ] && printf '%s\n' "$1" | grep -Eq '^https://[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?(:[0-9]{1,5})?(/[A-Za-z0-9._~%+-]+)*/$'
@@ -90,6 +106,9 @@ status_reply() {
 	json_add_string current "$current"; json_add_string manager "$manager"
 	json_add_string latest "$target"; json_add_string tag "$tag"; json_add_string notes "$notes"
 	mirror_prefix; json_add_string mirror "$mirror"
+	json_add_string logo "$(logo_url)"
+	json_add_boolean feed "$(feed_enabled && echo 1 || echo 0)"
+	json_add_string feed_url "$feed_base"
 	json_add_int checked_at "$checked"; json_add_boolean busy "$busy"
 	json_add_boolean can_upgrade "$can_upgrade"; json_add_string reason "$reason"
 	json_dump
@@ -227,12 +246,111 @@ configure() {
 	json_init; json_add_string mirror "$value"; json_dump
 }
 
+# ---- custom logo ----------------------------------------------------------
+logo_url() {
+	for ext in $logo_exts; do
+		[ -f "$logo_dir/logo.$ext" ] && [ ! -L "$logo_dir/logo.$ext" ] || continue
+		stamp=$(date -r "$logo_dir/logo.$ext" +%s 2>/dev/null) || stamp=''
+		printf '/luci-static/carbon/custom/logo.%s%s' "$ext" "${stamp:+?v=$stamp}"
+		return 0
+	done
+}
+# Image type from the file's magic bytes (never from its name).
+# Plain head/printf comparisons: OpenWrt's default BusyBox has no od -t.
+logo_type() {
+	case "$(head -c 6 "$1")" in GIF87a|GIF89a) echo gif; return 0 ;; esac
+	if [ "$(head -c 4 "$1")" = RIFF ] && [ "$(head -c 12 "$1" | tail -c 4)" = WEBP ]; then echo webp; return 0; fi
+	if [ "$(head -c 8 "$1")" = "$(printf '\211PNG\r\n\032\n')" ]; then echo png; return 0; fi
+	if [ "$(head -c 3 "$1")" = "$(printf '\377\330\377')" ]; then echo jpg; return 0; fi
+	head -c 4096 "$1" | tr 'A-Z' 'a-z' | grep -q '<svg' && echo svg
+}
+# The logo is shown through <img>, where SVG scripts never run, but the file is
+# also reachable by URL on the LuCI origin. Reject anything that could run there.
+svg_safe() {
+	flat=$(tr 'A-Z\n\r\t' 'a-z   ' < "$1")
+	printf '%s' "$flat" | grep -Eq '<script|<foreignobject|<iframe|<embed|<object|<!entity|<a[ />]|<(set|animate)[ />]|<handler|javascript:|vbscript:|&#|[^a-z0-9_:.-]on[a-z]+ *=' && return 1
+	# Embedded data: URIs only as raster images.
+	printf '%s' "$flat" | grep -Eo 'data: *[a-z0-9/+.-]*' | grep -Evq '^data: *image/(png|jpeg|jpg|gif|webp)$' && return 1
+	return 0
+}
+logo_reply() { json_init; json_add_string logo "$(logo_url)"; json_dump; }
+logo_fail() { rm -f "$logo_upload" "$logo_dir/.logo.new"; error_reply "$1"; }
+set_logo() {
+	[ -f "$logo_upload" ] && [ ! -L "$logo_upload" ] || { logo_fail logo_missing; return; }
+	size=$(wc -c < "$logo_upload")
+	[ "$size" -gt 0 ] && [ "$size" -le "$logo_max" ] || { logo_fail logo_size; return; }
+	ext=$(logo_type "$logo_upload")
+	[ -n "$ext" ] || { logo_fail logo_type; return; }
+	[ "$ext" != svg ] || svg_safe "$logo_upload" || { logo_fail logo_unsafe; return; }
+	[ ! -L "$logo_dir" ] && mkdir -p "$logo_dir" && chmod 755 "$logo_dir" &&
+	cp "$logo_upload" "$logo_dir/.logo.new" && chmod 644 "$logo_dir/.logo.new" || { logo_fail state; return; }
+	rm -f "$logo_upload"
+	for old in $logo_exts; do [ "$old" = "$ext" ] || rm -f "$logo_dir/logo.$old"; done
+	mv -f "$logo_dir/.logo.new" "$logo_dir/logo.$ext" || { logo_fail state; return; }
+	logo_reply
+}
+reset_logo() {
+	rm -f "$logo_upload"
+	for ext in $logo_exts; do rm -f "$logo_dir/logo.$ext"; done
+	rm -f "$logo_dir/.logo.new"
+	[ ! -d "$logo_dir" ] || rmdir "$logo_dir" 2>/dev/null || :
+	logo_reply
+}
+logo() {
+	json_load "$input" 2>/dev/null && json_get_var action action || { error_reply invalid; return; }
+	case "$action" in set) set_logo ;; reset) reset_logo ;; *) error_reply invalid ;; esac
+}
+
+# ---- software source (package feed) ---------------------------------------
+feed_paths() {
+	case "$manager" in
+		apk) feed_list=$apk_feed_list; feed_line=$apk_feed_line ;;
+		opkg) feed_list=$opkg_feed_list; feed_line=$opkg_feed_line ;;
+		*) return 1 ;;
+	esac
+}
+feed_enabled() { feed_paths && [ -f "$feed_list" ] && grep -Fqx "$feed_line" "$feed_list"; }
+feed_add() {
+	case "$manager" in
+		apk)
+			[ -s "$key_dir/carbon-apk.pem" ] || return 1
+			mkdir -p "$apk_key_dir" && cp "$key_dir/carbon-apk.pem" "$apk_key_dir/carbon-apk.pem" &&
+			chmod 644 "$apk_key_dir/carbon-apk.pem" || return 1 ;;
+		opkg)
+			[ -s "$key_dir/carbon-feed.pub" ] && command -v opkg-key >/dev/null 2>&1 || return 1
+			opkg-key add "$key_dir/carbon-feed.pub" >/dev/null 2>&1 || return 1 ;;
+	esac
+	feed_enabled && return 0
+	mkdir -p "${feed_list%/*}" || return 1
+	# keep the file's last line intact when it has no trailing newline
+	# $(…) drops a trailing newline, so anything left means the last line is open
+	if [ -n "$(tail -c 1 "$feed_list" 2>/dev/null)" ]; then echo >> "$feed_list" || return 1; fi
+	printf '%s\n' "$feed_line" >> "$feed_list"
+}
+# Only the feed line is removed. Keys stay: the APK key also serves LuCI uploads.
+feed_remove() {
+	feed_enabled || return 0
+	grep -Fvx "$feed_line" "$feed_list" > "$feed_list.carbon" || :
+	cat "$feed_list.carbon" > "$feed_list" && rm -f "$feed_list.carbon"
+}
+feed() {
+	json_load "$input" 2>/dev/null && json_get_var action action || { error_reply invalid; return; }
+	installed
+	feed_paths || { error_reply feed_manager; return; }
+	case "$action" in
+		add) feed_add || { error_reply feed_failed; return; } ;;
+		remove) feed_remove || { error_reply feed_failed; return; } ;;
+		*) error_reply invalid; return ;;
+	esac
+	json_init; json_add_boolean feed "$(feed_enabled && echo 1 || echo 0)"; json_dump
+}
+
 case "$1" in
-	list) printf '%s\n' '{"status":{},"check":{},"upgrade":{"version":""},"configure":{"mirror":""}}' ;;
+	list) printf '%s\n' '{"status":{},"check":{},"upgrade":{"version":""},"configure":{"mirror":""},"logo":{"action":""},"feed":{"action":""}}' ;;
 	call)
 		input=$(cat)
 		prepare || { error_reply state; exit 0; }
-		case "$2" in status) status_reply ;; check|upgrade) start_job "$2" ;; configure) configure ;; *) error_reply invalid ;; esac
+		case "$2" in status) status_reply ;; check|upgrade) start_job "$2" ;; configure) configure ;; logo) logo ;; feed) feed ;; *) error_reply invalid ;; esac
 		;;
 	worker)
 		job=${0%/*}; requested=${3:-}; failure=interrupted; complete=0

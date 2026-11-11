@@ -23,6 +23,14 @@ render "$T/header.ut" en | grep -q '/i18n/' && fail "english loads no catalogue"
 render "$T/header.ut" '../x' | grep -q '/i18n/' && fail "unsafe language code"
 render "$T/header.ut" en login | grep -q 'cb-login-card' || fail "login layout"
 render "$T/footer.ut" en | grep -q "L.require('menu-carbon')" || fail "footer"
+render "$T/header.ut" en | grep -q 'src="/luci-static/carbon/logo.svg" alt="">' || fail "default logo"
+mkdir -p /www/luci-static/carbon/custom
+printf '\211PNG\r\n\032\n' > /www/luci-static/carbon/custom/logo.png
+out=$(render "$T/header.ut" en)
+printf '%s' "$out" | grep -q 'class="cb-brand-logo" src="/luci-static/carbon/custom/logo.png?v=[0-9]*" alt="" data-custom>' || fail "custom sidebar logo"
+printf '%s' "$out" | grep -q 'rel="icon" href="/luci-static/carbon/custom/logo.png?v=' || fail "custom favicon"
+render "$T/header.ut" en login | grep -q 'class="cb-login-logo" src="/luci-static/carbon/custom/logo.png?v=' || fail "custom login logo"
+rm -r /www/luci-static/carbon/custom
 rm /usr/share/carbon/version
 render "$T/header.ut" en | grep -q 'carbon.js?v=dev"' || fail "missing version file falls back to dev"
 echo "templates render OK ($v)"

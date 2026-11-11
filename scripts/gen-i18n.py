@@ -37,10 +37,12 @@ def js_unescape(text):
 
 def extract():
     found = {}
+    # File-only references (like xgettext --add-location=file): editing a source
+    # does not rewrite every catalogue just because line numbers moved.
     for rel in SOURCES:
-        for lineno, line in enumerate((ROOT / rel).read_text(encoding='utf-8').splitlines(), 1):
+        for line in (ROOT / rel).read_text(encoding='utf-8').splitlines():
             for match in CALL.finditer(line):
-                found.setdefault(js_unescape(match.group(1)), []).append(f'{rel}:{lineno}')
+                found.setdefault(js_unescape(match.group(1)), []).append(rel)
     for rel in MENU_JSON:
         for node in json.loads((ROOT / rel).read_text(encoding='utf-8')).values():
             if node.get('title'):

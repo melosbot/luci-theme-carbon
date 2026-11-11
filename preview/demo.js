@@ -45,7 +45,16 @@
 		dialog.showModal();
 	}
 
-	document.documentElement.lang = T('en', 'zh-Hans');
+	/* [LuCI code, native name, short label, ?lang= value] */
+	const DEMO_LANGUAGES = [
+		['en', 'English', 'EN', 'en'], ['de', 'Deutsch', 'DE', 'de'], ['es', 'Español', 'ES', 'es'],
+		['fr', 'Français', 'FR', 'fr'], ['it', 'Italiano', 'IT', 'it'], ['ja', '日本語', 'JA', 'ja'],
+		['ko', '한국어', 'KO', 'ko'], ['pt_br', 'Português do Brasil', 'PT', 'pt-BR'], ['ru', 'Русский', 'RU', 'ru'],
+		['tr', 'Türkçe', 'TR', 'tr'], ['vi', 'Tiếng Việt', 'VI', 'vi'],
+		['zh_hans', '简体中文', '简', 'zh-Hans'], ['zh_hant', '繁體中文', '繁', 'zh-Hant']
+	];
+	/* keep a requested catalogue language (?lang=de); demo-only text is English or Chinese */
+	if (/^zh/i.test(document.documentElement.lang)) document.documentElement.lang = /hant|tw|hk|mo/i.test(document.documentElement.lang) ? 'zh-Hant' : 'zh-Hans';
 	document.body.dataset.page = active.replaceAll('/', '-');
 	document.body.className = T('lang_en', 'lang_zh_Hans');
 	document.title = P.title(active).filter(Boolean).join(' · ') + ' — Carbon Demo';
@@ -57,13 +66,14 @@
 		logoutUrl: 'login.html?lang=' + document.documentElement.lang,
 		language: {
 			current: document.documentElement.lang,
+			/* every bundled catalogue, as LuCI lists installed languages (code → ?lang=) */
 			load: () => Promise.resolve({
-				options: [{ code: 'en', label: 'English', short: 'EN' }, { code: 'zh_cn', label: '简体中文', short: '中' }],
-				selected: T('en', 'zh_cn')
+				options: DEMO_LANGUAGES.map(([code, label, short]) => ({ code: code, label: label, short: short })),
+				selected: (DEMO_LANGUAGES.find(([, , , lang]) => lang.toLowerCase() === document.documentElement.lang.toLowerCase()) || DEMO_LANGUAGES[0])[0]
 			}),
 			set(code) {
 				const next = new URL(location.href);
-				next.searchParams.set('lang', /^zh/.test(code) ? 'zh-Hans' : 'en');
+				next.searchParams.set('lang', code === 'auto' ? 'zh-Hans' : DEMO_LANGUAGES.find(([c]) => c === code)[3]);
 				next.searchParams.set('page', active);
 				location.assign(next.href);
 				return new Promise(() => {});

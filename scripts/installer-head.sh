@@ -34,7 +34,11 @@ FILE_PATHS="
 /usr/share/luci/menu.d/luci-theme-carbon.json
 /usr/share/carbon
 /usr/libexec/rpcd/luci.carbon_update
+/lib/upgrade/keep.d/luci-theme-carbon
 "
+# User data under the theme directory: the custom logo. Kept when a script-only
+# install becomes a package; removed on uninstall.
+CUSTOM_DIR=/www/luci-static/carbon/custom
 
 say() { printf '%s\n' "$*"; }
 warn() { printf 'WARNING: %s\n' "$*" >&2; }
@@ -95,7 +99,13 @@ version_cmp() {
 }
 
 remove_files() {
-	for p in $FILE_PATHS; do rm -rf "${ROOT}${p}"; done
+	for p in $FILE_PATHS; do
+		if [ "$p" = /www/luci-static/carbon ] && [ "${1:-}" != all ] && [ -d "${ROOT}${CUSTOM_DIR}" ]; then
+			find "${ROOT}${p}" -mindepth 1 -maxdepth 1 ! -name custom -exec rm -rf {} \;
+		else
+			rm -rf "${ROOT}${p}"
+		fi
+	done
 }
 
 install_files() {
@@ -228,7 +238,8 @@ do_uninstall() {
 			opkg) opkg remove "$PKG" ;;
 		esac || die "$mgr could not remove $PKG"
 	fi
-	remove_files
+	remove_files all
+	rm -rf "${ROOT}${CUSTOM_DIR}"
 	rm -f "$ROOT/etc/config/carbon"
 
 	if have_uci; then

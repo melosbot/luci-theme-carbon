@@ -74,7 +74,7 @@ async function open(url, { width = 1280, height = 900, appearance = 'light', sto
 /* every async source has rendered: leases, Wi‑Fi stations, sensors, languages */
 const dashboardReady = (page) => page.waitForFunction(() =>
 	document.querySelectorAll('.cb-card.span-8 .cb-list li').length >= 8 && document.querySelector('.cb-tag-wifi') &&
-	document.querySelectorAll('.cb-kv li').length >= 3 && document.querySelector('.cb-lang .cb-seg'));
+	document.querySelectorAll('.cb-kv li').length >= 3 && document.querySelector('.cb-lang .cb-lb'));
 
 test('navigation regression page passes at phone width', async () => {
 	const { page, context } = await open('/src/tests/navigation.html', { width: 390, height: 844 });
@@ -130,13 +130,187 @@ test('dashboard shows merged devices, Wi-Fi details, IPv6, sensors and a traffic
 	await context.close();
 });
 
-test('language switch lists catalogues and switches the preview language', async () => {
+/* every bundled catalogue loads, translates the shell and fits the sidebar */
+const CATALOGUES = fs.readdirSync(path.join(ROOT, 'htdocs/luci-static/carbon/i18n')).map((f) => f.replace(/\.js$/, ''));
+test('bundled catalogues translate the shell and fit the sidebar', async () => {
+	assert.ok(CATALOGUES.length >= 12, CATALOGUES.join(','));
+	for (const code of CATALOGUES) {
+		const lang = { 'zh-cn': 'zh-Hans', 'zh-tw': 'zh-Hant', 'pt-br': 'pt-BR' }[code] || code;
+		const { page, context, errors } = await open(`/src/preview/index.html?lang=${lang}`, { width: 1280 });
+		await dashboardReady(page);
+		const r = await page.evaluate(() => ({
+			loaded: Object.keys(window.Carbon.I18N || {}).length,
+			common: document.querySelector('.cb-nav-sect').textContent,
+			expected: window.Carbon.I18N.Common,
+			/* segmented labels must not overflow their buttons */
+			clipped: [...document.querySelectorAll('.cb-mode .cb-seg-btn, .cb-lang .cb-seg-btn')].filter((b) => b.scrollWidth > b.clientWidth + 1).map((b) => b.textContent),
+			navClipped: [...document.querySelectorAll('.cb-nav-label')].filter((l) => l.scrollWidth > l.clientWidth + 1 && getComputedStyle(l).textOverflow !== 'ellipsis').map((l) => l.textContent)
+		}));
+		assert.ok(r.loaded > 150, `${code}: catalogue loaded`);
+		assert.equal(r.common, r.expected, `${code}: sidebar section translated`);
+		assert.deepEqual(r.clipped, [], `${code}: segmented labels fit`);
+		assert.deepEqual(r.navClipped, [], `${code}: menu labels fit or ellipsize`);
+		assert.deepEqual(errors, [], code);
+		if (code === 'de' || code === 'ja')
+			await page.screenshot({ path: path.join(SHOTS, `overview-${code}-light-desktop.png`), fullPage: true });
+		await context.close();
+	}
+});
+
+test('a custom logo replaces the sidebar logo and the dashboard hero icon', async () => {
+	/* the theme header marks an uploaded logo with data-custom */
+	const ctx2 = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+	await ctx2.route('**/preview/index.html*', async (route) => {
+		const res = await route.fetch();
+		const body = (await res.text()).replace('<img class="cb-brand-logo" src="../htdocs/luci-static/carbon/logo.svg" alt="">',
+			'<img class="cb-brand-logo" src="../htdocs/luci-static/carbon/logo.svg?v=1" alt="" data-custom>');
+		await route.fulfill({ response: res, body });
+	});
+	const p2 = await ctx2.newPage();
+	await p2.goto(base + '/src/preview/index.html?lang=en');
+	await dashboardReady(p2);
+	const hero = await p2.evaluate(() => {
+		const img = document.querySelector('.cb-hero-icon.custom img');
+		const brand = document.querySelector('.cb-brand-logo');
+		return { src: img && img.getAttribute('src'), fit: getComputedStyle(brand).objectFit, shadow: getComputedStyle(brand).boxShadow };
+	});
+	assert.equal(hero.src, '../htdocs/luci-static/carbon/logo.svg?v=1');
+	assert.equal(hero.fit, 'contain');
+	assert.equal(hero.shadow, 'none');
+	await ctx2.close();
+});
+
+/* plugin adapters (styles/18-plugins.css) against markup copied from luci-app-diskman */
+const DISKMAN_FIXTURE = `<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="/src/htdocs/luci-static/carbon/carbon.css">
+</head><body data-page="admin-system-diskman-disks"><div id="maincontent">
+<table class="table cbi-section-table"><tbody><tr><td>/dev/sda</td><td>2.38 GB</td></tr>
+<tr width="100%" style="white-space:nowrap;"><td style="margin:0px; padding:0px; border:0px; white-space:nowrap;" colspan="15">
+<div title="sda1 fat16 128.00 MB" style="color:#525F7F; display:inline-block; text-align:center; background-color:#fbbd00; width:8%">sda1 fat16 128.00 MB </div><div title="sda2 squashfs 256.00 MB" style="color:#525F7F; display:inline-block; text-align:center; background-color:#e97c30; width:8.4%">sda2 squashfs 256.00 MB </div><div title="sda3 ext4 2.00 GB" style="color:#525F7F; display:inline-block; text-align:center; background-color:#a0e0a0; width:83.6%">sda3 ext4 2.00 GB </div>
+</td></tr></tbody></table></div></body></html>`;
+
+test('DiskMan partition bar stays inside its card on desktop and phone', async () => {
+	for (const width of [1280, 390]) {
+		const context = await browser.newContext({ viewport: { width, height: 800 } });
+		const page = await context.newPage();
+		await page.goto(base + '/src/preview/form.html');
+		await page.setContent(DISKMAN_FIXTURE, { waitUntil: 'load' });
+		const r = await page.evaluate(() => {
+			const td = document.querySelector('td[colspan]');
+			const segs = [...td.children].map((d) => d.getBoundingClientRect());
+			return {
+				pageScroll: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+				inside: segs.every((b) => b.right <= td.getBoundingClientRect().right + 1),
+				clipped: [...td.children].every((d) => getComputedStyle(d).textOverflow === 'ellipsis')
+			};
+		});
+		assert.equal(r.pageScroll, 0, `${width}px: no sideways scroll`);
+		assert.ok(r.inside, `${width}px: segments fit the row`);
+		assert.ok(r.clipped, `${width}px: long labels ellipsize`);
+		await context.close();
+	}
+});
+
+test('settings page: buttons, links, fields and status text share one centre line', async () => {
+	for (const width of [1200, 390]) {
+		const { page, context, errors } = await open('/src/tests/fixtures/settings.html', { width });
+		await page.waitForSelector('body[data-ready]');
+		/* a status message next to the mirror field, as after saving */
+		await page.evaluate(() => { document.querySelector('.cb-update-field .cb-update-note').textContent = '已保存。'; });
+		const rows = await page.evaluate(() => [...document.querySelectorAll('.cb-update-actions, .cb-logo-actions, .cb-update-field')].map((row) => {
+			const kids = [...row.children].filter((c) => c.offsetParent && c.getBoundingClientRect().width);
+			/* compare items on the same line only (rows may wrap on phones) */
+			const lines = {};
+			kids.forEach((c) => {
+				const r = c.getBoundingClientRect(), mid = r.top + r.height / 2;
+				const key = Object.keys(lines).find((k) => Math.abs(k - mid) < 12) || mid;
+				(lines[key] = lines[key] || []).push(mid);
+			});
+			return { row: row.className, spread: Math.max(...Object.values(lines).map((m) => Math.max(...m) - Math.min(...m))) };
+		}));
+		assert.equal(rows.length, 4, JSON.stringify(rows));
+		rows.forEach((r) => assert.ok(r.spread <= 0.5, `${width}px ${r.row}: ${r.spread}px off centre`));
+		assert.deepEqual(errors, []);
+		await context.close();
+	}
+});
+
+test('language switch is a Carbon listbox with every bundled language', async () => {
 	const { page, context } = await open('/src/preview/index.html?lang=en');
-	await page.waitForSelector('.cb-lang .cb-seg-btn');
-	assert.deepEqual(await page.$$eval('.cb-lang .cb-seg-btn', (b) => b.map((x) => x.textContent)), ['English', '中文']);
-	await Promise.all([page.waitForURL(/lang=zh-Hans/), page.click('.cb-lang .cb-seg-btn:nth-child(2)')]);
+	await page.waitForSelector('.cb-lang .cb-lb');
+	assert.equal(await page.$('.cb-lang select'), null, 'no native select');
+	assert.equal(await page.textContent('.cb-lang .cb-lb'), 'English');
+	await page.click('.cb-lang .cb-lb');
+	const list = await page.evaluate(() => {
+		const ul = document.querySelector('.cb-lb-list');
+		const r = ul.getBoundingClientRect(), t = document.querySelector('.cb-lang .cb-lb').getBoundingClientRect();
+		return {
+			labels: [...ul.children].map((li) => li.textContent),
+			selected: [...ul.querySelectorAll('[aria-selected="true"]')].map((li) => li.textContent),
+			expanded: document.querySelector('.cb-lang .cb-lb').getAttribute('aria-expanded'),
+			focus: document.activeElement === ul,
+			opensUp: r.bottom <= t.top, inView: r.top >= 0 && r.bottom <= innerHeight,
+			bg: getComputedStyle(ul).backgroundColor
+		};
+	});
+	assert.deepEqual(list.labels, ['Auto', 'English', 'Deutsch', 'Español', 'Français', 'Italiano', '日本語', '한국어',
+		'Português do Brasil', 'Русский', 'Türkçe', 'Tiếng Việt', '简体中文', '繁體中文']);
+	assert.deepEqual(list.selected, ['English']);
+	assert.equal(list.expanded, 'true');
+	assert.ok(list.focus, 'the list takes focus');
+	assert.ok(list.opensUp && list.inView, 'opens above the footer trigger, inside the window');
+	await Promise.all([page.waitForURL(/lang=zh-Hant/), page.click('.cb-lb-list li:has-text("繁體中文")')]);
 	await page.waitForSelector('.cb-dash');
-	assert.equal(await page.textContent('.cb-card.cb-traffic h3'), '实时流量');
+	assert.equal(await page.textContent('.cb-card.cb-traffic h3'), await page.evaluate(() => window.Carbon.I18N['Live Traffic']));
+	assert.equal(await page.textContent('.cb-lang .cb-lb'), '繁體中文');
+	await context.close();
+});
+
+test('language listbox: keyboard, type-ahead and dismissal', async () => {
+	const { page, context } = await open('/src/preview/index.html?lang=en');
+	await page.waitForSelector('.cb-lang .cb-lb');
+	await page.focus('.cb-lang .cb-lb');
+	await page.keyboard.press('ArrowDown');
+	const activeText = () => page.evaluate(() => document.querySelector('.cb-lb-list li.active').textContent);
+	assert.equal(await activeText(), 'English', 'opens on the current language');
+	assert.equal(await page.evaluate(() => document.querySelector('.cb-lb-list').getAttribute('aria-activedescendant') === document.querySelector('.cb-lb-list li.active').id), true);
+	await page.keyboard.press('End');
+	assert.equal(await activeText(), '繁體中文');
+	await page.waitForTimeout(150);
+	assert.notEqual(await page.$('.cb-lb-list'), null, 'scrolling inside the list keeps it open');
+	await page.keyboard.press('Home');
+	assert.equal(await activeText(), 'Auto');
+	await page.keyboard.type('fr');
+	assert.equal(await activeText(), 'Français', 'type-ahead');
+	await page.keyboard.press('Escape');
+	assert.equal(await page.$('.cb-lb-list'), null, 'Escape closes');
+	assert.equal(await page.evaluate(() => document.activeElement.classList.contains('cb-lb')), true, 'focus returns to the trigger');
+	assert.equal(new URL(page.url()).searchParams.get('lang'), 'en', 'nothing chosen yet');
+	await page.click('.cb-lang .cb-lb');
+	await page.mouse.click(700, 400);
+	assert.equal(await page.$('.cb-lb-list'), null, 'an outside click closes');
+	await page.focus('.cb-lang .cb-lb');
+	await page.keyboard.press('Enter');
+	await page.keyboard.press('ArrowDown');
+	await Promise.all([page.waitForURL(/lang=de/), page.keyboard.press('Enter')]);
+	await context.close();
+});
+
+test('language listbox opens beside the collapsed rail and returns focus to it', async () => {
+	const { page, context } = await open('/src/preview/index.html?lang=en', { storage: { 'carbon.collapsed': '1' } });
+	await page.waitForSelector('.cb-lang-mini');
+	await page.click('.cb-lang-mini');
+	const r = await page.evaluate(() => {
+		const ul = document.querySelector('.cb-lb-list').getBoundingClientRect();
+		return { left: ul.left, rail: document.getElementById('cb-sidebar').getBoundingClientRect().right, bottom: ul.bottom, h: innerHeight };
+	});
+	assert.ok(r.left >= r.rail, 'beside the rail');
+	assert.ok(r.bottom <= r.h, 'inside the window');
+	await page.keyboard.press('Escape');
+	assert.equal(await page.evaluate(() => document.activeElement.classList.contains('cb-lang-mini')), true);
+	await page.click('.cb-lang-mini');
+	await page.click('.cb-lang-mini');
+	assert.equal(await page.$('.cb-lb-list'), null, 'the rail button toggles');
 	await context.close();
 });
 
@@ -148,10 +322,6 @@ test('segmented controls follow the radio pattern', async () => {
 	assert.equal(await page.getAttribute('html', 'data-appearance'), 'dark');
 	assert.deepEqual(await page.$$eval('#cb-appearance .cb-seg-btn', (b) => b.map((x) => x.tabIndex)), [-1, -1, 0]);
 	assert.equal(await page.evaluate(() => document.activeElement.getAttribute('aria-checked')), 'true');
-	// language uses manual activation: arrows move focus only (switching reloads the page)
-	await page.focus('.cb-lang .cb-seg-btn[aria-checked="true"]');
-	await page.keyboard.press('ArrowRight');
-	assert.equal(new URL(page.url()).searchParams.get('lang'), 'en');
 	await context.close();
 });
 

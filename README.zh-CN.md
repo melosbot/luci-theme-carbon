@@ -27,9 +27,11 @@
 - **在线设备**：合并 DHCPv4/v6 租约、Wi‑Fi 关联列表（频段和信号）与 ARP 邻居，固定 IP 设备也能显示；根据主机名和 MAC 厂商前缀识别品牌（35 个品牌，约 9200 条 IEEE OUI 前缀）。
 - **简洁 / 专业双模式**：简洁模式只显示常用功能（概览、上网、Wi‑Fi、软件包、密码、备份、重启）；专业模式显示完整 LuCI 菜单，每个页面都有对应图标。
 - **毛玻璃侧栏**，可收起为只显示图标的窄栏（点侧栏边缘的圆形按钮，或按 <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>\\</kbd>），鼠标悬停图标弹出子菜单。
-- 右上角切换**浅色 / 深色 / 跟随系统**，左下角**切换语言**（列出所有已安装的 LuCI 语言）。主题文案内置英文、简体中文和繁体中文，其他语言可在 `po/` 中以 gettext 文件补充。
+- 右上角切换**浅色 / 深色 / 跟随系统**，左下角**切换语言**（列出所有已安装的 LuCI 语言）。主题文案内置英文、简体中文、繁体中文、德语、西班牙语、法语、意大利语、日语、韩语、巴西葡萄牙语、俄语、土耳其语和越南语，其他语言可在 `po/` 中以 gettext 文件补充。
 - **键盘与触屏友好**：分段按钮支持方向键，手机抽屉菜单管理焦点，收起的侧栏可点按、<kbd>Enter</kbd> 或 <kbd>→</kbd> 打开子菜单。
 - **适配手机**：侧栏变为抽屉，表格自动变成卡片。
+- **自定义 Logo**：在「系统 → Carbon 主题设置」上传 PNG、JPEG、WebP、GIF 或 SVG，替换侧栏、登录页、概览页和浏览器标签上的 Logo；主题升级和保留配置的固件升级后仍然保留。含脚本或嵌入内容的 SVG 会被拒绝。
+- **软件源**：GitHub Pages 上提供签名的 opkg / apk 软件源，添加后（在 Carbon 主题设置中一键添加）即可在「系统 → 软件包」中搜索和升级主题。
 - **网页在线升级**：在「系统 → Carbon 主题设置」检查并安装稳定版，可选 HTTPS 下载镜像；APK 保留签名校验，安装前按 GitHub 公布的信息核对文件大小和 SHA-256。
 - 所有 LuCI 页面和插件照常使用；更新器仅安装 Carbon 主题包。
 - 与架构无关，所有路由器通用一个主题包。
@@ -92,6 +94,22 @@ opkg install /tmp/luci-theme-carbon_*_all.ipk
 
 旧版 LuCI 没有公钥管理页时，只需一次 SSH 导入。公钥指纹、导入命令、刷机保留配置及排错见 [APK 配置说明](docs/apk-install.md)。旧 v1.0.0 APK 未签名，请重新下载新版。`wget` / `packages.adb` 报错属于独立的软件源或网络问题，要稳定通过网页安装仍需修复软件源。
 
+### 方式四：软件源（在 LuCI 中搜索与升级）
+
+添加一次 Carbon 的签名软件源，之后即可在「系统 → 软件包」中像其他软件包一样安装和升级 `luci-theme-carbon`。apk（25.x / snapshot）：
+
+```bash
+wget -O /etc/apk/keys/carbon-apk.pem https://mrjoechen.github.io/luci-theme-carbon/feed/carbon-apk.pem && echo 'https://mrjoechen.github.io/luci-theme-carbon/feed/apk/packages.adb' >> /etc/apk/repositories.d/customfeeds.list && apk update && apk add luci-theme-carbon
+```
+
+opkg（23.05 / 24.10）：
+
+```bash
+wget -O /tmp/carbon-feed.pub https://mrjoechen.github.io/luci-theme-carbon/feed/carbon-feed.pub && opkg-key add /tmp/carbon-feed.pub && echo 'src/gz carbon https://mrjoechen.github.io/luci-theme-carbon/feed/opkg' >> /etc/opkg/customfeeds.conf && opkg update && opkg install luci-theme-carbon
+```
+
+已安装 Carbon 时，「系统 → Carbon 主题设置 → 添加软件源」可一键完成。仅用网页的添加方法、公钥指纹和维护说明见[软件源文档](docs/feed.md)。
+
 ### 安装之后
 
 Carbon 会自动设为默认主题。刷新页面，然后**退出并重新登录一次**，仪表盘才能读取 CPU、连接数等数据。随时可以在「系统 → 系统 → 语言和界面」切换回其他主题。
@@ -105,8 +123,9 @@ Carbon 会自动设为默认主题。刷新页面，然后**退出并重新登�
 | 浅色 / 深色 / 自动 | 工具栏右上角 |
 | 语言 | 侧栏左下角（修改的是 LuCI 的界面语言，等同「系统 → 语言」；安装超过两种语言时显示下拉框） |
 | 实时流量统计接口 | 「实时流量」卡片右上角的选择框：「自动」跟随 WAN；也可选任意接口或网络设备（如同时承载 IPTV 的光口 `pon0`），按浏览器记住 |
-| GitHub 项目主页 | 工具栏右上角的 GitHub 图标 |
 | 检查更新与一键升级 | 系统 → Carbon 主题设置（简洁、专业模式均可见） |
+| 自定义 Logo | 系统 → Carbon 主题设置 → Logo（「恢复默认」可撤销） |
+| 在「系统 → 软件包」中找到 Carbon | 系统 → Carbon 主题设置 → 软件源 |
 | LuCI 原版状态页 | 仪表盘下方「显示详细状态」 |
 
 ### 网页在线升级（v1.1.0 起）
@@ -156,6 +175,8 @@ sh scripts/build-ipk.sh
 生成文件随仓库提交，各种安装方式都无需构建步骤；文件过期时 CI（`--check`）会失败。version 文件是唯一的版本来源：主题模板把它加到资源链接上，`carbon.js` 从链接中读取。
 
 新增语言：复制模板为 `po/<语言>/carbon.po`，翻译后运行 `gen-i18n.py`。使用 SDK 构建时还会生成 `luci-i18n-carbon-<语言>` 语言包。
+
+发布说明：编写 `docs/releases/vX.Y.Z.en.md` 和 `vX.Y.Z.zh-CN.md`（由 `next.*` 草稿改名）。发布任务用 `scripts/release-notes.sh` 组装：先英文、后简体中文，各自附上安装说明（`docs/releases/install.*.md`）。
 
 发布包中的 CSS/JS 会被压缩（`node scripts/minify.mjs`，由 CI 在临时检出目录中执行）。测试：
 

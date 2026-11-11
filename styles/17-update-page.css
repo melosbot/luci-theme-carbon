@@ -3,6 +3,12 @@
    ========================================================================== */
 
 .cb-update [hidden] { display: none !important; }
+.cb-update .cb-update-actions { display: flex; gap: .75rem; flex-wrap: wrap; align-items: center; margin: 1rem 0; }
+.cb-update .cb-update-versions { display: flex; gap: 3rem; flex-wrap: wrap; margin: 1rem 0; }
+/* a form field with its button and status message on one centred line */
+.cb-update .cb-update-field { display: flex; align-items: center; gap: .5rem .75rem; flex-wrap: wrap; }
+.cb-update .cb-update-field > input { flex: 0 1 22rem; min-width: 0; margin: 0; }
+.cb-update .cb-update-note { color: var(--cb-text-2); font-size: 13px; overflow-wrap: anywhere; }
 
 /* Release notes: scoped Markdown typography, with local overflow on phones. */
 .cb-update .cb-release-notes {
@@ -38,3 +44,20 @@
 .cb-release-notes img { max-width: 100%; height: auto; border-radius: var(--cb-radius-sm); }
 .cb-release-notes hr { border: 0; border-top: 1px solid var(--cb-border); margin: 1.25em 0; }
 
+
+/* Logo */
+.cb-logo-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin: 12px 0 4px; }
+.cb-logo-preview {
+	width: 72px;
+	height: 72px;
+	flex: none;
+	object-fit: contain;
+	padding: 6px;
+	border-radius: 18px;
+	background: var(--cb-fill);
+	border: 1px solid var(--cb-border);
+}
+.cb-logo-actions { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; min-width: 0; }
+
+/* Software source */
+.cb-update .cb-feed-commands { margin: .6rem 0 0; white-space: pre; overflow-x: auto; font-family: var(--cb-mono); font-size: 12.5px; padding: 12px 14px; background: var(--cb-fill-2); border: 1px solid var(--cb-border); border-radius: var(--cb-radius-sm); }

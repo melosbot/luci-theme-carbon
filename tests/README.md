@@ -5,13 +5,17 @@
 | Unit: formatting, i18n, devices, ARP, IPv6, brands (`carbon.test.js`) | `npm test` | Node 18+ |
 | Unit: LuCI glue — poll pause, language list/switch, menu cache | `npm test` | Node 18+ |
 | Unit: release-notes Markdown | `npm test` | Node 18+ |
+| Unit: settings backend — logo upload validation (types, size, unsafe SVG), software source add/remove (`settings-backend.test.js`; `CARBON_TEST_SH=/bin/dash` for a strict shell) | `npm test` | Node 18+, `sh` |
+| Unit: release body — English then Simplified Chinese, install guides, legacy notes (`release-notes.test.js`) | `npm test` | Node 18+, `sh` |
+| Unit: package feed layout and usign keys (`feed.test.js`) | `npm test` | Node 18+, `python3`, `tar` (usign checks need Python `cryptography`) |
+| Package feed signed and used by real opkg / apk | `sh scripts/publish-feed.sh OUT` (CI: pages.yml) | Docker, GitHub CLI, signing keys |
 | Browser: preview pages, accessibility, minified build parity | `npm run test:browser` | `npm ci`, `npx playwright install chromium` |
 | Installer control flow (stub apk/opkg/uci) | `npm test` | Node 18+, `sh`, `tar` |
 | Installer with real apk (25.12) and opkg (24.10) | `python3 tests/installer-integration.py` | Docker, network |
 | Theme templates rendered by OpenWrt's ucode | see below | Docker |
 | Updater (APK and IPK) | see [online-update.md](../docs/online-update.md#maintainers) | Docker |
 
-The browser suite serves the repository and a minified copy locally, runs `tests/navigation.html` at 390 × 844, loads the preview in Chinese/English × light/dark × desktop/phone (screenshots go to `.cache/screenshots/`), checks the dashboard data, the language switch, keyboard/touch behaviour of the rail and drawer, and compares computed styles of the minified release build with the sources.
+The browser suite also checks every bundled catalogue in the sidebar, the custom-logo hero, the settings page layout (`tests/fixtures/settings.html`), the language listbox, and the plugin adapters (DiskMan partition bar) against copied plugin markup. It serves the repository and a minified copy locally, runs `tests/navigation.html` at 390 × 844, loads the preview in Chinese/English × light/dark × desktop/phone (screenshots go to `.cache/screenshots/`), checks the dashboard data, the language switch, keyboard/touch behaviour of the rail and drawer, and compares computed styles of the minified release build with the sources.
 
 Render the templates with the real ucode runtime:
 

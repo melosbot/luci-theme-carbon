@@ -315,6 +315,8 @@ form.inline { display: inline; margin: 0; }
 	border-radius: 12px;
 	box-shadow: 0 6px 16px -6px rgba(79, 91, 234, .6);
 }
+/* uploaded logo: any aspect ratio, no brand-coloured glow */
+.cb-brand-logo[data-custom] { object-fit: contain; border-radius: 10px; box-shadow: none; }
 .cb-brand-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
 .cb-brand-text strong { font-size: 15px; font-weight: 700; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cb-brand-text small { color: var(--cb-nav-fg-2); font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -535,19 +537,10 @@ form.inline { display: inline; margin: 0; }
 .cb-lang .cb-seg-btn { font-size: 12px; font-weight: 600; }
 .cb-lang.busy { opacity: .55; pointer-events: none; }
 .cb-lang.err .cb-seg,
+.cb-lang.err .cb-lb,
 .cb-lang.err .cb-mini { box-shadow: 0 0 0 1.5px var(--cb-red); }
 .cb-lang-mini { font: inherit; font-size: 12.5px; font-weight: 700; letter-spacing: .02em; }
-.cb-lang .cb-lang-select {
-	flex: 1;
-	min-width: 0;
-	width: auto;
-	height: 30px;
-	min-height: 30px;
-	padding: 0 26px 0 10px;
-	border-radius: 9px;
-	font-size: 12.5px;
-	font-weight: 600;
-}
+.cb-lang .cb-lb { flex: 1; min-width: 0; }
 .cb-logout {
 	display: inline-flex;
 	align-items: center;
@@ -626,7 +619,7 @@ form.inline { display: inline; margin: 0; }
 	html.cb-collapsed .cb-nav-hint,
 	html.cb-collapsed .cb-mode .cb-seg,
 	html.cb-collapsed .cb-sidebar-foot .cb-seg,
-	html.cb-collapsed .cb-lang-select,
+	html.cb-collapsed .cb-lang .cb-lb,
 	html.cb-collapsed .cb-lang-ico,
 	html.cb-collapsed .cb-logout span { display: none; }
 	html.cb-collapsed .cb-mini { display: inline-flex; }
@@ -877,6 +870,7 @@ body.cb-login {
 	border-radius: 17px;
 	box-shadow: 0 12px 30px -8px rgba(79, 91, 234, .55);
 }
+.cb-login-logo[data-custom] { object-fit: contain; box-shadow: none; }
 .cb-login-brand h1 { margin: 16px 0 2px; font-size: 24px; font-weight: 700; }
 .cb-login-brand p { margin: 0; color: var(--cb-text-2); font-size: 13px; }
 
@@ -1578,6 +1572,7 @@ input[type="submit"].cbi-button-apply {
 	width: auto;
 	padding: 5px !important;
 	border-radius: var(--cb-radius-md);
+	/* opaque: the list is read item by item over busy pages */
 	background: var(--cb-card-solid);
 	box-shadow: var(--cb-shadow-pop);
 	color: var(--cb-text);
@@ -1628,6 +1623,76 @@ input[type="submit"].cbi-button-apply {
 .cbi-dropdown .zonebadge { width: 100%; }
 .cbi-dropdown[open] .zonebadge { width: auto; }
 
+
+/* ---- Carbon listbox (C.listbox): a select in the sidebar's glass style ---- */
+.cb-lb {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	height: 32px;
+	padding: 0 8px 0 11px;
+	border: 0;
+	border-radius: 11px;
+	background-color: var(--cb-seg-track);
+	color: var(--cb-text);
+	font: inherit;
+	font-size: 12.5px;
+	font-weight: 600;
+	text-align: start;
+	cursor: pointer;
+	transition: background-color .15s var(--cb-ease);
+}
+/* hover tint layered over the track colour */
+.cb-lb:hover,
+.cb-lb[aria-expanded="true"] { background-image: linear-gradient(var(--cb-nav-hover), var(--cb-nav-hover)); }
+.cb-lb:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cb-focus); }
+.cb-lb-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cb-lb-chev { display: inline-flex; flex: none; color: var(--cb-text-2); transition: transform .2s var(--cb-ease); }
+.cb-lb-chev svg { width: 14px; height: 14px; }
+.cb-lb[aria-expanded="true"] .cb-lb-chev { transform: rotate(180deg); }
+
+.cb-lb-list {
+	position: fixed;
+	z-index: 1000;
+	max-height: min(70vh, 440px);
+	min-width: 180px;
+	max-width: min(320px, calc(100vw - 16px));
+	margin: 0;
+	padding: 6px;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	list-style: none;
+	border-radius: 14px;
+	border: 1px solid var(--cb-glass-edge);
+	/* opaque: the list is read item by item over busy pages */
+	background: var(--cb-card-solid);
+	box-shadow: var(--cb-shadow-pop);
+	color: var(--cb-text);
+	outline: none;
+	opacity: 0;
+	transform: translateY(4px);
+	transition: opacity .14s var(--cb-ease), transform .14s var(--cb-ease);
+}
+.cb-lb-list.show { opacity: 1; transform: none; }
+.cb-lb-list > li {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 34px;
+	padding: 0 12px 0 8px;
+	border-radius: 9px;
+	font-size: 13px;
+	white-space: nowrap;
+	cursor: pointer;
+}
+.cb-lb-list > li.active { background: var(--cb-nav-hover); }
+.cb-lb-list > li[aria-selected="true"] { color: var(--cb-accent); font-weight: 600; }
+.cb-lb-check { display: inline-flex; flex: none; width: 16px; height: 16px; visibility: hidden; }
+.cb-lb-check svg { width: 16px; height: 16px; }
+.cb-lb-list > li[aria-selected="true"] .cb-lb-check { visibility: visible; }
+@media (prefers-reduced-motion: reduce) {
+	.cb-lb-list, .cb-lb-chev { transition: none; }
+}
 /* ==========================================================================
    9. Dynamic lists
    ========================================================================== */
@@ -2378,7 +2443,9 @@ textarea#syslog {
 }
 .cb-hero-id { display: flex; align-items: center; gap: 14px; min-width: 0; }
 .cb-hero-icon { width: 52px; height: 52px; flex: none; filter: drop-shadow(0 8px 16px rgba(79, 91, 234, .32)); }
-.cb-hero-icon svg { width: 100%; height: 100%; display: block; }
+.cb-hero-icon :is(svg, img) { width: 100%; height: 100%; display: block; }
+.cb-hero-icon.custom { filter: none; }
+.cb-hero-icon img { object-fit: contain; border-radius: 12px; }
 .cb-hero-text { min-width: 0; }
 .cb-hero-title { margin: 0 0 2px; font-size: 22px; font-weight: 700; letter-spacing: -.01em; }
 .cb-hero-sub { margin: 0; color: var(--cb-text-2); font-size: 13px; }
@@ -2823,6 +2890,12 @@ body.cb-has-dash #maincontent > h2 { display: none; }
    ========================================================================== */
 
 .cb-update [hidden] { display: none !important; }
+.cb-update .cb-update-actions { display: flex; gap: .75rem; flex-wrap: wrap; align-items: center; margin: 1rem 0; }
+.cb-update .cb-update-versions { display: flex; gap: 3rem; flex-wrap: wrap; margin: 1rem 0; }
+/* a form field with its button and status message on one centred line */
+.cb-update .cb-update-field { display: flex; align-items: center; gap: .5rem .75rem; flex-wrap: wrap; }
+.cb-update .cb-update-field > input { flex: 0 1 22rem; min-width: 0; margin: 0; }
+.cb-update .cb-update-note { color: var(--cb-text-2); font-size: 13px; overflow-wrap: anywhere; }
 
 /* Release notes: scoped Markdown typography, with local overflow on phones. */
 .cb-update .cb-release-notes {
@@ -2858,8 +2931,83 @@ body.cb-has-dash #maincontent > h2 { display: none; }
 .cb-release-notes img { max-width: 100%; height: auto; border-radius: var(--cb-radius-sm); }
 .cb-release-notes hr { border: 0; border-top: 1px solid var(--cb-border); margin: 1.25em 0; }
 
+
+/* Logo */
+.cb-logo-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin: 12px 0 4px; }
+.cb-logo-preview {
+	width: 72px;
+	height: 72px;
+	flex: none;
+	object-fit: contain;
+	padding: 6px;
+	border-radius: 18px;
+	background: var(--cb-fill);
+	border: 1px solid var(--cb-border);
+}
+.cb-logo-actions { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; min-width: 0; }
+
+/* Software source */
+.cb-update .cb-feed-commands { margin: .6rem 0 0; white-space: pre; overflow-x: auto; font-family: var(--cb-mono); font-size: 12.5px; padding: 12px 14px; background: var(--cb-fill-2); border: 1px solid var(--cb-border); border-radius: var(--cb-radius-sm); }
 /* ==========================================================================
-   18. Print
+   18. Third-party plugin adapters
+   One section per plugin package, scoped by body[data-page]
+   (admin-<category>-<page>…, set by the theme header) so nothing leaks into
+   other pages. Only for markup that the generic LuCI styles cannot reach,
+   typically inline styles; prefer fixing the generic rule when one exists.
+   Plugins that theme themselves for dark mode should key on
+   [data-darkmode="true"] on <html>, which Carbon sets like Argon does.
+   ========================================================================== */
+
+/* --- luci-app-diskman: partition bar under each disk ---------------------
+   A bare <tr> with one colspan cell of inline-styled, inline-block segments
+   (fixed % widths, white-space: nowrap, padding: 0). As a flex row the
+   widths fit the card, and long labels ellipsize. */
+[data-page^="admin-system-diskman"] .cbi-section-table td[colspan]:has(> div[title]) {
+	display: flex !important;
+	width: auto !important;
+	max-width: 100%;
+	padding: 2px 14px 12px !important;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+[data-page^="admin-system-diskman"] .cbi-section-table td[colspan] > div[title] {
+	box-sizing: border-box;
+	flex: 0 1 auto;
+	height: 22px;
+	min-width: 6px;
+	padding: 0 6px;
+	overflow: hidden;
+	font-size: 11.5px;
+	line-height: 22px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	/* the segments keep their light inline colours in dark mode too */
+	color: #1a1f36 !important;
+	border-inline-end: 1px solid rgba(255, 255, 255, .6);
+}
+[data-page^="admin-system-diskman"] .cbi-section-table td[colspan] > div[title]:first-child { border-radius: 7px 0 0 7px; }
+[data-page^="admin-system-diskman"] .cbi-section-table td[colspan] > div[title]:last-child { border-radius: 0 7px 7px 0; border-inline-end: 0; }
+/* phones: tables become cards (16-responsive.css); the bare <tr> must follow */
+@media (max-width: 760px) {
+	[data-page^="admin-system-diskman"] .cbi-section-table tr:has(> td[colspan] > div[title]) {
+		display: block;
+		white-space: normal !important;
+	}
+	[data-page^="admin-system-diskman"] .cbi-section-table td[colspan]:has(> div[title]) { padding: 4px 10px 8px !important; }
+}
+
+/* --- luci-app-ttyd: the terminal fills the window ------------------------
+   The view sets an inline min-height of 500px and nothing else. */
+[data-page^="admin-services-ttyd"] #view iframe {
+	display: block;
+	height: calc(100vh - 210px);
+	height: calc(100dvh - 210px);
+	min-height: 420px;
+	border-radius: var(--cb-radius-md) !important;
+	background: #000;
+}
+/* ==========================================================================
+   19. Print
    ========================================================================== */
 
 @media print {

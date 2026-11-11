@@ -1,0 +1,42 @@
+<!doctype html>
+<!-- Renders view/system/carbon-update.js with minimal LuCI stand-ins (E, rpc, poll …)
+     for the browser tests; served from /src/ by tests/browser/preview.test.js. -->
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<script src="../../htdocs/luci-static/carbon/i18n/zh-cn.js"></script>
+<link rel="stylesheet" href="../../htdocs/luci-static/carbon/carbon.css">
+<script src="../../htdocs/luci-static/carbon/carbon.js"></script>
+</head>
+<body>
+<div class="cb-app"><main class="cb-main" style="margin-left:0"><div id="maincontent" class="cb-content"><div id="view"></div></div></main></div>
+<script>
+function E(tag, attrs, children) {
+	const el = document.createElement(tag);
+	for (const [k, v] of Object.entries(attrs || {})) {
+		if (v == null || v === false) continue;
+		if (typeof v === 'function') el.addEventListener(k, v);
+		else el.setAttribute(k, v === true ? '' : v);
+	}
+	const add = (c) => { if (c == null) return; if (Array.isArray(c)) c.forEach(add); else el.append(c instanceof Node ? c : String(c)); };
+	add(children);
+	return el;
+}
+const L = { hasViewPermission: () => true, env: { cgi_base: '/cgi-bin' } };
+const data = {
+	current: '1.1.3-r1', latest: '1.1.4-r1', can_upgrade: true, manager: 'opkg', notes: '### v1.1.4\n\n- Notes', mirror: '',
+	logo: '../../htdocs/luci-static/carbon/logo.svg', feed: false, feed_url: 'https://example.github.io/luci-theme-carbon/feed'
+};
+const stubs = {
+	view: { extend: (o) => o }, rpc: { declare: () => async () => data, getSessionID: () => 'test' },
+	poll: { add() {} }, ui: { menu: { flushCache() {} } }, request: {}, markdown: { render: (s) => '<p>' + s + '</p>' }
+};
+fetch('../../htdocs/luci-static/resources/view/system/carbon-update.js').then((r) => r.text()).then((src) => {
+	const v = new Function('view', 'rpc', 'poll', 'ui', 'request', 'markdown', 'E', 'L', '_', src)(
+		stubs.view, stubs.rpc, stubs.poll, stubs.ui, stubs.request, stubs.markdown, E, L, (s) => s);
+	document.getElementById('view').appendChild(v.render(data));
+	document.body.dataset.ready = '1';
+});
+</script>
+</body>
+</html>

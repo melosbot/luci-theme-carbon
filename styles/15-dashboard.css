@@ -74,7 +74,9 @@
 }
 .cb-hero-id { display: flex; align-items: center; gap: 14px; min-width: 0; }
 .cb-hero-icon { width: 52px; height: 52px; flex: none; filter: drop-shadow(0 8px 16px rgba(79, 91, 234, .32)); }
-.cb-hero-icon svg { width: 100%; height: 100%; display: block; }
+.cb-hero-icon :is(svg, img) { width: 100%; height: 100%; display: block; }
+.cb-hero-icon.custom { filter: none; }
+.cb-hero-icon img { object-fit: contain; border-radius: 12px; }
 .cb-hero-text { min-width: 0; }
 .cb-hero-title { margin: 0 0 2px; font-size: 22px; font-weight: 700; letter-spacing: -.01em; }
 .cb-hero-sub { margin: 0; color: var(--cb-text-2); font-size: 13px; }

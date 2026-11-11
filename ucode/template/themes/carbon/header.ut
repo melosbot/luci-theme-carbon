@@ -8,7 +8,7 @@
 
 {%
 	import { getuid, getspnam } from 'luci.core';
-	import { access, readfile } from 'fs';
+	import { access, readfile, stat } from 'fs';
 
 	const boardinfo = ubus.call('system', 'board') ?? {};
 	const hostname = striptags(boardinfo.hostname ?? 'OpenWrt');
@@ -24,6 +24,16 @@
 	let carbon_version = trim(readfile('/usr/share/carbon/version') ?? '');
 	if (!match(carbon_version, /^[0-9A-Za-z._-]{1,40}$/))
 		carbon_version = 'dev';
+
+	/* Custom logo (System → Carbon Theme Settings); the mtime busts caches. */
+	let carbon_logo = `${media}/logo.svg`, carbon_custom = false;
+	for (let ext in [ 'svg', 'png', 'webp', 'jpg', 'gif' ]) {
+		const st = stat(`/www${media}/custom/logo.${ext}`);
+		if (!carbon_custom && st?.type == 'file') {
+			carbon_logo = `${media}/custom/logo.${ext}?v=${st.mtime}`;
+			carbon_custom = true;
+		}
+	}
 
 	/* Theme string catalogue for the active LuCI language, if bundled. */
 	const carbon_lang = replace(lc(dispatcher.lang ?? 'en'), '_', '-');
@@ -46,8 +56,12 @@
 		<meta name="theme-color" content="#f2f2f7">
 		<title>{{ hostname }}{{ page?.title ? ` · ${striptags(_(page.title))}` : '' }}</title>
 		<link rel="stylesheet" href="{{ media }}/carbon.css?v={{ carbon_version }}">
-		<link rel="icon" href="{{ media }}/logo.svg" type="image/svg+xml">
-		<link rel="apple-touch-icon" href="{{ media }}/logo.svg">
+		{% if (carbon_custom): %}
+		<link rel="icon" href="{{ carbon_logo }}">
+		{% else %}
+		<link rel="icon" href="{{ carbon_logo }}" type="image/svg+xml">
+		{% endif %}
+		<link rel="apple-touch-icon" href="{{ carbon_logo }}">
 		{% if (page?.css): %}
 		<link rel="stylesheet" href="{{ resource }}/{{ page.css }}">
 		{% endif %}
@@ -66,7 +80,7 @@
 	{% if (is_login): %}
 		<div class="cb-login-wrap">
 			<div class="cb-login-brand">
-				<img class="cb-login-logo" src="{{ media }}/logo.svg" alt="">
+				<img class="cb-login-logo" src="{{ carbon_logo }}" alt=""{{ carbon_custom ? ' data-custom' : '' }}>
 				<h1>{{ hostname }}</h1>
 				{% if (model): %}<p>{{ model }}</p>{% endif %}
 			</div>
@@ -76,7 +90,7 @@
 			<aside class="cb-sidebar" id="cb-sidebar">
 				<button type="button" class="cb-collapse" id="cb-collapse" aria-label="Collapse sidebar"></button>
 				<a class="cb-brand" href="{{ dispatcher.build_url() }}">
-					<img class="cb-brand-logo" src="{{ media }}/logo.svg" alt="">
+					<img class="cb-brand-logo" src="{{ carbon_logo }}" alt=""{{ carbon_custom ? ' data-custom' : '' }}>
 					<span class="cb-brand-text">
 						<strong>{{ hostname }}</strong>
 						{% if (model): %}<small>{{ model }}</small>{% endif %}
