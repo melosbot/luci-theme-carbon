@@ -22,6 +22,8 @@ render "$T/header.ut" zh-hans | grep -q '/i18n/zh-cn.js' || fail "zh-hans alias"
 render "$T/header.ut" en | grep -q '/i18n/' && fail "english loads no catalogue"
 render "$T/header.ut" '../x' | grep -q '/i18n/' && fail "unsafe language code"
 render "$T/header.ut" en login | grep -q 'cb-login-card' || fail "login layout"
+render "$T/header.ut" en login | grep -q 'Test Router' && fail "login page shows the device model"
+render "$T/header.ut" en | grep -q '<small>Test Router</small>' || fail "sidebar shows the device model"
 render "$T/footer.ut" en | grep -q "L.require('menu-carbon')" || fail "footer"
 render "$T/header.ut" en | grep -q 'src="/luci-static/carbon/logo.svg" alt="">' || fail "default logo"
 mkdir -p /www/luci-static/carbon/custom

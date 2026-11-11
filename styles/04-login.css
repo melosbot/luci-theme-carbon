@@ -23,8 +23,7 @@ body.cb-login {
 	box-shadow: 0 12px 30px -8px rgba(79, 91, 234, .55);
 }
 .cb-login-logo[data-custom] { object-fit: contain; box-shadow: none; }
-.cb-login-brand h1 { margin: 16px 0 2px; font-size: 24px; font-weight: 700; }
-.cb-login-brand p { margin: 0; color: var(--cb-text-2); font-size: 13px; }
+.cb-login-brand h1 { margin: 16px 0 0; font-size: 24px; font-weight: 700; }
 
 .cb-login-card {
 	padding: 22px 22px 18px;

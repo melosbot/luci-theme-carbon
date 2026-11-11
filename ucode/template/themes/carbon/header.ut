@@ -82,7 +82,6 @@
 			<div class="cb-login-brand">
 				<img class="cb-login-logo" src="{{ carbon_logo }}" alt=""{{ carbon_custom ? ' data-custom' : '' }}>
 				<h1>{{ hostname }}</h1>
-				{% if (model): %}<p>{{ model }}</p>{% endif %}
 			</div>
 			<div id="maincontent" class="cb-login-card">
 	{% elif (!blank_page): %}
