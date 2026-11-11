@@ -103,7 +103,7 @@ msgstr "取消"
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 #: root/usr/share/luci/menu.d/luci-theme-carbon.json
 msgid "Carbon Theme Settings"
-msgstr "Carbon 主题设置"
+msgstr "Carbon 主题"
 
 #: htdocs/luci-static/resources/view/system/carbon-update.js
 msgid "Check for updates"

@@ -24,7 +24,7 @@
 	"Cache": "缓存",
 	"Camera": "摄像头",
 	"Cancel": "取消",
-	"Carbon Theme Settings": "Carbon 主题设置",
+	"Carbon Theme Settings": "Carbon 主题",
 	"Check for updates": "检查更新",
 	"Check the latest stable Carbon release.": "检查 Carbon 最新稳定版。",
 	"Checking for updates…": "正在检查更新…",
