@@ -762,6 +762,7 @@
 	C.initShell = function (opts) {
 		opts = opts || {};
 		C.initTabs(document.getElementById('maincontent'));
+		C.initLeaseAvatars(document.getElementById('maincontent'));
 		const body = document.body;
 		const burger = document.getElementById('cb-burger');
 		const scrim = document.getElementById('cb-scrim');
@@ -1511,6 +1512,61 @@
 		const ch = l.hostname ? Array.from(l.hostname)[0] : null;
 		return h('span', { class: 'cb-avatar', style: '--c:' + color, html: ch ? esc(ch) : icon('laptop') });
 	}
+
+	/* ------------------------------------------------------------------
+	 * Brand avatars in LuCI's own lease tables (DHCP page, overview details)
+	 *
+	 * ui.Table rebuilds every row on each poll and sorts from its data, not
+	 * the DOM, so the avatar is simply added again to each new row. The
+	 * hostname is the cell before the first IP address cell (an Interface
+	 * column may come first), the MAC is any cell holding one; DHCPv6 rows
+	 * have none, but DUID-LL/LLT carry the client's MAC.
+	 * ------------------------------------------------------------------ */
+	const LEASE_TABLES = ['#lease_status_table', '#lease6_status_table', '#status_leases', '#status_leases6'];
+	const LEASE_ROWS = LEASE_TABLES.map((sel) => sel + ' .tr:not(.table-titles):not(.cbi-section-table-titles):not(.placeholder)').join(', ');
+	const IP_CELL = /^(?:\d{1,3}(?:\.\d{1,3}){3}|[0-9a-f]{0,4}(?::[0-9a-f]{0,4}){2,})/i;
+	const MAC_TEXT = /\b[0-9a-f]{2}(?::[0-9a-f]{2}){5}\b/i;
+	const duidMac = (s) => {
+		s = String(s || '').replace(/[^0-9a-f]/gi, '');
+		if (s.length === 28 && /^00010001/i.test(s)) return s.slice(16);
+		if (s.length === 20 && /^00030001/i.test(s)) return s.slice(8);
+		return '';
+	};
+	function leaseAvatar(tr) {
+		const cells = Array.from(tr.children).filter((c) => c.classList.contains('td'));
+		const ip = cells.findIndex((c) => IP_CELL.test(c.textContent.trim()));
+		const cell = ip > 0 ? cells[ip - 1] : null;
+		if (!cell || cell.querySelector('.cb-host')) return;
+		let mac = '';
+		for (const c of cells) {
+			const text = c.textContent.trim();
+			const m = text.match(MAC_TEXT);
+			mac = m ? m[0] : duidMac(text);
+			if (mac) break;
+		}
+		let host = cell.textContent.trim();
+		if (host === '-') host = '';
+		const id = C.identify(host.replace(/\s*\(.*\)$/, ''), mac);
+		const avatar = deviceAvatar({ hostname: host, macaddr: mac }, id);
+		avatar.setAttribute('aria-hidden', 'true');
+		const name = h('span', { class: 'cb-host-name' }, Array.from(cell.childNodes));
+		cell.appendChild(h('span', { class: 'cb-host' }, [avatar, name]));
+	}
+	C.initLeaseAvatars = function (root) {
+		if (!root || !window.MutationObserver) return;
+		let ready = false;
+		const run = () => { if (ready) root.querySelectorAll(LEASE_ROWS).forEach(leaseAvatar); };
+		new MutationObserver(run).observe(root, { childList: true, subtree: true });
+		/* brand data loads only once a lease table shows up */
+		const start = () => {
+			if (!root.querySelector(LEASE_TABLES.join(', '))) return;
+			C.loadBrands().then(() => { ready = true; run(); });
+			watch.disconnect();
+		};
+		const watch = new MutationObserver(start);
+		watch.observe(root, { childList: true, subtree: true });
+		start();
+	};
 
 	C.Dashboard = {
 		mount(host, P, opts) {
