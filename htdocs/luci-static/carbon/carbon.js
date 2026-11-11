@@ -172,6 +172,7 @@
 		clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
 		chevron: '<path d="M9 6l6 6-6 6"/>',
 		chevdown: '<path d="M6 9l6 6 6-6"/>',
+		check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
 		shield: '<path d="M12 3l7.5 3v5.5c0 4.6-3.1 8.2-7.5 9.5-4.4-1.3-7.5-4.9-7.5-9.5V6z"/>',
 		phone: '<rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 18h2"/>',
 		tv: '<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 20h8"/>',
@@ -232,13 +233,19 @@
 		bell: '<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2H4.5z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
 		eye: '<path d="M2.5 12s3.5-6.5 9.5-6.5 9.5 6.5 9.5 6.5-3.5 6.5-9.5 6.5S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/>',
 		chevleft: '<path d="M14.5 6l-6 6 6 6"/>',
+		/* whale carrying a stack of containers (Docker) */
+		docker: '<path d="M2.6 12.4h16.7c.5-1.3 1.6-2 2.9-1.8-.1 1.2-.9 2-2.1 2.3-1.3 4-4.9 6.6-9.4 6.6-4.4 0-7.2-2.8-8.1-7.1z"/>' +
+			'<g fill="currentColor" stroke="none"><rect x="4.6" y="9" width="2.7" height="2.4" rx=".4"/><rect x="7.9" y="9" width="2.7" height="2.4" rx=".4"/>' +
+			'<rect x="11.2" y="9" width="2.7" height="2.4" rx=".4"/><rect x="7.9" y="5.9" width="2.7" height="2.4" rx=".4"/>' +
+			'<rect x="11.2" y="5.9" width="2.7" height="2.4" rx=".4"/><rect x="11.2" y="2.8" width="2.7" height="2.4" rx=".4"/><circle cx="7.4" cy="15.4" r=".9"/></g>',
+		nodes: '<circle cx="12" cy="5.5" r="2.3"/><circle cx="5.5" cy="18" r="2.3"/><circle cx="18.5" cy="18" r="2.3"/><path d="M10.9 7.6l-4.3 8.3M13.1 7.6l4.3 8.3M7.8 18h8.4"/>',
 		sparkle: '<path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.9z"/><path d="M18.5 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/>'
 	});
 
 	/* Top-level LuCI menu categories → line icon */
 	const CATEGORY_ICON = {
 		status: 'gauge', system: 'gear', services: 'grid', network: 'globe', vpn: 'lock',
-		nas: 'disk', statistics: 'chart', control: 'shield', docker: 'box', logout: 'logout'
+		nas: 'disk', statistics: 'chart', control: 'shield', docker: 'docker', logout: 'logout'
 	};
 
 	/* Second-level pages → icon (exact node name first, then keyword match).
@@ -269,7 +276,7 @@
 		'ssr-plus': 'send', shadowsocksr: 'send', vssr: 'send', bypass: 'send', aria2: 'download',
 		transmission: 'download', qbittorrent: 'download', minidlna: 'play', jellyfin: 'play',
 		rtp2httpd: 'fiber', rtp2httpx: 'fiber', udpxy: 'fiber', iptv: 'fiber',
-		watchcat: 'eye', diskman: 'disk', 'hd-idle': 'disk', dockerman: 'box', docker: 'box',
+		watchcat: 'eye', diskman: 'disk', 'hd-idle': 'disk', dockerman: 'docker', docker: 'docker',
 		vlmcsd: 'key', ua2f: 'shield', accesscontrol: 'filter', timecontrol: 'clock', p910nd: 'printer',
 		usb_printer: 'printer', alist: 'folder', 'ddns-go': 'refresh', wechatpush: 'bell', serverchan: 'bell',
 		pushbot: 'bell'
@@ -284,11 +291,22 @@
 		[/watch/, 'eye'], [/log/, 'doc'], [/wifi|wlan|wireless/, 'wifi'],
 		[/vpn|wireguard|tunnel|ipsec|pptp|l2tp|zerotier|tailscale/, 'lock'], [/push|notif|chan|bot/, 'bell'], [/dns/, 'server'],
 		[/firewall|guard|block|filter/, 'shield'], [/stat|graph|monitor|bandwidth/, 'chart'],
-		[/disk|storage|mount/, 'disk'], [/nas|share|smb|nfs|ftp|file/, 'folder'], [/docker|container/, 'box'],
+		[/disk|storage|mount/, 'disk'], [/nas|share|smb|nfs|ftp|file/, 'folder'], [/docker/, 'docker'], [/container/, 'box'],
 		[/time|cron|schedule/, 'clock'], [/user|account|admin/, 'user'], [/terminal|shell|ssh/, 'terminal'],
 		[/update|upgrade|flash|backup/, 'download']
 	];
-	const pageIcon = (name) => {
+	/* Pages whose generic names only mean something inside their category
+	   (Docker → config / images / networks / volumes / events …). Checked
+	   before PAGE_ICON; add a category here rather than special cases below. */
+	const CATEGORY_PAGE_ICON = {
+		docker: {
+			config: 'sliders', overview: 'gauge', containers: 'box', images: 'layers',
+			networks: 'nodes', volumes: 'disk', events: 'pulse'
+		}
+	};
+	const pageIcon = (name, category) => {
+		const own = CATEGORY_PAGE_ICON[category];
+		if (own && own[name]) return own[name];
 		if (PAGE_ICON[name]) return PAGE_ICON[name];
 		for (const k of PAGE_KEYWORDS) if (k[0].test(name)) return k[1];
 		return 'dot';
@@ -336,6 +354,7 @@
 		}
 	};
 	C.appearance.apply();
+
 	if (mq) {
 		const onChange = () => C.appearance.apply();
 		if (mq.addEventListener) mq.addEventListener('change', onChange);
@@ -407,6 +426,141 @@
 		return seg;
 	}
 	C.segmented = segmented;
+
+	/* ------------------------------------------------------------------
+	 * Listbox: a select in Carbon's glass style (instead of a native <select>)
+	 *
+	 * listbox({ options: [{ value, label }], value, label, className, onChange(value) })
+	 *   → { el, open({ anchor, beside }), toggle(…), close(), set(value) }
+	 * Select-only combobox pattern: the trigger is a button; ↑/↓/Enter/Space
+	 * open the list, ↑/↓/Home/End/typing move, Enter/Space pick, Esc/Tab close.
+	 * The list lives on <body> (position: fixed) so no container clips it; it
+	 * opens below its anchor, above when there is no room, or `beside` a rail.
+	 * ------------------------------------------------------------------ */
+	function listbox(opts) {
+		const id = uid();
+		let value = opts.value, list = null, opener = null, active = -1, typed = '', typedAt = 0;
+		const text = h('span', { class: 'cb-lb-text' });
+		const el = h('button', {
+			type: 'button', class: 'cb-lb' + (opts.className ? ' ' + opts.className : ''),
+			'aria-haspopup': 'listbox', 'aria-expanded': 'false', 'aria-controls': id, 'aria-label': opts.label || null
+		}, [text, h('span', { class: 'cb-lb-chev', html: icon('chevdown') })]);
+		const index = (v) => opts.options.findIndex((o) => o.value === v);
+		const sync = () => {
+			const o = opts.options[index(value)] || opts.options[0];
+			text.textContent = o ? o.label : '';
+			el.title = (opts.label ? opts.label + ' · ' : '') + text.textContent;
+		};
+		const items = () => list ? Array.from(list.children) : [];
+		const highlight = (i) => {
+			const all = items();
+			if (!all.length) return;
+			active = clamp(i, 0, all.length - 1);
+			all.forEach((li, k) => li.classList.toggle('active', k === active));
+			list.setAttribute('aria-activedescendant', all[active].id);
+			all[active].scrollIntoView({ block: 'nearest' });
+		};
+		const place = (anchor, beside) => {
+			const r = anchor.getBoundingClientRect(), gap = 6, pad = 8;
+			list.style.minWidth = beside ? '' : r.width + 'px';
+			const lh = list.offsetHeight, lw = list.offsetWidth;
+			let left, top;
+			if (beside) {
+				const side = document.getElementById('cb-sidebar');
+				left = (side ? side.getBoundingClientRect().right : r.right) + 10;
+				top = r.bottom - lh;
+			}
+			else {
+				left = r.left;
+				top = r.bottom + gap + lh <= window.innerHeight - pad ? r.bottom + gap : r.top - gap - lh;
+			}
+			list.style.left = clamp(left, pad, Math.max(pad, window.innerWidth - lw - pad)) + 'px';
+			list.style.top = clamp(top, pad, Math.max(pad, window.innerHeight - lh - pad)) + 'px';
+		};
+		const choose = (i) => {
+			const o = opts.options[i];
+			close(true);
+			if (!o || o.value === value) return;
+			value = o.value;
+			sync();
+			if (typeof opts.onChange === 'function') opts.onChange(value);
+		};
+		const inside = (node) => !!node && ((list && list.contains(node)) || el.contains(node) || (opener && opener.contains(node)));
+		const outside = (e) => { if (!inside(e.target)) close(false); };
+		/* page scroll or resize closes the list; scrolling inside it does not */
+		const dismiss = (e) => { if (!(e && e.type === 'scroll' && list && list.contains(e.target))) close(false); };
+
+		function open(o) {
+			o = o || {};
+			if (list) return;
+			opener = o.anchor || el;
+			list = h('ul', { class: 'cb-lb-list', id: id, role: 'listbox', tabindex: '-1', 'aria-label': opts.label || null });
+			opts.options.forEach((opt, i) => {
+				const li = h('li', { id: id + '-' + i, role: 'option', 'aria-selected': opt.value === value ? 'true' : 'false' }, [
+					h('span', { class: 'cb-lb-check', html: icon('check') }), h('span', { text: opt.label })
+				]);
+				li.addEventListener('pointermove', () => { if (active !== i) highlight(i); });
+				li.addEventListener('click', () => choose(i));
+				list.appendChild(li);
+			});
+			list.addEventListener('keydown', onListKey);
+			list.addEventListener('focusout', (e) => { if (!inside(e.relatedTarget)) close(false); });
+			document.body.appendChild(list);
+			place(o.anchor || el, !!o.beside);
+			list.classList.add('show');
+			el.setAttribute('aria-expanded', 'true');
+			highlight(o.last ? opts.options.length - 1 : Math.max(0, index(value)));
+			list.focus({ preventScroll: true });
+			document.addEventListener('pointerdown', outside, true);
+			window.addEventListener('resize', dismiss);
+			window.addEventListener('scroll', dismiss, true);
+		}
+		function close(restoreFocus) {
+			if (!list) return;
+			document.removeEventListener('pointerdown', outside, true);
+			window.removeEventListener('resize', dismiss);
+			window.removeEventListener('scroll', dismiss, true);
+			const old = list;
+			list = null;
+			active = -1;
+			old.remove();
+			el.setAttribute('aria-expanded', 'false');
+			/* back to whatever opened the list (the trigger, or e.g. a rail button) */
+			const back = opener && opener.offsetParent !== null ? opener : el;
+			opener = null;
+			if (restoreFocus && back.offsetParent !== null) back.focus({ preventScroll: true });
+		}
+		function toggle(o) { if (list) close(true); else open(o); }
+		function onListKey(e) {
+			const n = opts.options.length;
+			const move = { ArrowDown: active + 1, ArrowUp: active - 1, Home: 0, End: n - 1, PageDown: active + 5, PageUp: active - 5 }[e.key];
+			if (move != null) { e.preventDefault(); highlight(move); }
+			else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(active); }
+			else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(true); }
+			else if (e.key === 'Tab') close(false);
+			else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+				/* type-ahead: jump to the next label starting with what was typed */
+				const now = Date.now();
+				typed = (now - typedAt > 700 ? '' : typed) + e.key.toLowerCase();
+				typedAt = now;
+				/* a new first letter searches after the current option, more letters refine it */
+				const start = typed.length > 1 ? active : active + 1;
+				for (let k = 0; k < n; k++) {
+					const i = (start + k) % n;
+					if (opts.options[i].label.toLowerCase().startsWith(typed)) { highlight(i); break; }
+				}
+			}
+		}
+		el.addEventListener('click', () => toggle());
+		el.addEventListener('keydown', (e) => {
+			if (['ArrowDown', 'ArrowUp', 'Enter', ' '].indexOf(e.key) < 0) return;
+			e.preventDefault();
+			open({ last: e.key === 'ArrowUp' });
+		});
+		sync();
+		return { el: el, open: open, toggle: toggle, close: close, set(v) { value = v; sync(); } };
+	}
+	C.listbox = listbox;
 
 	/* ------------------------------------------------------------------
 	 * Flyout (collapsed rail): label or sub-menu next to a hovered icon
@@ -577,15 +731,16 @@
 			wrap.appendChild(seg);
 		}
 		else {
-			const select = h('select', { class: 'cb-lang-select', 'aria-label': t('Language') },
-				[{ code: 'auto', label: t('Auto') }].concat(options).map((o) =>
-					h('option', { value: o.code, selected: o.code === info.selected }, o.label)));
-			reset = () => { select.value = info.selected; };
-			select.addEventListener('change', () => go(select.value));
-			/* the rail has no room for a list: expand, then focus the select */
-			mini.addEventListener('click', () => { C.sidebar.set(false); select.focus(); });
+			const list = listbox({
+				options: [{ value: 'auto', label: t('Auto') }].concat(options.map((o) => ({ value: o.code, label: o.label }))),
+				value: info.selected, label: t('Language'), className: 'cb-lang-list', onChange: go
+			});
+			reset = () => list.set(info.selected);
+			/* on the rail the list opens beside it, like the sub-menus */
+			mini.setAttribute('aria-haspopup', 'listbox');
+			mini.addEventListener('click', () => list.toggle({ anchor: mini, beside: railActive() }));
 			wrap.classList.add('cb-lang-many');
-			wrap.appendChild(select);
+			wrap.appendChild(list.el);
 		}
 		mini.setAttribute('aria-label', mini.title);
 		wrap.appendChild(mini);
@@ -825,7 +980,7 @@
 					h('span', { class: 'cb-nav-label', text: cat.title }),
 					h('span', { class: 'cb-chev', html: icon('chevron') })
 				]);
-				const subs = cat.children.map((ch) => ({ title: ch.title, url: ch.url, icon: pageIcon(ch.name), active: isActive(ch.path) }));
+				const subs = cat.children.map((ch) => ({ title: ch.title, url: ch.url, icon: pageIcon(ch.name, cat.name), active: isActive(ch.path) }));
 
 				head.addEventListener('click', (e) => {
 					if (railActive()) {
@@ -1436,7 +1591,12 @@
 			const metaItem = (label, valEl) => h('div', { class: 'cb-meta' }, [h('span', { class: 'cb-meta-label', text: label }), valEl]);
 			const manage = (href) => href ? h('a', { class: 'cb-card-link', href: href, text: t('Manage') }) : null;
 
-			/* hero */
+			/* hero: the router's logo (a custom one from Carbon Theme Settings when set) */
+			const heroIcon = () => {
+				const custom = document.querySelector('.cb-brand-logo[data-custom]');
+				return custom ? h('div', { class: 'cb-hero-icon custom' }, h('img', { src: custom.getAttribute('src'), alt: '' }))
+					: h('div', { class: 'cb-hero-icon', html: LOGO });
+			};
 			ui.host = h('h2', { class: 'cb-hero-title', text: '…' });
 			ui.sub = h('p', { class: 'cb-hero-sub' });
 			ui.net = h('span', { class: 'cb-pill off', text: '…' });
@@ -1447,7 +1607,7 @@
 			ui.wan6Item.classList.add('hidden');
 			dash.appendChild(h('div', { class: 'cb-card cb-hero span-12' }, [
 				h('div', { class: 'cb-hero-id' }, [
-					h('div', { class: 'cb-hero-icon', html: LOGO }),
+					heroIcon(),
 					h('div', { class: 'cb-hero-text' }, [ui.host, ui.sub])
 				]),
 				h('div', { class: 'cb-hero-meta' }, [ui.net, metaItem(t('WAN IP'), ui.wan), ui.wan6Item, metaItem(t('LAN IP'), ui.lan)])

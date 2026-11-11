@@ -4,8 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const baseclass = { extend: value => value };
-const markdownIt = new Function('baseclass', fs.readFileSync('htdocs/luci-static/resources/carbon/vendor/markdown_it.js', 'utf8'))(baseclass);
-const markdown = new Function('baseclass', 'markdownIt', fs.readFileSync('htdocs/luci-static/resources/carbon/markdown.js', 'utf8'))(baseclass, markdownIt);
+const markdown = new Function('baseclass', fs.readFileSync('htdocs/luci-static/resources/carbon/markdown.js', 'utf8'))(baseclass);
 
 test('formats real release notes including headings, lists, tables and fenced commands', () => {
 	const notes = fs.readFileSync('docs/releases/v1.1.2.md', 'utf8') + '\n\n| Firmware | File |\n|---|---|\n| APK | `carbon.apk` |\n\n```sh\nopkg install carbon.ipk\n```';
@@ -55,6 +54,33 @@ test('empty or malformed Markdown has a stable text rendering', () => {
 	assert.match(markdown.render('**unfinished [link](\n\nA & B < C'), /A &amp; B &lt; C/);
 });
 
+test('setext headings, rules, table alignment and ordered list start', () => {
+	const html = markdown.render('Title\n=====\n\nSub\n---\n\n***\n\n| L | C | R |\n|:--|:-:|--:|\n| a \\| b | c | d |\n\n3. three\n4. four');
+	for (const pattern of [/<h1>Title<\/h1>/, /<h2>Sub<\/h2>/, /<hr>/, /<th style="text-align:left">L<\/th>/, /<th style="text-align:center">C<\/th>/,
+		/<td style="text-align:right">d<\/td>/, /<td style="text-align:left">a \| b<\/td>/, /<ol start="3">/])
+		assert.match(html, pattern);
+});
+
+test('tight lists stay inline, loose lists get paragraphs', () => {
+	assert.match(markdown.render('- a\n- b'), /<li>a<\/li>\n<li>b<\/li>/);
+	assert.match(markdown.render('- a\n\n- b'), /<li><p>a<\/p><\/li>\n<li><p>b<\/p><\/li>/);
+	assert.match(markdown.render('- a\ncontinued\n- b'), /<li>a\ncontinued<\/li>/);
+});
+
+test('escapes, code spans and URL punctuation', () => {
+	assert.equal(markdown.render('\\*not em\\* `**not strong**` **strong** _em_ snake_case_name'),
+		'<p>*not em* <code>**not strong**</code> <strong>strong</strong> <em>em</em> snake_case_name</p>\n');
+	assert.match(markdown.render('See https://example.com/a.'), /href="https:\/\/example.com\/a"[^>]*>https:\/\/example.com\/a<\/a>\.<\/p>/);
+	assert.match(markdown.render('line one  \nline two'), /line one<br>\nline two/);
+});
+
+test('deep nesting and pathological input stay bounded', () => {
+	const t = Date.now();
+	assert.match(markdown.render('>'.repeat(500) + ' deep'), /deep/);
+	for (const s of ['['.repeat(12000), '**'.repeat(6000), '_a '.repeat(4000), '[a]('.repeat(3000), '`'.repeat(12000)]) markdown.render(s);
+	assert.ok(Date.now() - t < 2000, 'renders in under 2 s');
+});
+
 test('status polling keeps the notes DOM, selection and scroll when content is unchanged', async () => {
 	let writes = 0;
 	function E(tag, attrs = {}, children) {
@@ -68,7 +94,7 @@ test('status polling keeps the notes DOM, selection and scroll when content is u
 	let current = { current: '1.1.2-r1', notes: '# First', manager: 'apk' };
 	const subject = new Function('view', 'rpc', 'poll', 'ui', 'markdown', 'document', 'E', 'L', 'window', '_', fs.readFileSync('htdocs/luci-static/resources/view/system/carbon-update.js', 'utf8'))(
 		baseclass, { declare: () => async () => current }, { add() {} }, {}, markdown,
-		{ documentElement: { lang: 'zh' } }, E, { hasViewPermission: () => true }, {}, s => s);
+		{ documentElement: { lang: 'zh' }, querySelectorAll: () => [] }, E, { hasViewPermission: () => true }, {}, s => s);
 	subject.render(current);
 	assert.equal(writes, 1);
 	await subject.pollStatus();

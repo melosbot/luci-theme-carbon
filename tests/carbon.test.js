@@ -187,3 +187,17 @@ test('brand identification by hostname, OUI and randomised MAC', () => {
 	assert.equal(C.identify('', 'de:ad:be:ef:12:34').priv, true);
 	assert.equal(C.identify('', 'de:ad:be:ef:12:34').brand, null);
 });
+
+test('Docker uses the whale icon and its pages get their own icons', () => {
+	const C = load();
+	assert.equal(C.pageIcon('dockerman'), 'docker');
+	assert.equal(C.pageIcon('docker'), 'docker');
+	assert.deepEqual(['config', 'overview', 'containers', 'images', 'networks', 'volumes', 'events'].map((n) => C.pageIcon(n, 'docker')),
+		['sliders', 'gauge', 'box', 'layers', 'nodes', 'disk', 'pulse']);
+	/* the same names elsewhere keep the general rules */
+	assert.equal(C.pageIcon('overview', 'status'), 'gauge');
+	assert.equal(C.pageIcon('images', 'services'), 'dot');
+	assert.equal(C.pageIcon('podman-containers'), 'box');
+	assert.match(C.icon('docker'), /<rect /);
+	assert.notEqual(C.icon('nodes'), C.icon('nonexistent'));
+});

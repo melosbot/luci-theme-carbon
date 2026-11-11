@@ -30,11 +30,12 @@ A clean, glass-style LuCI theme for OpenWrt — built for everyday users.
 - **Connected devices** — DHCPv4/v6 leases, Wi‑Fi stations (band and signal) and ARP neighbours are merged, so static-IP clients show up too. Devices are recognised by hostname and MAC vendor prefix (35 brands, ~9,200 IEEE OUI prefixes).
 - **Simple / Pro navigation** — *Simple* shows only the pages most people need (overview, internet, Wi‑Fi, software, password, backup, reboot); *Pro* shows the full LuCI menu with an icon for every page.
 - **Frosted-glass sidebar** that collapses into an icon rail (button on the sidebar edge or <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>\\</kbd>); hovering a rail icon opens its sub-menu.
-- **Light / dark / auto** theme switch (top-right) and a **language switch** (bottom-left) for every installed LuCI language. Theme strings ship in English, Simplified and Traditional Chinese; more can be added as gettext files in `po/`.
+- **Light / dark / auto** theme switch (top-right) and a **language switch** (bottom-left) for every installed LuCI language. Theme strings ship in English, Simplified and Traditional Chinese, German, Spanish, French, Italian, Japanese, Korean, Brazilian Portuguese, Russian, Turkish and Vietnamese; more can be added as gettext files in `po/`.
 - **Keyboard and touch friendly** — arrow keys in segmented controls, a focus-managed phone drawer, and rail sub-menus that open with a tap, <kbd>Enter</kbd> or <kbd>→</kbd>.
 - **Mobile friendly** — drawer navigation and tables that reflow into cards.
+- **Custom logo** — upload a PNG, JPEG, WebP, GIF or SVG in *System → Carbon Theme Settings*. It replaces the sidebar, login, overview and browser-tab logo, and is kept across theme and firmware upgrades. SVGs with scripts or embedded content are rejected.
 - **Online updates** — check and install stable releases from *System → Carbon Theme Settings*, optionally through an HTTPS download mirror. APK signatures remain verified; download size and SHA-256 are checked against GitHub before installation.
-- Existing LuCI pages and plugins keep working; the updater only installs the Carbon theme package.
+- Existing LuCI pages and plugins keep working;
 - Architecture independent: one theme package for every router.
 
 ## Installation & Usage
@@ -108,8 +109,8 @@ Carbon becomes the default theme. Refresh the page, then **log out and log in on
 | Light / dark / auto | top-right of the toolbar |
 | Language | bottom-left of the sidebar (changes LuCI's language, same as *System → Language*; a list when more than two are installed) |
 | Live traffic interface | picker in the *Live Traffic* card: *Auto* follows the WAN; any interface or network device (e.g. an xPON port such as `pon0` that also carries IPTV) can be picked, remembered per browser |
-| GitHub project | icon at the top-right of the toolbar |
 | Check and install theme updates | System → Carbon Theme Settings (Simple and Pro modes) |
+| Custom logo | System → Carbon Theme Settings → Logo (*Restore default* undoes it) |
 | LuCI's original status page | *Show detailed status* under the dashboard |
 
 ### Online upgrades (v1.1.0+)
@@ -159,6 +160,8 @@ sh scripts/build-ipk.sh
 Generated files are committed so every install path works without a build step; CI fails if they are stale (`--check`). The version file is the only version source: the theme template appends it to asset URLs and `carbon.js` reads it from there.
 
 To add a language, create `po/<lang>/carbon.po` (copy the template), translate it and run `gen-i18n.py`. The SDK also builds it into a `luci-i18n-carbon-<lang>` package.
+
+Release notes: write `docs/releases/vX.Y.Z.md` (copy the layout of the previous one) with a `## English` and a `## 简体中文` section. The release job (`scripts/release-notes.sh`) appends the matching section of `docs/releases/install.md` to each, so every language reads through once.
 
 Release packages ship minified CSS/JS (`node scripts/minify.mjs`, run by CI on a disposable checkout). Tests:
 

@@ -5,10 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<meta name="theme-color" content="#f2f2f7">
 	<title>Login — Carbon Demo</title>
-	<script>
-		document.documentElement.lang = new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'zh-Hans';
-		if (/^zh/i.test(document.documentElement.lang)) document.write('<script src="../htdocs/luci-static/carbon/i18n/zh-cn.js"><\/script>');
-	</script>
+	<script src="lang.js" data-i18n="../htdocs/luci-static/carbon/i18n/"></script>
 	<link rel="stylesheet" href="../htdocs/luci-static/carbon/carbon.css">
 	<link rel="stylesheet" href="demo.css">
 	<link rel="icon" href="../htdocs/luci-static/carbon/logo.svg" type="image/svg+xml">
@@ -18,7 +15,7 @@
 	<div class="cb-login-wrap">
 		<div class="cb-login-brand">
 			<img class="cb-login-logo" src="../htdocs/luci-static/carbon/logo.svg" alt="Carbon">
-			<h1>OpenWrt</h1><p>Xiaomi Redmi Router AX6000</p>
+			<h1>OpenWrt</h1>
 		</div>
 		<div id="maincontent" class="cb-login-card">
 			<form id="demo-login" action="index.html" method="get">
@@ -38,7 +35,7 @@
 		<p class="cb-login-foot">OpenWrt 24.10.0 · Carbon Demo</p>
 	</div>
 	<script>
-		const en = document.documentElement.lang === 'en';
+		const en = !/^zh/i.test(document.documentElement.lang);
 		document.getElementById('login-lang').value = en ? 'en' : 'zh-Hans';
 		if (en) {
 			Object.entries({ 'login-title': 'Carbon Demo', 'login-note': 'No account or password needed. Enter the demo directly.', 'user-label': 'Username', 'password-label': 'Demo password', 'login-button': 'Enter demo' }).forEach(([id, text]) => { document.getElementById(id).textContent = text; });

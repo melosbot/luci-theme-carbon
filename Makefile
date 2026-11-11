@@ -9,8 +9,8 @@ LUCI_TITLE:=Carbon Theme (Apple-style, beginner friendly)
 LUCI_DEPENDS:=+luci-base +curl +ca-bundle +flock
 LUCI_PKGARCH:=all
 
-PKG_VERSION:=1.1.3
-PKG_RELEASE:=3
+PKG_VERSION:=1.1.4
+PKG_RELEASE:=2
 PKG_LICENSE:=Apache-2.0
 
 # Keep modern CSS/JS intact (csstidy/jsmin do not understand
@@ -32,6 +32,8 @@ if [ "$${PKG_UPGRADE}" = 1 ] || [ "$$1" = upgrade ]; then exit 0; fi
 	fi
 	uci commit luci
 	rm -f /etc/config/carbon
+	rm -rf /www/luci-static/carbon/custom
+	rmdir /www/luci-static/carbon 2>/dev/null
 }
 exit 0
 endef

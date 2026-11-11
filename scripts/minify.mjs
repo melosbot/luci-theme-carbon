@@ -6,7 +6,7 @@
  *
  * CI runs this on a disposable checkout before building packages. Sources in
  * git stay readable. LuCI view modules ('require …' directives, top-level
- * return) are not touched; markdown-it is already minified upstream.
+ * return) are not touched.
  */
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, resolve, relative } from 'node:path';

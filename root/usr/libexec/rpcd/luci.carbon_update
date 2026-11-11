@@ -1,13 +1,21 @@
 #!/bin/sh
-# Carbon updater. RPC callers can select a checked version, never a URL or command.
+# Carbon theme settings backend: verified theme updates and the custom logo.
+# RPC callers can select a checked version, never a URL or command.
 # An optional HTTPS download mirror (uci carbon.update.mirror) only carries the
 # package bytes; release metadata, size and SHA-256 always come from GitHub.
+# A custom logo is uploaded by LuCI's cgi-upload to $logo_upload (the only file
+# the ACL lets it write), validated here and published under $logo_dir, which
+# sysupgrade keeps (/lib/upgrade/keep.d/luci-theme-carbon).
 . /usr/share/libubox/jshn.sh
 umask 077
 state_dir=/tmp/carbon-update
 key_dir=/usr/share/carbon/keys
 repository=mrjoechen/luci-theme-carbon
 package_name=luci-theme-carbon
+logo_dir=/www/luci-static/carbon/custom
+logo_upload=/tmp/carbon-logo.upload
+logo_max=262144
+logo_exts='svg png webp jpg gif'
 
 valid_mirror() {
 	[ "${#1}" -le 200 ] && printf '%s\n' "$1" | grep -Eq '^https://[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?(:[0-9]{1,5})?(/[A-Za-z0-9._~%+-]+)*/$'
@@ -90,6 +98,7 @@ status_reply() {
 	json_add_string current "$current"; json_add_string manager "$manager"
 	json_add_string latest "$target"; json_add_string tag "$tag"; json_add_string notes "$notes"
 	mirror_prefix; json_add_string mirror "$mirror"
+	json_add_string logo "$(logo_url)"
 	json_add_int checked_at "$checked"; json_add_boolean busy "$busy"
 	json_add_boolean can_upgrade "$can_upgrade"; json_add_string reason "$reason"
 	json_dump
@@ -227,12 +236,67 @@ configure() {
 	json_init; json_add_string mirror "$value"; json_dump
 }
 
+# ---- custom logo ----------------------------------------------------------
+logo_url() {
+	for ext in $logo_exts; do
+		[ -f "$logo_dir/logo.$ext" ] && [ ! -L "$logo_dir/logo.$ext" ] || continue
+		stamp=$(date -r "$logo_dir/logo.$ext" +%s 2>/dev/null) || stamp=''
+		printf '/luci-static/carbon/custom/logo.%s%s' "$ext" "${stamp:+?v=$stamp}"
+		return 0
+	done
+}
+# Image type from the file's magic bytes (never from its name).
+# Plain head/printf comparisons: OpenWrt's default BusyBox has no od -t.
+logo_type() {
+	case "$(head -c 6 "$1")" in GIF87a|GIF89a) echo gif; return 0 ;; esac
+	if [ "$(head -c 4 "$1")" = RIFF ] && [ "$(head -c 12 "$1" | tail -c 4)" = WEBP ]; then echo webp; return 0; fi
+	if [ "$(head -c 8 "$1")" = "$(printf '\211PNG\r\n\032\n')" ]; then echo png; return 0; fi
+	if [ "$(head -c 3 "$1")" = "$(printf '\377\330\377')" ]; then echo jpg; return 0; fi
+	head -c 4096 "$1" | tr 'A-Z' 'a-z' | grep -q '<svg' && echo svg
+}
+# The logo is shown through <img>, where SVG scripts never run, but the file is
+# also reachable by URL on the LuCI origin. Reject anything that could run there.
+svg_safe() {
+	flat=$(tr 'A-Z\n\r\t' 'a-z   ' < "$1")
+	printf '%s' "$flat" | grep -Eq '<script|<foreignobject|<iframe|<embed|<object|<!entity|<a[ />]|<(set|animate)[ />]|<handler|javascript:|vbscript:|&#|[^a-z0-9_:.-]on[a-z]+ *=' && return 1
+	# Embedded data: URIs only as raster images.
+	printf '%s' "$flat" | grep -Eo 'data: *[a-z0-9/+.-]*' | grep -Evq '^data: *image/(png|jpeg|jpg|gif|webp)$' && return 1
+	return 0
+}
+logo_reply() { json_init; json_add_string logo "$(logo_url)"; json_dump; }
+logo_fail() { rm -f "$logo_upload" "$logo_dir/.logo.new"; error_reply "$1"; }
+set_logo() {
+	[ -f "$logo_upload" ] && [ ! -L "$logo_upload" ] || { logo_fail logo_missing; return; }
+	size=$(wc -c < "$logo_upload")
+	[ "$size" -gt 0 ] && [ "$size" -le "$logo_max" ] || { logo_fail logo_size; return; }
+	ext=$(logo_type "$logo_upload")
+	[ -n "$ext" ] || { logo_fail logo_type; return; }
+	[ "$ext" != svg ] || svg_safe "$logo_upload" || { logo_fail logo_unsafe; return; }
+	[ ! -L "$logo_dir" ] && mkdir -p "$logo_dir" && chmod 755 "$logo_dir" &&
+	cp "$logo_upload" "$logo_dir/.logo.new" && chmod 644 "$logo_dir/.logo.new" || { logo_fail state; return; }
+	rm -f "$logo_upload"
+	for old in $logo_exts; do [ "$old" = "$ext" ] || rm -f "$logo_dir/logo.$old"; done
+	mv -f "$logo_dir/.logo.new" "$logo_dir/logo.$ext" || { logo_fail state; return; }
+	logo_reply
+}
+reset_logo() {
+	rm -f "$logo_upload"
+	for ext in $logo_exts; do rm -f "$logo_dir/logo.$ext"; done
+	rm -f "$logo_dir/.logo.new"
+	[ ! -d "$logo_dir" ] || rmdir "$logo_dir" 2>/dev/null || :
+	logo_reply
+}
+logo() {
+	json_load "$input" 2>/dev/null && json_get_var action action || { error_reply invalid; return; }
+	case "$action" in set) set_logo ;; reset) reset_logo ;; *) error_reply invalid ;; esac
+}
+
 case "$1" in
-	list) printf '%s\n' '{"status":{},"check":{},"upgrade":{"version":""},"configure":{"mirror":""}}' ;;
+	list) printf '%s\n' '{"status":{},"check":{},"upgrade":{"version":""},"configure":{"mirror":""},"logo":{"action":""}}' ;;
 	call)
 		input=$(cat)
 		prepare || { error_reply state; exit 0; }
-		case "$2" in status) status_reply ;; check|upgrade) start_job "$2" ;; configure) configure ;; *) error_reply invalid ;; esac
+		case "$2" in status) status_reply ;; check|upgrade) start_job "$2" ;; configure) configure ;; logo) logo ;; *) error_reply invalid ;; esac
 		;;
 	worker)
 		job=${0%/*}; requested=${3:-}; failure=interrupted; complete=0

@@ -16,7 +16,7 @@ def build():
     if OUTPUT.exists():
         shutil.rmtree(OUTPUT)
     OUTPUT.mkdir(parents=True)
-    for name in ("index.html", "login.html", "form.html", "mock.js", "demo.js", "demo.css"):
+    for name in ("index.html", "login.html", "form.html", "lang.js", "mock.js", "demo.js", "demo.css"):
         content = (ROOT / "preview" / name).read_text(encoding="utf-8")
         if name.endswith(".html"):
             content = content.replace(THEME_PREFIX, "assets/carbon/")
