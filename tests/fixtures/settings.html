@@ -35,12 +35,12 @@ const stubs = {
 	view: { extend: (o) => o }, rpc: { declare: () => async () => data, getSessionID: () => 'test' },
 	poll: { add() {} }, ui: { menu: { flushCache() {} } }, request: {}
 };
-/* the real Markdown module, fed the draft release notes */
+/* the real Markdown module, fed real bilingual release notes */
 const text = (url) => fetch(url).then((r) => r.text());
 Promise.all([
 	text('../../htdocs/luci-static/resources/view/system/carbon-update.js'),
 	text('../../htdocs/luci-static/resources/carbon/markdown.js'),
-	text('../../docs/releases/next.md')
+	text('../../docs/releases/v1.1.4.md')
 ]).then(([src, md, notes]) => {
 	const markdown = new Function('baseclass', md)({ extend: (o) => o });
 	data.notes = notes + '\n| Firmware | File |\n|---|---|\n| OpenWrt 24.10 | `luci-theme-carbon_*_all.ipk` |\n\n```sh\nopkg install /tmp/luci-theme-carbon.ipk\n```\n';

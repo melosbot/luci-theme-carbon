@@ -19,8 +19,8 @@ function notes(tag, files, repo) {
 }
 const headings = (md) => md.split('\n').filter((l) => /^(##+ |---$)/.test(l));
 
-test('the draft reads English start to finish, then Simplified Chinese', () => {
-	const r = notes('v9.9.9', { 'v9.9.9.md': fs.readFileSync(path.join(RELEASES, 'next.md'), 'utf8') }, 'someone/fork');
+test('a bilingual release reads English start to finish, then Simplified Chinese', () => {
+	const r = notes('v9.9.9', { 'v9.9.9.md': fs.readFileSync(path.join(RELEASES, 'v1.1.4.md'), 'utf8') }, 'someone/fork');
 	assert.equal(r.status, 0, r.stderr);
 	assert.deepEqual(headings(r.stdout), [
 		'## English', "### What's new", '### Upgrade notes', '### Install', '---',

@@ -158,7 +158,7 @@ sh scripts/build-ipk.sh
 
 新增语言：复制模板为 `po/<语言>/carbon.po`，翻译后运行 `gen-i18n.py`。使用 SDK 构建时还会生成 `luci-i18n-carbon-<语言>` 语言包。
 
-发布说明：编写 `docs/releases/vX.Y.Z.md`（由 `next.md` 改名），文件中分为 `## English` 和 `## 简体中文` 两节。发布任务（`scripts/release-notes.sh`）会把 `docs/releases/install.md` 中对应语言的安装说明接在各自一节后面，每种语言从头到尾连续阅读。
+发布说明：编写 `docs/releases/vX.Y.Z.md`（参照上一版的格式），文件中分为 `## English` 和 `## 简体中文` 两节。发布任务（`scripts/release-notes.sh`）会把 `docs/releases/install.md` 中对应语言的安装说明接在各自一节后面，每种语言从头到尾连续阅读。
 
 发布包中的 CSS/JS 会被压缩（`node scripts/minify.mjs`，由 CI 在临时检出目录中执行）。测试：
 

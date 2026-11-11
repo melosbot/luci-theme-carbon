@@ -161,7 +161,7 @@ Generated files are committed so every install path works without a build step; 
 
 To add a language, create `po/<lang>/carbon.po` (copy the template), translate it and run `gen-i18n.py`. The SDK also builds it into a `luci-i18n-carbon-<lang>` package.
 
-Release notes: write `docs/releases/vX.Y.Z.md` (start from `next.md`) with a `## English` and a `## 简体中文` section. The release job (`scripts/release-notes.sh`) appends the matching section of `docs/releases/install.md` to each, so every language reads through once.
+Release notes: write `docs/releases/vX.Y.Z.md` (copy the layout of the previous one) with a `## English` and a `## 简体中文` section. The release job (`scripts/release-notes.sh`) appends the matching section of `docs/releases/install.md` to each, so every language reads through once.
 
 Release packages ship minified CSS/JS (`node scripts/minify.mjs`, run by CI on a disposable checkout). Tests:
 
