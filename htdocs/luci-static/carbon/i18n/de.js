@@ -12,6 +12,7 @@
 	"2 min ago": "vor 2 Min.",
 	"<1 min": "<1 Min.",
 	"A new version is available.": "Eine neue Version ist verfügbar.",
+	"About this setting": "Über diese Einstellung",
 	"All settings": "Alle Einstellungen",
 	"Another update operation is running.": "Ein anderer Aktualisierungsvorgang läuft bereits.",
 	"APK signature verification failed. Nothing was installed; signature checks remain enabled.": "Die APK-Signaturprüfung ist fehlgeschlagen. Es wurde nichts installiert; die Signaturprüfung bleibt aktiv.",

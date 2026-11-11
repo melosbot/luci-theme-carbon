@@ -12,6 +12,7 @@
 	"2 min ago": "2 мин назад",
 	"<1 min": "<1 мин",
 	"A new version is available.": "Доступна новая версия.",
+	"About this setting": "Об этой настройке",
 	"All settings": "Все настройки",
 	"Another update operation is running.": "Уже выполняется другое обновление.",
 	"APK signature verification failed. Nothing was installed; signature checks remain enabled.": "Проверка подписи APK не пройдена. Ничего не установлено; проверка подписей остаётся включённой.",

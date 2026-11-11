@@ -12,6 +12,7 @@
 	"2 min ago": "2 dk önce",
 	"<1 min": "<1 dk",
 	"A new version is available.": "Yeni bir sürüm mevcut.",
+	"About this setting": "Bu ayar hakkında",
 	"All settings": "Tüm ayarlar",
 	"Another update operation is running.": "Başka bir güncelleme işlemi sürüyor.",
 	"APK signature verification failed. Nothing was installed; signature checks remain enabled.": "APK imza doğrulaması başarısız oldu. Hiçbir şey kurulmadı; imza denetimi açık kalıyor.",

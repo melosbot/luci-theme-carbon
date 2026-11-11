@@ -12,6 +12,7 @@
 	"2 min ago": "2 phút trước",
 	"<1 min": "<1 phút",
 	"A new version is available.": "Đã có phiên bản mới.",
+	"About this setting": "Về cài đặt này",
 	"All settings": "Tất cả cài đặt",
 	"Another update operation is running.": "Một thao tác cập nhật khác đang chạy.",
 	"APK signature verification failed. Nothing was installed; signature checks remain enabled.": "Xác minh chữ ký APK thất bại. Chưa cài gì; kiểm tra chữ ký vẫn được bật.",

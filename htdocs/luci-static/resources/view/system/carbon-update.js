@@ -62,7 +62,29 @@ const writable = () => L.hasViewPermission();
 
 /* LuCI's E() renders a null array item as the text "null": never pass one */
 const section = (title, description, children) => E('section', { 'class': 'cbi-section' },
-	[E('h3', {}, title)].concat(description ? [E('p', { 'class': 'cbi-section-descr' }, description)] : [], children));
+	[E('h3', {}, [].concat(title))].concat(description ? [E('p', { 'class': 'cbi-section-descr' }, description)] : [], children));
+/* "?" toggletip: hover or keyboard focus shows the text, a click or tap pins it,
+   Esc or a click elsewhere closes it. Keeps long explanations off the page. */
+let hintSeq = 0;
+function hint(text) {
+	const id = 'cb-hint-' + (++hintSeq);
+	let wrap = null;
+	const outside = (e) => { if (!wrap.contains(e.target)) setOpen(false); };
+	const setOpen = (on) => {
+		wrap.classList.toggle('open', on);
+		button.setAttribute('aria-expanded', on ? 'true' : 'false');
+		if (on) document.addEventListener('pointerdown', outside, true);
+		else document.removeEventListener('pointerdown', outside, true);
+	};
+	const button = E('button', {
+		'type': 'button', 'class': 'cb-hint-btn', 'aria-label': tr('About this setting'),
+		'aria-describedby': id, 'aria-expanded': 'false',
+		'click': () => setOpen(!wrap.classList.contains('open')),
+		'keydown': (e) => { if (e.key === 'Escape') setOpen(false); }
+	}, ['?']);
+	wrap = E('span', { 'class': 'cb-hint' }, [button, E('span', { 'class': 'cb-hint-bubble', 'id': id, 'role': 'tooltip' }, [text])]);
+	return wrap;
+}
 const actions = (children) => E('div', { 'class': 'cb-update-actions' }, children);
 const external = (href, text) => E('a', { 'href': href, 'target': '_blank', 'rel': 'noopener noreferrer' }, text);
 
@@ -153,7 +175,7 @@ function mirrorSection(data) {
 	} }, tr('Save'));
 	if (!writable()) { input.disabled = true; save.disabled = true; }
 
-	return section(tr('Download mirror'), tr('Optional. If GitHub downloads are slow or blocked, enter an HTTPS prefix that proxies GitHub links, for example https://mirror.example.com/ for https://mirror.example.com/https://github.com/…. Release information is still read from GitHub, and the downloaded file must match the size and SHA-256 published there; GitHub is tried if the mirror fails.'), [
+	return section([tr('Download mirror'), hint(tr('Optional. If GitHub downloads are slow or blocked, enter an HTTPS prefix that proxies GitHub links, for example https://mirror.example.com/ for https://mirror.example.com/https://github.com/…. Release information is still read from GitHub, and the downloaded file must match the size and SHA-256 published there; GitHub is tried if the mirror fails.'))], null, [
 		E('div', { 'class': 'cbi-value' }, [
 			E('label', { 'class': 'cbi-value-title', 'for': 'carbon-mirror' }, tr('Mirror prefix')),
 			E('div', { 'class': 'cbi-value-field cb-update-field' }, [input, save, state])

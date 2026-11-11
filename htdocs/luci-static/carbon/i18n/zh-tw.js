@@ -12,6 +12,7 @@
 	"2 min ago": "2 分鐘前",
 	"<1 min": "<1 分鐘",
 	"A new version is available.": "有新版本可用。",
+	"About this setting": "關於此設定",
 	"All settings": "全部設定",
 	"Another update operation is running.": "已有更新作業正在執行。",
 	"APK signature verification failed. Nothing was installed; signature checks remain enabled.": "APK 簽章驗證失敗，未執行安裝；簽章驗證維持啟用。",

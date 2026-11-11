@@ -250,6 +250,52 @@ test('settings page: buttons, links, fields and status text share one centre lin
 	}
 });
 
+test('settings page: the mirror explanation lives in a ? toggletip', async () => {
+	for (const width of [1200, 390]) {
+		const { page, context, errors } = await open('/src/tests/fixtures/settings.html', { width, height: 900 });
+		await page.waitForSelector('body[data-ready]');
+		const section = page.locator('section.cbi-section', { has: page.locator('#carbon-mirror') });
+		assert.equal(await section.locator('.cbi-section-descr').count(), 0, 'no long paragraph on the page');
+		const btn = section.locator('h3 .cb-hint-btn'), bubble = section.locator('.cb-hint-bubble');
+		const shown = () => bubble.evaluate((b) => getComputedStyle(b).visibility === 'visible');
+		assert.equal(await btn.getAttribute('aria-describedby'), await bubble.getAttribute('id'));
+		assert.match(await bubble.textContent(), /HTTPS/);
+		assert.equal(await shown(), false, 'hidden by default');
+		await btn.hover();
+		await page.waitForTimeout(200);
+		assert.equal(await shown(), true, 'hover shows it');
+		await page.mouse.move(5, 5);
+		await page.waitForTimeout(200);
+		assert.equal(await shown(), false, 'leaving hides it');
+		await btn.click();
+		await page.mouse.move(5, 5);
+		await page.waitForTimeout(200);
+		assert.equal(await shown(), true, 'a click pins it');
+		assert.equal(await btn.getAttribute('aria-expanded'), 'true');
+		const box = await bubble.boundingBox();
+		assert.ok(box.x >= 0 && box.x + box.width <= width, `${width}px: bubble inside the window`);
+		await page.mouse.click(5, 5);
+		await page.waitForTimeout(200);
+		assert.equal(await shown(), false, 'a click elsewhere closes it');
+		await btn.click();
+		await page.keyboard.press('Escape');
+		await page.waitForTimeout(200);
+		assert.equal(await btn.getAttribute('aria-expanded'), 'false', 'Esc closes it');
+		await page.keyboard.press('Tab');
+		await page.keyboard.press('Shift+Tab');
+		await page.waitForTimeout(200);
+		assert.equal(await shown(), true, 'keyboard focus shows it');
+		if (width === 1200) {
+			await page.mouse.move(5, 5);
+			await btn.hover();
+			await page.waitForTimeout(200);
+			await section.screenshot({ path: path.join(SHOTS, 'settings-mirror-hint.png') });
+		}
+		assert.deepEqual(errors, []);
+		await context.close();
+	}
+});
+
 test('language switch is a Carbon listbox with every bundled language', async () => {
 	const { page, context } = await open('/src/preview/index.html?lang=en');
 	await page.waitForSelector('.cb-lang .cb-lb');

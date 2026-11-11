@@ -50,6 +50,10 @@ msgstr ""
 msgid "A new version is available."
 msgstr ""
 
+#: htdocs/luci-static/resources/view/system/carbon-update.js
+msgid "About this setting"
+msgstr ""
+
 #: htdocs/luci-static/carbon/carbon.js
 msgid "All settings"
 msgstr ""

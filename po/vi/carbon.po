@@ -51,6 +51,10 @@ msgstr "<1 phút"
 msgid "A new version is available."
 msgstr "Đã có phiên bản mới."
 
+#: htdocs/luci-static/resources/view/system/carbon-update.js
+msgid "About this setting"
+msgstr "Về cài đặt này"
+
 #: htdocs/luci-static/carbon/carbon.js
 msgid "All settings"
 msgstr "Tất cả cài đặt"

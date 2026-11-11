@@ -51,6 +51,10 @@ msgstr "<1 分鐘"
 msgid "A new version is available."
 msgstr "有新版本可用。"
 
+#: htdocs/luci-static/resources/view/system/carbon-update.js
+msgid "About this setting"
+msgstr "關於此設定"
+
 #: htdocs/luci-static/carbon/carbon.js
 msgid "All settings"
 msgstr "全部設定"

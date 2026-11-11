@@ -2945,6 +2945,70 @@ body.cb-has-dash #maincontent > h2 { display: none; }
 	border: 1px solid var(--cb-border);
 }
 .cb-logo-actions { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; min-width: 0; }
+
+/* "?" toggletip next to a heading: hover / keyboard focus shows, click pins */
+.cb-update h3 .cb-hint { margin-inline-start: 6px; }
+.cb-hint { position: relative; display: inline-flex; }
+.cb-hint-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	height: 18px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: var(--cb-fill);
+	color: var(--cb-text-2);
+	font: inherit;
+	font-size: 11.5px;
+	font-weight: 700;
+	line-height: 1;
+	cursor: help;
+	transition: background-color .15s var(--cb-ease), color .15s var(--cb-ease);
+}
+.cb-hint-btn:hover,
+.cb-hint.open .cb-hint-btn { background: var(--cb-accent-t); color: var(--cb-accent); }
+.cb-hint-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cb-focus); }
+.cb-hint-bubble {
+	position: absolute;
+	z-index: 50;
+	top: calc(100% + 8px);
+	left: -12px;
+	width: max-content;
+	max-width: min(24rem, calc(100vw - 48px));
+	padding: 10px 12px;
+	border-radius: var(--cb-radius-md);
+	border: 1px solid var(--cb-border);
+	background: var(--cb-card-solid);
+	box-shadow: var(--cb-shadow-pop);
+	color: var(--cb-text);
+	/* the heading is a small uppercase label: reset its text styles */
+	font-size: 12.5px;
+	font-weight: 400;
+	line-height: 1.6;
+	letter-spacing: normal;
+	text-transform: none;
+	white-space: normal;
+	overflow-wrap: anywhere;
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(-4px);
+	pointer-events: none;
+	transition: opacity .14s var(--cb-ease), transform .14s var(--cb-ease), visibility .14s;
+}
+/* bridge the gap so the pointer can move from the icon into the bubble */
+.cb-hint-bubble::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
+.cb-hint:hover .cb-hint-bubble,
+.cb-hint:has(.cb-hint-btn:focus-visible) .cb-hint-bubble,
+.cb-hint.open .cb-hint-bubble { opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
+/* narrow screens: anchor the bubble to the heading so it spans the section */
+.cb-update .cbi-section > h3 { position: relative; }
+@media (max-width: 600px) {
+	.cb-update h3 .cb-hint { position: static; }
+	.cb-update h3 .cb-hint-bubble { left: 0; right: 0; width: auto; max-width: none; }
+}
+@media (prefers-reduced-motion: reduce) { .cb-hint-bubble { transition: none; } }
 /* ==========================================================================
    18. Third-party plugin adapters
    One section per plugin package, scoped by body[data-page]

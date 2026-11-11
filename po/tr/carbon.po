@@ -51,6 +51,10 @@ msgstr "<1 dk"
 msgid "A new version is available."
 msgstr "Yeni bir sürüm mevcut."
 
+#: htdocs/luci-static/resources/view/system/carbon-update.js
+msgid "About this setting"
+msgstr "Bu ayar hakkında"
+
 #: htdocs/luci-static/carbon/carbon.js
 msgid "All settings"
 msgstr "Tüm ayarlar"

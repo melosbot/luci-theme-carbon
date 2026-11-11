@@ -12,6 +12,7 @@
 	"2 min ago": "2 分前",
 	"<1 min": "1 分未満",
 	"A new version is available.": "新しいバージョンがあります。",
+	"About this setting": "この設定について",
 	"All settings": "すべての設定",
 	"Another update operation is running.": "別の更新処理が実行中です。",
 	"APK signature verification failed. Nothing was installed; signature checks remain enabled.": "APK の署名検証に失敗しました。何もインストールされていません。署名検証は有効のままです。",

@@ -12,6 +12,7 @@
 	"2 min ago": "2분 전",
 	"<1 min": "1분 미만",
 	"A new version is available.": "새 버전이 있습니다.",
+	"About this setting": "이 설정 정보",
 	"All settings": "모든 설정",
 	"Another update operation is running.": "다른 업데이트 작업이 진행 중입니다.",
 	"APK signature verification failed. Nothing was installed; signature checks remain enabled.": "APK 서명 확인에 실패했습니다. 아무것도 설치하지 않았으며 서명 확인은 계속 켜져 있습니다.",
